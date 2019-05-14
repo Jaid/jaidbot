@@ -1,3 +1,6 @@
+import {sample} from "lodash"
+
+const people = require("./people.txt").default.split("\n")
 const shortcuts = require("./shortcuts.yml")
 
 export default {
@@ -13,7 +16,7 @@ export default {
     }
     await streamerClient.kraken.channels.updateChannel("65887522", {game: newGame})
     if (currentGame) {
-      return `Die Leute, die nur für ${currentGame} hier waren, sind jetzt herzlich ausgeladen, denn es geht weiter mit ${newGame}!`
+      return `Die ${people |> sample}, die nur für ${currentGame} hier waren, sind jetzt herzlich ausgeladen, denn es geht weiter mit ${newGame}!`
     } else {
       return `Es geht weiter mit ${newGame}!`
     }
