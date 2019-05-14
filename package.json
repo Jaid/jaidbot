@@ -4,7 +4,11 @@
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@babel/runtime": "^7.4.4",
-    "debug": "^4.1.1"
+    "debug": "^4.1.1",
+    "minimist": "^1.2.0",
+    "moment": "^2.24.0",
+    "twitch": "^2.2.3",
+    "twitch-chat-client": "^2.3.5"
   },
   "devDependencies": {
     "acorn": "^6.1.1",
@@ -22,6 +26,7 @@
   },
   "scripts": {
     "clean": "rimraf dist/ test/**/dist/",
+    "start": "npm run build:dev && node dist/package/development/cli.js",
     "babel:prod": "rimraf dist/src-transpiled/production && NODE_ENV=production babel --out-dir dist/src-transpiled/production --source-maps true src",
     "babel:dev": "rimraf dist/src-transpiled/development && babel --out-dir dist/src-transpiled/development src",
     "babel:test": "rimraf dist/src-transpiled/test && NODE_ENV=test babel --out-dir dist/src-transpiled/test src",
