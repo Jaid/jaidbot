@@ -11,7 +11,7 @@ const commands = commandsRequire.keys().reduce((state, value) => {
   return state
 }, {})
 
-export default (message, msg, chatClient, say) => {
+export default (message, msg, streamerClient, botClient, chatClient, say) => {
   const parsedCommand = commandRegex.exec(message.trim())
   if (parsedCommand === null) {
     return
@@ -41,6 +41,8 @@ export default (message, msg, chatClient, say) => {
   command.handle({
     msg,
     say,
+    streamerClient,
+    botClient,
     chatClient,
     commandArguments,
     senderDisplayName,
