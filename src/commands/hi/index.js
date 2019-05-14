@@ -1,7 +1,7 @@
 import moment from "moment"
 
 export default {
-  async handle({msg, say}) {
+  async handle({senderDisplayName}) {
     const hour = moment().hour()
     const greeting = (() => {
       if (hour >= 21) {
@@ -18,6 +18,6 @@ export default {
         return "Guten Morgen"
       }
     })()
-    say(`${greeting}, ${msg.userInfo.displayName}!`)
+    return `${greeting}, ${senderDisplayName}!`
   },
 }
