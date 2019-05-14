@@ -44,11 +44,12 @@ export default (message, msg, chatClient, say) => {
     chatClient,
     commandArguments,
     senderDisplayName,
+    senderUserName: msg.userInfo.userName,
   }).then(returnValue => {
     if (returnValue |> isString) {
       say(returnValue)
     }
   }).catch(error => {
-    say(`Oh, ${senderDisplayName}, irgendetwas habe ich jetzt falsch gemacht. (${error.message || error})`)
+    say(`Oh, ${senderDisplayName}, da hat irgendetwas nicht geklappt. (${error?.message || error})`)
   })
 }
