@@ -26,7 +26,7 @@ export default {
     const viewsString = millify(info.view_count, {precision: 0})
     say(`${senderDisplayName} hat "${info.title}" (${info.height}p${info.fps}, ${durationString}, ${viewsString} Klicks) von ${info.uploader} hinzugefügt!`)
     await execa("E:/Projects/node-scripts/dist/exe/playVideo.exe", [video])
-    say(info.downloadFileExists ? "Downlaod nicht nötig!" : "Download fertig!")
+    say(info.downloadFileExists ? "Download nicht nötig!" : "Download fertig!")
     let vlcState
     try {
       const {body} = await got("http://127.0.0.1:8080/requests/status.json", gotOptions)
@@ -35,6 +35,12 @@ export default {
       return "Kein Lebenszeichen vom Video Player."
     }
     if (vlcState.state === "stopped") {
+      await got("http://127.0.0.1:8080/requests/status.json", {
+        ...gotOptions,
+        query: {
+          command: "pl_play",
+        },
+      })
       await got("http://127.0.0.1:8080/requests/status.json", {
         ...gotOptions,
         query: {
