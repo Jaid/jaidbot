@@ -1,3 +1,4 @@
+import stringArgv from "string-argv"
 import minimist from "minimist"
 import {isString} from "lodash"
 
@@ -15,26 +16,39 @@ export default (message, msg, chatClient, say) => {
   if (parsedCommand === null) {
     return
   }
+  const senderDisplayName = msg.userInfo.displayName || msg.userInfo.name
   const {commandName} = parsedCommand.groups
   let commandArguments
   if (parsedCommand.groups.commandArguments) {
-    commandArguments = minimist(parsedCommand.groups.commandArguments)
+    commandArguments = parsedCommand.groups.commandArguments |> stringArgv |> minimist
   }
   const command = commands[commandName]
   if (!command) {
-    say("Verstehe ich jetzt nicht! Alle Befehle sind in den Panels unter dem Stream beschrieben.")
+    say(`Verstehe ich jetzt nicht, ${senderDisplayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
     return
+  }
+  if (command.requiredArguments) {
+    if (!commandArguments) {
+      say(`${senderDisplayName}, dieser Befehl kann nicht ohne Arguments verwendet werden!`)
+      return
+    }
+    const givenArgumentsLength = commandArguments._.length
+    if (command.requiredArguments > givenArgumentsLength) {
+      say(`${senderDisplayName}, dieser Befehl benötigt ${command.requiredArguments} Arguments!`)
+      return
+    }
   }
   command.handle({
     msg,
     say,
     chatClient,
     commandArguments,
+    senderDisplayName,
   }).then(returnValue => {
     if (returnValue |> isString) {
       say(returnValue)
     }
   }).catch(error => {
-    debugger
+    say(`Oh, ${senderDisplayName}, irgendetwas habe ich jetzt falsch gemacht. (${error.message || error})`)
   })
 }
