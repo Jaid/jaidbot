@@ -1,7 +1,7 @@
 import moment from "moment"
 
 export default {
-  async handle({chatClient}) {
+  async handle({chatClient, senderDisplayName}) {
     const info = await chatClient._twitchClient.helix.streams.getStreamByUserName("jaidchen")
     if (info?.type !== "live") {
       return "Jaidchen ist gerade nicht live!"
@@ -38,6 +38,6 @@ export default {
     if (nowMoment.day() !== startMoment.day()) {
       dayString = " gestern"
     }
-    return `Der Stream ging vor ${durationString} live, das war${dayString} um ${startMoment.format("HH:mm")} Uhr.`
+    return `${senderDisplayName}, der Stream ging vor ${durationString} live, das war${dayString} um ${startMoment.format("HH:mm")} Uhr.`
   },
 }
