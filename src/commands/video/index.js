@@ -72,6 +72,6 @@ export default {
       properties.push(`${moment(info.upload_date).locale("de").fromNow()} erschienen`)
     }
     const currentTime = moment.duration(vlcState.time, "seconds").format()
-    return `PopCorn ${senderDisplayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader} (${properties.join(", ")}).`
+    return `PopCorn ${senderDisplayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader}. ${properties.join(", ")}.`
   },
 }
