@@ -19,7 +19,7 @@ const gotOptions = {
 }
 
 export default {
-  async handle({senderDisplayName}) {
+  async handle() {
     let vlcState
     try {
       const {body} = await got("http://127.0.0.1:8080/requests/status.json", {
@@ -51,27 +51,12 @@ export default {
       return "Dazu finde ich in meinen Unterlagen keine brauchbaren Informationen, sorry!"
     }
     const info = await fsp.readJson(metaFile)
-    const properties = []
-    if (info.height && info.fps) {
-      properties.push(`${info.height}p${info.fps}`)
+    let url
+    if (info.extractor === "youtube") {
+      url = `https://youtu.be/${info.id}?t=${vlcState.time}`
+    } else {
+      url = info.webpage_url
     }
-    if (info.age_limit > 0) {
-      properties.push(`freigegeben ab ${info.age_limit} Jahren`)
-    }
-    if (info.duration) {
-      properties.push(`${moment.duration(info.duration, "seconds").format("h[h] m[m] s[s]")} Laufzeit`)
-    }
-    if (info.view_count) {
-      properties.push(`${millify(info.view_count, {precision: 0})} Views`)
-    }
-    if (info.like_count && info.dislike_count) {
-      const ratio = Math.floor((info.like_count / (info.like_count + info.dislike_count)) * 100)
-      properties.push(`${millify(info.like_count, {precision: 0})} Likes (${ratio}%)`)
-    }
-    if (info.upload_date) {
-      properties.push(`${moment(info.upload_date).locale("de").fromNow()} erschienen`)
-    }
-    const currentTime = moment.duration(vlcState.time, "seconds").format()
-    return `PopCorn ${senderDisplayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader} (${properties.join(", ")}).`
+    return `PopCorn ${url}`
   },
 }
