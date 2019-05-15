@@ -19,11 +19,11 @@ export default {
   requiredArguments: 1,
   async handle({say, commandArguments, senderDisplayName}) {
     const video = commandArguments._[0]
-    const execResult = await execa("E:/Projects/node-scripts/dist/exe/playVideo.exe", ["--dry", video])
-    const info = execResult.stdout |> JSON.parse
-    say(`PopCorn ${senderDisplayName} hat "${info.title}" von ${info.uploader} hinzugefügt!`)
+    const execResult = await execa("E:/Binaries/youtube-dl.exe", ["--get-title", video])
+    const title = execResult.stdout
+    say(`PopCorn ${senderDisplayName} hat "${title}" hinzugefügt!`)
     await execa("E:/Projects/node-scripts/dist/exe/playVideo.exe", [video])
-    say(info.downloadFileExists ? "Download nicht nötig!" : "Download fertig!")
+    // say(info.downloadFileExists ? "Download nicht nötig!" : "Download fertig!")
     let vlcState
     try {
       const {body} = await got("http://127.0.0.1:8080/requests/status.json", gotOptions)
