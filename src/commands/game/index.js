@@ -5,9 +5,8 @@ const shortcuts = require("./shortcuts.yml")
 
 export default {
   requiredArguments: 1,
-  async handle({streamerClient, commandArguments}) {
+  async handle({streamerClient, combinedArguments: newGame}) {
     const {game: currentGame} = await streamerClient.kraken.streams.getStreamByChannel("65887522")
-    let newGame = commandArguments._[0]
     if (shortcuts[newGame]) {
       newGame = shortcuts[newGame]
     }

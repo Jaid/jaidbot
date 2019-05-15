@@ -46,6 +46,7 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
     chatClient,
     commandArguments,
     senderDisplayName,
+    combinedArguments: parsedCommand?.groups?.commandArguments,
     senderUserName: msg.userInfo.userName,
   }).then(returnValue => {
     if (returnValue |> isString) {
