@@ -5,6 +5,7 @@ import urlParse from "url-parse"
 import fsp from "@absolunet/fsp"
 import preventStart from "prevent-start"
 import millify from "millify"
+import fastDecodeUriComponent from "fast-decode-uri-component"
 
 momentDurationFormat(moment)
 
@@ -39,11 +40,11 @@ export default {
     if (!playlistEntry) {
       return "Irgendwie steige ich gerade nicht in der Playlist durch, sorry!"
     }
-    const {pathname: urlPath} = playlistEntry.uri |> decodeURI |> urlParse
+    const {pathname: urlPath} = playlistEntry.uri |> fastDecodeUriComponent |> urlParse
     const videoFile = preventStart(urlPath, "/")
     const videoFileExists = await fsp.pathExists(videoFile)
     if (!videoFileExists) {
-      return "Dazu finde ich nichts im Dateisystem, sorry!"
+      return "Dazu gerade abgespielte Video finde ich nicht im Dateisystem, sorry!"
     }
     const metaFile = videoFile.replace(/\.(mp4|webm|mov|flv|mkv)$/i, ".info.json")
     const metaFileExists = await fsp.pathExists(metaFile)
