@@ -23,7 +23,7 @@ const job = async () => {
   await chatClient.waitForRegistration()
   await chatClient.join("jaidchen")
   const say = message => chatClient.say("jaidchen", message)
-  say("Da bin ich!")
+  say("TBAngel Da bin ich!")
   const listener = chatClient.onPrivmsg(async (channel, user, message, msg) => {
     handleMessage(message, msg, streamerClient, botClient, chatClient, say)
   })

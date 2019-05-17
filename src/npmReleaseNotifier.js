@@ -25,15 +25,15 @@ const run = async say => {
     }
     const getStateString = () => {
       if (build.state === "passed") {
-        return "Build abgeschlossen"
+        return "PartyHat Build abgeschlossen"
       }
       if (build.state === "canceled") {
-        return "Build abgebrochen"
+        return "ItsBoshyTime Build abgebrochen"
       }
       if (build.state === "failed") {
-        return "Build fehlgeschlagen"
+        return "ItsBoshyTime Build fehlgeschlagen"
       }
-      return "Build aus unbekannten Gründen beendet"
+      return "ItsBoshyTime Build aus unbekannten Gründen beendet"
     }
     say(`${getStateString()}: ${build.repository.name} ${build.tag.name}`)
   }

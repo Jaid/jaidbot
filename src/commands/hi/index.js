@@ -6,17 +6,17 @@ const vips = require("./vips.yml")
 const getGreeting = () => {
   const hour = moment().hour()
   if (hour >= 21) {
-    return "Guten Tag"
+    return "HeyGuys Guten Tag"
   } else if (hour >= 18) {
-    return "Guten Abend"
+    return "HeyGuys Guten Abend"
   } else if (hour >= 13) {
-    return "Guten Nachmittag"
+    return "HeyGuys Guten Nachmittag"
   } else if (hour >= 11) {
-    return "Guten Mittag"
+    return "HeyGuys Guten Mittag"
   } else if (hour >= 9) {
-    return "Guten Vormittag"
+    return "HeyGuys Guten Vormittag"
   } else {
-    return "Guten Morgen"
+    return "HeyGuys Guten Morgen"
   }
 }
 

@@ -38,6 +38,6 @@ export default {
     if (nowMoment.day() !== startMoment.day()) {
       dayString = " gestern"
     }
-    return `${senderDisplayName}, der Stream ging vor ${durationString} live, das war${dayString} um ${startMoment.format("HH:mm")} Uhr.`
+    return `VoHiYo ${senderDisplayName}, der Stream ging vor ${durationString} live, das war${dayString} um ${startMoment.format("HH:mm")} Uhr.`
   },
 }
