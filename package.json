@@ -4,6 +4,7 @@
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@babel/runtime": "^7.4.4",
+    "@rexlabs/npm-hook-receiver": "^1.0.0",
     "debug": "^4.1.1",
     "execa": "^1.0.0",
     "fast-decode-uri-component": "^1.0.1",

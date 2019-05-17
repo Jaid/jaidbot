@@ -3,6 +3,7 @@
 import ChatClient from "twitch-chat-client"
 import twitch from "twitch"
 
+import npmReleaseNotifier from "./npmReleaseNotifier"
 import handleMessage from "./handleMessage"
 
 const streamerScopes = [
@@ -26,6 +27,7 @@ const job = async () => {
   const listener = chatClient.onPrivmsg(async (channel, user, message, msg) => {
     handleMessage(message, msg, streamerClient, botClient, chatClient, say)
   })
+  npmReleaseNotifier(say)
 }
 
 job()
