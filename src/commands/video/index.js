@@ -6,6 +6,7 @@ import fsp from "@absolunet/fsp"
 import preventStart from "prevent-start"
 import millify from "millify"
 import fastDecodeUriComponent from "fast-decode-uri-component"
+import filesize from "filesize"
 
 momentDurationFormat(moment)
 
@@ -61,6 +62,10 @@ export default {
     }
     if (info.duration) {
       properties.push(`${moment.duration(info.duration, "seconds").format("h[h] m[m] s[s]")} Laufzeit`)
+    }
+    const {size} = await fsp.stat(videoFile)
+    if (size > 1000) {
+      properties.push(filesize(size, {round: 0}))
     }
     if (info.view_count) {
       properties.push(`${millify(info.view_count, {precision: 0})} Views`)
