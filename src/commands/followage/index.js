@@ -36,7 +36,7 @@ export default {
       if (!followMoment) {
         return `${senderDisplayName}... NotLikeThis`
       }
-      return `Für den Follow hast du dich ${followMoment.fromNow()} entschieden, ${senderDisplayName}, am ${followMoment.format("DD.MM.YYYY [um] HH:mm")} Uhr.`
+      return `Für den Follow hast du dich ${followMoment.fromNow()} entschieden, ${senderDisplayName}, am ${followMoment |> formatDate} Uhr.`
     }
   },
 }

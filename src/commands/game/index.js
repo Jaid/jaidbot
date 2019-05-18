@@ -1,4 +1,5 @@
 import {sample} from "lodash"
+import {getMyStream, setCategory} from "lib/twitchApi"
 
 const people = require("./people.txt").default.split("\n")
 const shortcuts = require("./shortcuts.yml")
@@ -6,14 +7,14 @@ const shortcuts = require("./shortcuts.yml")
 export default {
   requiredArguments: 1,
   async handle({streamerClient, combinedArguments: newGame}) {
-    const {game: currentGame} = await streamerClient.kraken.streams.getStreamByChannel("65887522")
+    const {game: currentGame} = await getMyStream(streamerClient)
     if (shortcuts[newGame]) {
       newGame = shortcuts[newGame]
     }
     if (newGame === currentGame) {
       return "Uff, da ändert sich nicht viel."
     }
-    await streamerClient.kraken.channels.updateChannel("65887522", {game: newGame})
+    await setCategory(client, newGame)
     if (currentGame) {
       return `Die ${people |> sample}, die nur für ${currentGame} hier waren, sind jetzt herzlich ausgeladen, denn es geht weiter mit ${newGame}!`
     } else {
