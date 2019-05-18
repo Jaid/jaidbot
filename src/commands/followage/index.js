@@ -1,4 +1,3 @@
-import moment from "lib/moment"
 import {getFollowMoment, userNameToDisplayName} from "lib/twitchApi"
 
 const formatDate = momentDate => momentDate.format("DD.MM.YYYY [um] HH:mm")
@@ -7,8 +6,8 @@ export default {
   async handle({streamerClient, senderUserName, senderDisplayName, positionalArguments}) {
     if (positionalArguments[0]) {
       const compareUserName = positionalArguments[0]
-      const [{displayName: compareDisplayName}, senderFollowMoment, compareFollowMoment] = await Promise.all([
-        userNameToDisplayName(compareUserName),
+      const [compareDisplayName, senderFollowMoment, compareFollowMoment] = await Promise.all([
+        userNameToDisplayName(streamerClient, compareUserName),
         getFollowMoment(streamerClient, senderUserName),
         getFollowMoment(streamerClient, compareUserName),
       ])
