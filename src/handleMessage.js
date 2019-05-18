@@ -2,7 +2,7 @@ import stringArgv from "string-argv"
 import minimist from "minimist"
 import {isString} from "lodash"
 
-const commandRegex = /(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
+const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 
 const commandsRequire = require.context("./commands/", true, /index\.js$/)
 const commands = commandsRequire.keys().reduce((state, value) => {
@@ -19,8 +19,10 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
   const senderDisplayName = msg.userInfo.displayName || msg.userInfo.name
   const {commandName} = parsedCommand.groups
   let commandArguments
+  let positionalArguments
   if (parsedCommand.groups.commandArguments) {
     commandArguments = parsedCommand.groups.commandArguments |> stringArgv |> minimist
+    positionalArguments = commandArguments._
   }
   const command = commands[commandName]
   if (!command) {
@@ -32,7 +34,7 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
       say(`${senderDisplayName}, dieser Befehl kann nicht ohne Arguments verwendet werden!`)
       return
     }
-    const givenArgumentsLength = commandArguments._.length
+    const givenArgumentsLength = positionalArguments.length
     if (command.requiredArguments > givenArgumentsLength) {
       say(`${senderDisplayName}, dieser Befehl benötigt ${command.requiredArguments} Arguments!`)
       return
@@ -46,6 +48,7 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
     chatClient,
     commandArguments,
     senderDisplayName,
+    positionalArguments,
     combinedArguments: parsedCommand?.groups?.commandArguments,
     senderUserName: msg.userInfo.userName,
   }).then(returnValue => {
