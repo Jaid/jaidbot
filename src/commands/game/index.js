@@ -14,7 +14,7 @@ export default {
     if (newGame === currentGame) {
       return "Uff, da ändert sich nicht viel."
     }
-    await setCategory(client, newGame)
+    await setCategory(streamerClient, newGame)
     if (currentGame) {
       return `Die ${people |> sample}, die nur für ${currentGame} hier waren, sind jetzt herzlich ausgeladen, denn es geht weiter mit ${newGame}!`
     } else {
