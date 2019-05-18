@@ -1,22 +1,14 @@
 import moment from "moment"
-
-const getFollowMoment = async (streamerClient, userName) => {
-  const user = await streamerClient.helix.users.getUserByName(userName)
-  const followResult = await user.getFollowTo("65887522")
-  if (followResult === null) {
-    return false
-  }
-  return moment(followResult.followDate).locale("de")
-}
+import {getFollowMoment, userNameToDisplayName} from "lib/twitchApi"
 
 const formatDate = momentDate => momentDate.format("DD.MM.YYYY [um] HH:mm")
 
 export default {
   async handle({streamerClient, senderUserName, senderDisplayName, positionalArguments}) {
-    if (positionalArguments?.[0]) {
+    if (positionalArguments[0]) {
       const compareUserName = positionalArguments[0]
       const [{displayName: compareDisplayName}, senderFollowMoment, compareFollowMoment] = await Promise.all([
-        streamerClient.helix.users.getUserByName(positionalArguments[0]),
+        userNameToDisplayName(compareUserName),
         getFollowMoment(streamerClient, senderUserName),
         getFollowMoment(streamerClient, compareUserName),
       ])

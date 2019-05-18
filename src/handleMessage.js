@@ -48,7 +48,7 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
     chatClient,
     commandArguments,
     senderDisplayName,
-    positionalArguments,
+    positionalArguments: positionalArguments || [],
     combinedArguments: parsedCommand?.groups?.commandArguments,
     senderUserName: msg.userInfo.userName,
   }).then(returnValue => {

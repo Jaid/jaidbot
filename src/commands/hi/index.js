@@ -1,5 +1,6 @@
 import moment from "moment"
 import {template} from "lodash"
+import {userNameToDisplayName} from "lib/twitchApi"
 
 const vips = require("./vips.yml")
 
@@ -21,11 +22,20 @@ const getGreeting = () => {
 }
 
 export default {
-  async handle({senderDisplayName, senderUserName}) {
+  async handle({senderDisplayName, senderUserName, positionalArguments, streamerClient}) {
     const greeting = getGreeting()
-    if (vips[senderUserName]) {
-      return template(vips[senderUserName])({greeting})
+    let userName
+    let displayName
+    if (positionalArguments[0]) {
+      userName = positionalArguments[0].toLowerCase()
+      displayName = await userNameToDisplayName(streamerClient, userName)
+    } else {
+      userName = senderUserName
+      displayName = senderDisplayName
     }
-    return `${greeting}, ${senderDisplayName}!`
+    if (vips[userName]) {
+      return template(vips[userName])({greeting})
+    }
+    return `${greeting}, ${displayName}!`
   },
 }
