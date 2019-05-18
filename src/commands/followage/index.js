@@ -1,4 +1,4 @@
-import moment from "moment"
+import moment from "lib/moment"
 import {getFollowMoment, userNameToDisplayName} from "lib/twitchApi"
 
 const formatDate = momentDate => momentDate.format("DD.MM.YYYY [um] HH:mm")

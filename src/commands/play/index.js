@@ -1,9 +1,6 @@
 import execa from "execa"
-import moment from "moment"
-import momentDurationFormat from "moment-duration-format"
+import moment from "lib/moment"
 import got from "got"
-
-momentDurationFormat(moment)
 
 const gotOptions = {
   auth: ":1",

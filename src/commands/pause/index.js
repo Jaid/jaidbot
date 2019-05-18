@@ -1,8 +1,5 @@
 import got from "got"
-import moment from "moment"
-import momentDurationFormat from "moment-duration-format"
-
-momentDurationFormat(moment)
+import moment from "lib/moment"
 
 const gotOptions = {
   auth: ":1",

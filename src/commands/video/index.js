@@ -1,5 +1,4 @@
-import moment from "moment"
-import momentDurationFormat from "moment-duration-format"
+import moment from "lib/moment"
 import got from "got"
 import urlParse from "url-parse"
 import fsp from "@absolunet/fsp"
@@ -7,8 +6,6 @@ import preventStart from "prevent-start"
 import millify from "millify"
 import fastDecodeUriComponent from "fast-decode-uri-component"
 import filesize from "filesize"
-
-momentDurationFormat(moment)
 
 const gotOptions = {
   auth: ":1",
