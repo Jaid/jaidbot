@@ -1,5 +1,4 @@
 import got from "got"
-import moment from "lib/moment"
 
 const gotOptions = {
   auth: ":1",
@@ -12,23 +11,20 @@ const gotOptions = {
 }
 
 export default {
-  async handle() {
-    let vlcState
+  async handle({say}) {
     try {
-      const {body} = await got("http://127.0.0.1:8080/requests/status.json", {
+      await got("http://127.0.0.1:8080/requests/status.json", {
         ...gotOptions,
       })
-      vlcState = body
     } catch {
       return "Kein Lebenszeichen vom Video Player."
     }
-    const currentTime = moment.duration(vlcState.time, "seconds")
     await got("http://127.0.0.1:8080/requests/status.json", {
       ...gotOptions,
       query: {
         command: "pl_next",
       },
     })
-    return answer
+    say("Skippie!")
   },
 }
