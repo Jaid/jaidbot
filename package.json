@@ -14,7 +14,7 @@
     "minimist": "^1.2.0",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.2.2",
-    "prevent-start": "^1.0.1",
+    "prevent-start": "^1.0.2",
     "string-argv": "^0.3.0",
     "twitch": "^2.2.3",
     "twitch-chat-client": "^2.3.5",
@@ -24,15 +24,15 @@
     "acorn": "^6.1.1",
     "ajv": "^6.10.0",
     "babel-jest": "^24.8.0",
-    "babel-plugin-pkg": "^1.1.0",
-    "babel-preset-jaid": "^6.2.0",
+    "babel-plugin-pkg": "^1.1.1",
+    "babel-preset-jaid": "^6.2.1",
     "caniuse-lite": "^1.0.30000969",
     "eslint": "^5.16.0",
-    "eslint-config-jaid": "^1.12.0",
+    "eslint-config-jaid": "^1.12.1",
     "jest": "^24.8.0",
     "open-cli": "^5.0.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^3.21.1"
+    "webpack-config-jaid": "^3.21.2"
   },
   "scripts": {
     "clean": "rimraf dist/ test/**/dist/",
