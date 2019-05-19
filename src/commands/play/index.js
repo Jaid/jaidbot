@@ -14,7 +14,9 @@ export default {
     if (!vlcState) {
       return "Kein Lebenszeichen vom Video Player."
     }
-    await vlc.sendCommand(vlcState.state === "stopped" ? "pl_play" : "pl_next")
-    return "Und den Video Player habe ich wieder gestartet!"
+    if (vlcState.state === "stopped") {
+      await vlc.sendCommand("pl_play")
+      say("Und den Video Player habe ich wieder gestartet!")
+    }
   },
 }
