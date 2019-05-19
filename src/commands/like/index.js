@@ -3,7 +3,7 @@ import pify from "pify"
 import youtube from "lib/youtube"
 
 export default {
-  async handle({say}) {
+  async handle() {
     const info = await vlc.getMetaForVideo()
     if (!info) {
       return "Das habe ich nicht hingekriegt."
@@ -15,6 +15,7 @@ export default {
       id: info.id,
       rating: "like",
     })
+    return `Like für dieses geile Video "${info.fulltitle || info.title}" ist raus!`
     //   const credentialsString = await fsp.readFile("C:/Users/Jaid/googleClient.json", "utf8")
     //   const credentials = credentialsString |> JSON.parse
     //   const oauthClient = new google.auth.OAuth2({
