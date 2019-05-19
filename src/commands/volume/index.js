@@ -12,7 +12,7 @@ export default {
     if (positionalArguments[0] |> isInteger) {
       const chosenVolume = Math.floor(positionalArguments[0] * 3.2)
       if (Number(positionalArguments[0]) === currentVolume) {
-        return "Die Lautstärke wurde von ${currentVolume}% auf ${currentVolume}... Moment. Am I a joke to you?"
+        return `Die Lautstärke wurde von ${currentVolume}% auf ${currentVolume}... Moment. Am I a joke to you?`
       }
       await vlc.sendCommand("volume", {val: chosenVolume})
       const verb = positionalArguments[0] > currentVolume ? "angehoben" : "gesenkt"
