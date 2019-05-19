@@ -1,11 +1,9 @@
 import moment from "lib/moment"
 import got from "got"
-import urlParse from "url-parse"
 import fsp from "@absolunet/fsp"
-import preventStart from "prevent-start"
 import millify from "millify"
-import fastDecodeUriComponent from "fast-decode-uri-component"
 import filesize from "filesize"
+import vlc from "lib/vlc"
 
 const gotOptions = {
   auth: ":1",
@@ -19,37 +17,21 @@ const gotOptions = {
 
 export default {
   async handle({senderDisplayName}) {
-    let vlcState
-    try {
-      const {body} = await got("http://127.0.0.1:8080/requests/status.json", {
-        ...gotOptions,
-      })
-      vlcState = body
-    } catch {
+    const vlcState = await vlc.getState()
+    if (!vlcState) {
       return "Kein Lebenszeichen vom Video Player."
     }
     if (vlcState.currentplid === -1) {
       return "Gerade läuft nichts."
     }
-    const {body: playlist} = await got("http://127.0.0.1:8080/requests/playlist.json", {
-      ...gotOptions,
-    })
-    const playlistEntry = playlist.children.find(({name}) => name === "Playlist").children.find(({id}) => Number(id) === vlcState.currentplid)
-    if (!playlistEntry) {
-      return "Irgendwie steige ich gerade nicht in der Playlist durch, sorry!"
+    const videoFile = await vlc.getCurrentVideoPath()
+    if (!videoFile) {
+      return "Das gerade abgespielte Video finde ich nicht im Dateisystem, sorry!"
     }
-    const {pathname: urlPath} = playlistEntry.uri |> fastDecodeUriComponent |> urlParse
-    const videoFile = preventStart(urlPath, "/")
-    const videoFileExists = await fsp.pathExists(videoFile)
-    if (!videoFileExists) {
-      return "Dazu gerade abgespielte Video finde ich nicht im Dateisystem, sorry!"
-    }
-    const metaFile = videoFile.replace(/\.(mp4|webm|mov|flv|mkv)$/i, ".info.json")
-    const metaFileExists = await fsp.pathExists(metaFile)
-    if (!metaFileExists) {
+    const info = await vlc.getMetaForVideo(videoFile)
+    if (!info) {
       return "Dazu finde ich in meinen Unterlagen keine brauchbaren Informationen, sorry!"
     }
-    const info = await fsp.readJson(metaFile)
     const properties = []
     if (info.height && info.fps) {
       properties.push(`${info.height}p${info.fps}`)

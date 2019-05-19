@@ -93,4 +93,4 @@ const AfkManager = class {
 
 }
 
-export default new AfkManager()
+export default new AfkManager
