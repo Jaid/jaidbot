@@ -58,7 +58,7 @@ export default {
       properties.push(`freigegeben ab ${info.age_limit} Jahren`)
     }
     if (info.duration) {
-      properties.push(`${moment.duration(info.duration, "seconds").format("h[h] m[m] s[s]")} Laufzeit`)
+      properties.push(`${moment.duration(info.duration, "seconds").format()} Laufzeit`)
     }
     const {size} = await fsp.stat(videoFile)
     if (size > 1000) {
