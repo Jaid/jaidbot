@@ -59,6 +59,7 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
     chatClient,
     commandArguments,
     senderDisplayName,
+    isVip,
     positionalArguments: positionalArguments || [],
     combinedArguments: parsedCommand?.groups?.commandArguments,
     senderUserName: msg.userInfo.userName,

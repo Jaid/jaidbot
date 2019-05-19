@@ -22,7 +22,7 @@ const getGreeting = () => {
 }
 
 export default {
-  async handle({senderDisplayName, senderUserName, positionalArguments, streamerClient}) {
+  async handle({isVip, senderDisplayName, senderUserName, positionalArguments, streamerClient}) {
     const greeting = getGreeting()
     let userName
     let displayName
@@ -36,6 +36,7 @@ export default {
     if (vips[userName]) {
       return template(vips[userName])({greeting})
     }
-    return `${greeting}, ${displayName}!`
+    const vipString = isVip ? "höchstgeachteter " : ""
+    return `${greeting}, ${vipString}${displayName}!`
   },
 }
