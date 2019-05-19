@@ -88,6 +88,7 @@ const AfkManager = class {
   init(twitchClient, say) {
     this.twitchClient = twitchClient
     this.say = say
+    this.setTitle()
   }
 
 }
