@@ -2,6 +2,7 @@ import execa from "execa"
 import vlc from "lib/vlc"
 
 export default {
+  permission: "sub-or-vip",
   requiredArguments: 1,
   async handle({say, commandArguments, senderDisplayName}) {
     const video = commandArguments._[0]

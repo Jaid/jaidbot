@@ -1,13 +1,13 @@
 import afkManager from "lib/afkManager"
 import parseDuration from "parse-duration"
 import {isInteger} from "lodash"
-import humanizeDuration from "lib/humanizeDuration"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 
 export default {
+  permission: "mod",
   requiredArguments: 1,
-  async handle({streamerClient, say, positionalArguments, combinedArguments}) {
+  async handle({positionalArguments, combinedArguments}) {
     let durationSeconds
     if (positionalArguments[0] |> isInteger) {
       durationSeconds = Math.floor(parseDuration(`${positionalArguments[0]}m`) / 1000)

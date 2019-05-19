@@ -3,6 +3,7 @@ import pify from "pify"
 import youtube from "lib/youtube"
 
 export default {
+  permission: "mod",
   minimumArguments: 1,
   async handle({combinedArguments}) {
     const info = await vlc.getMetaForVideo()

@@ -5,6 +5,7 @@ const people = require("./people.txt").default.split("\n")
 const shortcuts = require("./shortcuts.yml")
 
 export default {
+  permission: "mod",
   requiredArguments: 1,
   async handle({streamerClient, combinedArguments: newGame}) {
     const {game: currentGame} = await getMyStream(streamerClient)

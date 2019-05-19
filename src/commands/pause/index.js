@@ -2,6 +2,7 @@ import moment from "lib/moment"
 import vlc from "lib/vlc"
 
 export default {
+  permission: "mod",
   async handle() {
     const vlcState = await vlc.getState()
     if (!vlcState) {
