@@ -40,8 +40,9 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
       return
     }
   }
+  const isVip = msg.userInfo.badges.get("vip") === "1"
   if (msg.userInfo.userId !== "65887522") {
-    if (command.permission === "sub-or-vip" && !msg.userInfo.isSubscriber && !msg.userInfo.isMod) {
+    if (command.permission === "sub-or-vip" && !msg.userInfo.isSubscriber && !isVip && !msg.userInfo.isMod) {
       say(`${senderDisplayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
       return
     }
