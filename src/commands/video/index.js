@@ -1,19 +1,8 @@
 import moment from "lib/moment"
-import got from "got"
 import fsp from "@absolunet/fsp"
 import millify from "millify"
 import filesize from "filesize"
 import vlc from "lib/vlc"
-
-const gotOptions = {
-  auth: ":1",
-  throwHttpErrors: false,
-  retry: {
-    retries: 1,
-    errorCodes: ["ETIMEDOUT", " ECONNRESET", "EADDRINUSE", "EPIPE", "ENOTFOUND", "ENETUNREACH", "EAI_AGAIN"],
-  },
-  json: true,
-}
 
 export default {
   async handle({senderDisplayName}) {

@@ -78,6 +78,18 @@ const Vlc = class {
     return info
   }
 
+  async sendCommand(command) {
+    try {
+      await got("http://127.0.0.1/requests/status.json", {
+        ...gotOptions,
+        query: {command},
+      })
+      return true
+    } catch {
+      return null
+    }
+  }
+
 }
 
 export default new Vlc
