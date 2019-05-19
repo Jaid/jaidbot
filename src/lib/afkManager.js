@@ -75,7 +75,7 @@ const AfkManager = class {
       } else if (remainingTime > (-afkToleranceMinutes * 60 * 1000)) {
         return "Da ist er ja wieder! TPFufun"
       } else {
-        return `Okay, Jaidchen. Du wolltest doch eigentlich schon seit ${Math.abs(remainingTime) |> humanizeDuration} wieder da sein. Wo bist du gewesen? HotPokket`
+        return `Okay, Jaidchen. Du wolltest doch eigentlich schon seit ${remainingTime |> Math.abs |> humanizeDuration} wieder da sein. Wo bist du gewesen? HotPokket`
       }
     }
     this.afkStart = null
