@@ -78,11 +78,14 @@ const Vlc = class {
     return info
   }
 
-  async sendCommand(command) {
+  async sendCommand(command, query) {
     try {
       await got("http://127.0.0.1/requests/status.json", {
         ...gotOptions,
-        query: {command},
+        query: {
+          command,
+          ...query,
+        },
       })
       return true
     } catch {

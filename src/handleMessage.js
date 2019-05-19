@@ -40,13 +40,15 @@ export default (message, msg, streamerClient, botClient, chatClient, say) => {
       return
     }
   }
-  if (command.permission === "sub-or-vip" && !msg.userInfo.isSubscriber && !msg.userInfo.isMod) {
-    say(`${senderDisplayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
-    return
-  }
-  if (command.permission === "mod" && !msg.userInfo.isMod) {
-    say(`${senderDisplayName}, für diesen Befehl musst du Moderator sein!`)
-    return
+  if (msg.userInfo.userId !== "65887522") {
+    if (command.permission === "sub-or-vip" && !msg.userInfo.isSubscriber && !msg.userInfo.isMod) {
+      say(`${senderDisplayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
+      return
+    }
+    if (command.permission === "mod" && !msg.userInfo.isMod) {
+      say(`${senderDisplayName}, für diesen Befehl musst du Moderator sein!`)
+      return
+    }
   }
   command.handle({
     msg,
