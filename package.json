@@ -4,12 +4,10 @@
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@babel/runtime": "^7.4.5",
-    "@rexlabs/npm-hook-receiver": "^1.0.0",
     "debug": "^4.1.1",
     "execa": "^1.0.0",
     "fast-decode-uri-component": "^1.0.1",
     "filesize": "^4.1.2",
-    "google-auth-library": "^4.0.0",
     "googleapis": "^40.0.0",
     "got": "^9.6.0",
     "humanize-duration": "^3.18.0",
@@ -24,8 +22,7 @@
     "string-argv": "^0.3.0",
     "twitch": "^2.2.3",
     "twitch-chat-client": "^2.3.5",
-    "url-parse": "^1.4.7",
-    "youtube-api": "^2.0.10"
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "acorn": "^6.1.1",
@@ -39,7 +36,7 @@
     "jest": "^24.8.0",
     "open-cli": "^5.0.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^4.0.0"
+    "webpack-config-jaid": "^5.1.0"
   },
   "scripts": {
     "clean": "rimraf dist/ test/**/dist/",
