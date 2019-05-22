@@ -1,11 +1,10 @@
-import youtube from "youtube-api"
+import {google} from "googleapis"
 
-youtube.authenticate({
-  type: "oauth",
+const auth = new google.auth.OAuth2(process.env.YOUTUBE_CLIENT_ID, process.env.YOUTUBE_CLIENT_SECRET, "http://localhost")
+auth.setCredentials({
   refresh_token: require("C:/Users/Jaid/youtubeToken.json").refresh_token,
-  client_id: process.env.YOUTUBE_CLIENT_ID,
-  client_secret: process.env.YOUTUBE_CLIENT_SECRET,
-  redirect_url: "http://localhost",
 })
-
-export default youtube
+export default google.youtube({
+  auth,
+  version: "v3",
+})
