@@ -8,7 +8,6 @@ export default configureExecutable({
   extra: {
     plugins: [
       new NormalModuleReplacementPlugin(/index\.es\.js$/, resource => {
-        console.log(resource)
         resource.resource = resource.resource.replace("es.js", "js")
       }),
     ],
