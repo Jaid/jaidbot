@@ -78,11 +78,12 @@ const AfkManager = class {
         return `"${this.afkMessage}", ja ja. Du wolltest doch eigentlich schon seit ${remainingTime |> Math.abs |> humanizeDuration} wieder da sein. Jaidchen,wo bist du gewesen? HotPokket`
       }
     }
+    const comment = getComment()
     this.afkStart = null
     this.afkEnd = null
     this.afkMessage = null
     await this.setTitle()
-    this.say(getComment())
+    this.say(comment)
   }
 
   init(twitchClient, say) {
