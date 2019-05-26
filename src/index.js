@@ -4,6 +4,7 @@ import ChatClient from "twitch-chat-client"
 import twitch from "twitch"
 import afkManager from "lib/afkManager"
 import {log} from "lib/logger"
+import config from "lib/config"
 
 import npmReleaseNotifier from "./npmReleaseNotifier"
 import handleMessage from "./handleMessage"
@@ -19,15 +20,15 @@ const streamerScopes = [
 
 const job = async () => {
   const [botClient, streamerClient] = await Promise.all([
-    twitch.withCredentials(process.env.TWITCH_BOT_CLIENT_ID, process.env.TWITCH_BOT_TOKEN),
-    twitch.withCredentials(process.env.TWITCH_STREAMER_CLIENT_ID, process.env.TWITCH_STREAMER_TOKEN, streamerScopes),
+    twitch.withCredentials(config.twitchBotClient.id, config.twitchBotClient.token),
+    twitch.withCredentials(config.twitchApiClient.id, config.twitchApiClient.token, streamerScopes),
   ])
-  log("Initialied Twitch clients")
+  log("Initialized Twitch clients")
   const chatClient = await ChatClient.forTwitchClient(botClient)
   await chatClient.connect()
   await chatClient.waitForRegistration()
-  await chatClient.join("jaidchen")
-  const say = message => chatClient.say("jaidchen", message)
+  await chatClient.join(config.twitchChannel)
+  const say = message => chatClient.say(config.twitchChannel, message)
   afkManager.init(streamerClient, say)
   log("Connected bot")
   say("TBAngel Da bin ich!")

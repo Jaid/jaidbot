@@ -1,6 +1,7 @@
 import got from "got"
 import {isEmpty, isString} from "lodash"
 import moment from "moment"
+import config from "lib/config"
 
 import startDate from "./startDate"
 
@@ -11,7 +12,7 @@ const run = async say => {
     json: true,
     headers: {
       "Travis-API-Version": 3,
-      Authorization: `token ${process.env.TRAVIS_TOKEN}`,
+      Authorization: `token ${config.travisToken}`,
     },
   })
   const tagBuilds = result.builds.filter(({id, tag, finished_at}) => tag?.["@type"] === "tag" && isString(finished_at) && !processedIds.has(id))

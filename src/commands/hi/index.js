@@ -1,8 +1,7 @@
 import moment from "lib/moment"
 import {template} from "lodash"
 import {userNameToDisplayName} from "lib/twitchApi"
-
-const vips = require("./vips.yml")
+import config from "lib/config"
 
 const getGreeting = () => {
   const hour = moment().hour()
@@ -33,8 +32,8 @@ export default {
       userName = senderUserName
       displayName = senderDisplayName
     }
-    if (vips[userName]) {
-      return template(vips[userName])({greeting})
+    if (config.hiMessages[userName]) {
+      return template(config.hiMessages[userName])({greeting})
     }
     const vipString = isVip ? "höchstgeachteter " : ""
     return `${greeting}, ${vipString}${displayName}!`
