@@ -1,4 +1,3 @@
-twitchChannel: jaidchen
 twitchBotClient:
   id: INSERT
   token: INSERT

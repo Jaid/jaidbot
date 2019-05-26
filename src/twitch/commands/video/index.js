@@ -5,7 +5,7 @@ import filesize from "filesize"
 import vlc from "lib/vlc"
 
 export default {
-  async handle({senderDisplayName}) {
+  async handle({sender}) {
     const vlcState = await vlc.getState()
     if (!vlcState) {
       return "Kein Lebenszeichen vom Video Player."
@@ -46,6 +46,6 @@ export default {
       properties.push(`${moment(info.upload_date).locale("de").fromNow()} erschienen`)
     }
     const currentTime = moment.duration(vlcState.time, "seconds").format()
-    return `PopCorn ${senderDisplayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader}. ${properties.join(", ")}.`
+    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader}. ${properties.join(", ")}.`
   },
 }

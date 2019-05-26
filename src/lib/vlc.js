@@ -53,8 +53,9 @@ const Vlc = class {
     if (!playlistEntry) {
       return null
     }
-    const {pathname: urlPath} = playlistEntry.uri |> fastDecodeUriComponent |> urlParse
-    const videoFile = preventStart(urlPath, "/")
+    const videoFile = playlistEntry.uri
+    |> preventStart(#, "file:///")
+    |> fastDecodeUriComponent
     const videoFileExists = await fsp.pathExists(videoFile)
     if (!videoFileExists) {
       return null

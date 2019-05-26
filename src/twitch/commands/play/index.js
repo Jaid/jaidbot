@@ -1,14 +1,15 @@
 import execa from "execa"
 import vlc from "lib/vlc"
+import twitch from "src/twitch"
 
 export default {
   permission: "sub-or-vip",
   requiredArguments: 1,
-  async handle({say, commandArguments, senderDisplayName}) {
+  async handle({commandArguments, sender}) {
     const video = commandArguments._[0]
     const execResult = await execa("E:/Binaries/youtube-dl.exe", ["--get-title", video])
     const title = execResult.stdout
-    say(`PopCorn ${senderDisplayName} hat "${title}" hinzugefügt!`)
+    twitch.say(`PopCorn ${sender.displayName} hat "${title}" hinzugefügt!`)
     await execa("E:/Projects/node-scripts/dist/exe/playVideo.exe", [video])
     const vlcState = await vlc.getState()
     if (!vlcState) {

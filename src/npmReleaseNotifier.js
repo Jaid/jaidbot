@@ -1,6 +1,6 @@
 import got from "got"
 import {isEmpty, isString} from "lodash"
-import moment from "moment"
+import moment from "lib/moment"
 import config from "lib/config"
 
 import startDate from "./startDate"

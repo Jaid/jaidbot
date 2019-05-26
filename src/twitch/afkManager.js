@@ -1,12 +1,15 @@
-import {setTitle, getMyStream} from "lib/twitchApi"
+import EventEmitter from "events"
+
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
+import twitch from "src/twitch"
+import logger from "lib/logger"
 
 const extractTitleRegex = /(?<nontitle>(?<prefix>.*?)?\s*(?<emoji>💜)\s*)?(?<title>.*)/
 
 const afkToleranceMinutes = 2
 
-const AfkManager = class {
+class AfkManager extends EventEmitter {
 
   afkMessage = null
 
@@ -17,11 +20,13 @@ const AfkManager = class {
   title = null
 
   constructor() {
+    super()
     setInterval(() => {
       if (this.isAfk()) {
         this.setTitle()
       }
     }, 30000)
+    this.setTitle()
   }
 
   isAfk() {
@@ -49,14 +54,17 @@ const AfkManager = class {
   }
 
   async setTitle(title) {
+    if (!twitch) {
+      return
+    }
     if (title) {
       this.title = title
     }
     if (!this.title) {
-      const {channel} = await getMyStream(this.twitchClient)
+      const {channel} = await twitch.getMyStream()
       this.title = extractTitleRegex.exec(channel.status).groups.title
     }
-    await setTitle(this.twitchClient, `${this.getTitlePrefix()}💜 ${this.title}`)
+    await twitch.setTitle(`${this.getTitlePrefix()}💜 ${this.title}`)
   }
 
   async activate(durationSeconds, message) {
@@ -64,7 +72,7 @@ const AfkManager = class {
     this.afkEnd = this.afkStart + durationSeconds * 1000
     this.afkMessage = message
     await this.setTitle()
-    this.say(`Jaidchen geht jetzt mal weg für etwa ${(durationSeconds * 1000) |> humanizeDuration}. Als Nachricht hat er lediglich ein "${message}" hinterlassen.`)
+    twitch.say(`Jaidchen geht jetzt mal weg für etwa ${(durationSeconds * 1000) |> humanizeDuration}. Als Nachricht hat er lediglich ein "${message}" hinterlassen.`)
   }
 
   async deactivate() {
@@ -83,13 +91,7 @@ const AfkManager = class {
     this.afkEnd = null
     this.afkMessage = null
     await this.setTitle()
-    this.say(comment)
-  }
-
-  init(twitchClient, say) {
-    this.twitchClient = twitchClient
-    this.say = say
-    this.setTitle()
+    twitch.say(comment)
   }
 
 }

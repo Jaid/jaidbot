@@ -1,4 +1,4 @@
-import afkManager from "lib/afkManager"
+import afkManager from "src/twitch/afkManager"
 
 export default {
   permission: "mod",

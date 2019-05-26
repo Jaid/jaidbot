@@ -1,4 +1,4 @@
-import afkManager from "lib/afkManager"
+import afkManager from "src/twitch/afkManager"
 import parseDuration from "parse-duration"
 import {isInteger} from "lodash"
 

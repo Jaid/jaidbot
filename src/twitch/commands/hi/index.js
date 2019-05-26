@@ -1,7 +1,7 @@
 import moment from "lib/moment"
 import {template} from "lodash"
-import {userNameToDisplayName} from "lib/twitchApi"
 import config from "lib/config"
+import twitch from "src/twitch"
 
 const getGreeting = () => {
   const hour = moment().hour()
@@ -21,21 +21,21 @@ const getGreeting = () => {
 }
 
 export default {
-  async handle({isVip, senderDisplayName, senderUserName, positionalArguments, streamerClient}) {
+  async handle({sender, positionalArguments}) {
     const greeting = getGreeting()
     let userName
     let displayName
     if (positionalArguments[0]) {
       userName = positionalArguments[0].toLowerCase()
-      displayName = await userNameToDisplayName(streamerClient, userName)
+      displayName = await twitch.userNameToDisplayName(userName)
     } else {
-      userName = senderUserName
-      displayName = senderDisplayName
+      userName = sender.name
+      displayName = sender.displayName
     }
     if (config.hiMessages[userName]) {
       return template(config.hiMessages[userName])({greeting})
     }
-    const vipString = isVip ? "höchstgeachteter " : ""
+    const vipString = sender.isVip ? "höchstgeachteter " : ""
     return `${greeting}, ${vipString}${displayName}!`
   },
 }
