@@ -1,5 +1,5 @@
 import moment from "lib/moment"
-import {template} from "lodash"
+import {template, sample, isArray} from "lodash-es"
 import config from "lib/config"
 import twitch from "src/twitch"
 
@@ -32,8 +32,10 @@ export default {
       userName = sender.name
       displayName = sender.displayName
     }
-    if (config.hiMessages[userName]) {
-      return template(config.hiMessages[userName])({greeting})
+    const hiMessage = config.hiMessages[userName]
+    if (himessage) {
+      const customMessage = isArray(hiMessage) ? sample(hiMessage) : hiMessage
+      return template(customMessage)({greeting})
     }
     const vipString = sender.isVip ? "höchstgeachteter " : ""
     return `${greeting}, ${vipString}${displayName}!`

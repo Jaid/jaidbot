@@ -1,3 +1,6 @@
+server:
+  port: 9411
+  password: INSERT
 twitchBotClient:
   id: INSERT
   token: INSERT
@@ -17,3 +20,7 @@ hiMessages:
   leaevil: <%= greeting %>, Lea! Hast du Kuchen mitgebracht?
   polaceka: <%= greeting %>, Bruder! Ehre!
   flomey_: Ja moinsen, Flöchen!
+  35xy9om_uranus:
+    - Na ihr Swiffer, was cruncht?
+    - Na ihr Sniffer, was schnanscht?
+    - Naan ayya fof wif fif fif flolf föf wääw cruaurc saas

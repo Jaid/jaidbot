@@ -15,6 +15,7 @@
     "got": "^9.6.0",
     "humanize-duration": "^3.18.0",
     "jaid-logger": "^1.0.0",
+    "lodash-es": "^4.17.11",
     "millify": "^3.1.0",
     "minimist": "^1.2.0",
     "moment": "^2.24.0",
