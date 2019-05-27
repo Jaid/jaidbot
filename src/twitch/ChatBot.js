@@ -4,6 +4,7 @@ import stringArgv from "string-argv"
 import minimist from "minimist"
 import {isString} from "lodash"
 import twitch from "src/twitch"
+import server from "src/server"
 
 const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 
@@ -31,6 +32,10 @@ export default class ChatBot extends EventEmitter {
     const command = commands[commandName]
     if (!command) {
       twitch.say(`Verstehe ich jetzt nicht, ${message.sender.displayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
+      return
+    }
+    if (command.needsDesktopClient && !server?.client) {
+      twitch.say(`Es besteht gerade keine Verbindung zum Computer von ${twitch.broadcaster.displayName}. ResidentSleeper`)
       return
     }
     if (command.requiredArguments) {

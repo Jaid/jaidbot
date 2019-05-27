@@ -32,8 +32,11 @@ export default {
       userName = sender.name
       displayName = sender.displayName
     }
+    if (sender.isBroadcaster) {
+      return "Testest du mich schon wieder? cmonBruh"
+    }
     const hiMessage = config.hiMessages[userName]
-    if (himessage) {
+    if (hiMessage) {
       const customMessage = isArray(hiMessage) ? sample(hiMessage) : hiMessage
       return template(customMessage)({greeting})
     }
