@@ -1,6 +1,7 @@
 import vlc from "lib/vlc"
 
 export default {
+  needsDesktopClient: true,
   async handle() {
     const vlcState = await vlc.getState()
     if (!vlcState) {

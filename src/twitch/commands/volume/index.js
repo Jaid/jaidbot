@@ -3,6 +3,7 @@ import {isInteger} from "lodash"
 
 export default {
   permission: "mod",
+  needsDesktopClient: true,
   async handle({positionalArguments}) {
     const vlcState = await vlc.getState()
     if (!vlcState) {

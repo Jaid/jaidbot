@@ -5,6 +5,7 @@ import youtube from "lib/youtube"
 export default {
   permission: "mod",
   minimumArguments: 1,
+  needsDesktopClient: true,
   async handle({combinedArguments}) {
     const info = await vlc.getMetaForVideo()
     if (!info) {

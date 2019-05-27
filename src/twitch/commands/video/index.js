@@ -5,6 +5,7 @@ import filesize from "filesize"
 import vlc from "lib/vlc"
 
 export default {
+  needsDesktopClient: true,
   async handle({sender}) {
     const vlcState = await vlc.getState()
     if (!vlcState) {

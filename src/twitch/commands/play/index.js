@@ -4,6 +4,7 @@ import twitch from "src/twitch"
 
 export default {
   permission: "sub-or-vip",
+  needsDesktopClient: true,
   requiredArguments: 1,
   async handle({commandArguments, sender}) {
     const video = commandArguments._[0]
