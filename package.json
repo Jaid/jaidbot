@@ -29,8 +29,8 @@
     "twitch": "^2.2.3",
     "twitch-chat-client": "^2.3.5",
     "url-parse": "^1.4.7",
-    "ws": "^7.0.0",
-    "uws": "uNetworking/uWebSockets.js#v15.10.0"
+    "uws": "uNetworking/uWebSockets.js#v15.10.0",
+    "ws": "^7.0.0"
   },
   "devDependencies": {
     "acorn": "^6.1.1",
