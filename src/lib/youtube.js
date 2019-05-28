@@ -5,7 +5,9 @@ const auth = new google.auth.OAuth2(config.youtubeClient.id, config.youtubeClien
 auth.setCredentials({
   refresh_token: config.youtubeClient.refreshToken,
 })
-export default google.youtube({
+const youtube = google.youtube({
   auth,
   version: "v3",
 })
+
+export default youtube

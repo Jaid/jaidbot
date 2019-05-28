@@ -53,6 +53,22 @@ export default {
       })
     })
   },
+  getCurrentYoutubeVideo() {
+    return new Promise((resolve, reject) => {
+      this.getCurrentVideo().then(info => {
+        if (!info?.videoInfo) {
+          resolve(false)
+          return
+        }
+        if (info.videoInfo.extractor !== "youtube") {
+          twitch.say("Beim abgespielten Video scheint es sich nicht um ein YouTube-Video zu handeln.")
+          resolve(false)
+          return
+        }
+        resolve(info)
+      }).catch(reject)
+    })
+  },
   sendCommand(command, values) {
     return new Promise(resolve => {
       if (!server.client) {

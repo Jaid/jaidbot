@@ -1,5 +1,4 @@
 import vlc from "lib/vlc"
-import pify from "pify"
 import youtube from "lib/youtube"
 
 export default {
@@ -7,18 +6,15 @@ export default {
   minimumArguments: 1,
   needsDesktopClient: true,
   async handle({combinedArguments}) {
-    const info = await vlc.getMetaForVideo()
-    if (!info) {
-      return "Das habe ich nicht hingekriegt."
+    const {videoInfo} = await vlc.getCurrentYoutubeVideo()
+    if (!videoInfo) {
+      return
     }
-    if (info.extractor !== "youtube") {
-      return "Beim abgespielten Video scheint es sich nicht um ein YouTube-Video zu handeln."
-    }
-    await pify(youtube.commentThreads.insert)({
+    await youtube.commentThreads.insert({
       part: "snippet",
       resource: {
         snippet: {
-          videoId: info.id,
+          videoId: videoInfo.id,
           topLevelComment: {
             snippet: {
               textOriginal: combinedArguments,
@@ -27,6 +23,6 @@ export default {
         },
       },
     })
-    return `Comment unter dem Video "${info.fulltitle || info.title}" ist raus!`
+    return `Comment unter dem Video "${videoInfo.fulltitle || videoInfo.title}" ist raus!`
   },
 }
