@@ -53,4 +53,30 @@ export default {
       })
     })
   },
+  sendCommand(command, values) {
+    return new Promise(resolve => {
+      if (!server.client) {
+        twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+        resolve(false)
+        return
+      }
+      const commandAction = {
+        command,
+        ...values,
+      }
+      server.client.emit("sendVlcCommand", commandAction, commandResult => {
+        if (commandResult === "noVlc") {
+          twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+          resolve(false)
+          return
+        }
+        if (commandResult === "commandFailed") {
+          twitch.say("Die Anweisung ans Kino hat jetzt nicht so richtig geklappt.")
+          resolve(false)
+          return
+        }
+        resolve(commandResult)
+      })
+    })
+  },
 }

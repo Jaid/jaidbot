@@ -10,12 +10,12 @@ export default {
       return
     }
     const currentVolume = vlcState.volume
-    const chosenVolume = new positionalArguments[0]
-    if (Number(chosenVolume) === currentVolume) {
+    const chosenVolume = Number(positionalArguments[0])
+    if (chosenVolume === currentVolume) {
       return `Die Lautstärke wurde von ${currentVolume}% auf ${currentVolume}... Moment. Am I a joke to you?`
     }
     await vlc.sendCommand("volume", {val: chosenVolume})
     const verb = chosenVolume > currentVolume ? "angehoben" : "gesenkt"
-    return `Die Lautstärke wurde von ${currentVolume}% auf ${chosenVolume}% ${verb}.`
+    return `Die Lautstärke wurde von ${currentVolume} auf ${chosenVolume} von maximal 320 ${verb}.`
   },
 }
