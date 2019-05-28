@@ -5,9 +5,8 @@ export default {
   needsDesktopClient: true,
   async handle() {
     const result = await vlc.sendCommand("pl_next")
-    if (!result) {
-      return "Der Video Player scheint gerade nicht ansprechbar zu sein."
+    if (result) {
+      return "Skippie!"
     }
-    return "Skippie!"
   },
 }
