@@ -5,6 +5,7 @@ import minimist from "minimist"
 import {isString} from "lodash"
 import twitch from "src/twitch"
 import server from "src/server"
+import logger from "lib/logger"
 
 const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 
@@ -69,6 +70,7 @@ export default class ChatBot extends EventEmitter {
         twitch.say(returnValue)
       }
     }).catch(error => {
+      logger.error(error?.stack ? String(error.stack) : error)
       twitch.say(`Oh, ${message.sender.displayName}, da hat irgendetwas nicht geklappt. (${error?.message || error})`)
     })
   }

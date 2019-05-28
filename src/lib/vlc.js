@@ -12,7 +12,7 @@ export default {
         return
       }
       server.client.emit("getVlcState", vlcState => {
-        if (!vlcState) {
+        if (vlcState === "noVlc") {
           twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
           resolve(false)
           return
@@ -28,13 +28,28 @@ export default {
         resolve(false)
         return
       }
-      server.client.emit("getVlcVideo", vlcState => {
-        if (!vlcState) {
+      server.client.emit("getVlcVideo", videoInfo => {
+        if (videoInfo === "noVlc") {
           twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
           resolve(false)
           return
         }
-        resolve(vlcState)
+        if (videoInfo === "noVideo") {
+          twitch.say("Anscheinend läuft gerade gar kein Video.")
+          resolve(false)
+          return
+        }
+        if (videoInfo === "videoNotOnDisk") {
+          twitch.say("Das gerade laufende Video finde ich nicht im Dateisystem auf dem Computer von Jaidchen.")
+          resolve(false)
+          return
+        }
+        if (videoInfo === "noInfoFound") {
+          twitch.say("Zu dem gerade laufenden Video finde ich keine Informationsunterlagen im Dateisystem auf dem Computer von Jaidchen.")
+          resolve(false)
+          return
+        }
+        resolve(videoInfo)
       })
     })
   },

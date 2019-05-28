@@ -4,6 +4,7 @@ import http from "http"
 import socketIo from "socket.io"
 import config from "lib/config"
 import logger from "lib/logger"
+import twitch from "src/twitch"
 
 class Server extends EventEmitter {
 
@@ -24,10 +25,12 @@ class Server extends EventEmitter {
       }
       this.client = client
       client.on("disconnect", () => {
-        logger.info("Client %s has disconnected", client.handshake.address)
         delete this.client
+        logger.info("Client %s has disconnected", client.handshake.address)
+        twitch?.say("Uff, ich habe die Verbindung zum Computer von Jaidchen verloren.")
       })
       logger.info("New connection from %s", client.handshake.address)
+      twitch?.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
     })
     const port = config.server.port
     this.io.listen(port)

@@ -2,7 +2,7 @@ import EventEmitter from "events"
 
 import ChatClient from "twitch-chat-client"
 import twitch from "twitch"
-import {log} from "lib/logger"
+import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
 
@@ -25,12 +25,12 @@ class TwitchCore extends EventEmitter {
       twitch.withCredentials(config.twitchApiClient.id, config.twitchApiClient.token, streamerScopes),
     ])
     this.broadcaster = await streamerClient.helix.users.getMe()
-    log("Initialized Twitch clients")
+    logger.info("Initialized Twitch clients")
     const chatClient = await ChatClient.forTwitchClient(botClient)
     await chatClient.connect()
     await chatClient.waitForRegistration()
     await chatClient.join(this.broadcaster.name)
-    log("Connected bot")
+    logger.info("Connected bot")
     this.botClient = botClient
     this.streamerClient = streamerClient
     this.chatClient = chatClient
@@ -54,7 +54,7 @@ class TwitchCore extends EventEmitter {
   }
 
   handleChatMessage(message) {
-    log(`${message.sender.displayName}: ${message.text}`)
+    logger.debug(`${message.sender.displayName}: ${message.text}`)
     this.emit("chat", message)
     this.chatBot.handleMessage(message)
   }
@@ -88,6 +88,10 @@ class TwitchCore extends EventEmitter {
   }
 
   say(message) {
+    if (!this.chatClient) {
+      logger.warn("Tried to say \"%s\", but chatClient was %s", message, this.chatClient)
+      return
+    }
     this.chatClient.say(this.broadcaster.name, message)
   }
 
