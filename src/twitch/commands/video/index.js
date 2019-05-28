@@ -1,52 +1,52 @@
 import moment from "lib/moment"
-import fsp from "@absolunet/fsp"
 import millify from "millify"
 import filesize from "filesize"
 import vlc from "lib/vlc"
+import {isNumber} from "lodash"
 
 export default {
   needsDesktopClient: true,
   async handle({sender}) {
-    const vlcState = await vlc.getState()
-    if (!vlcState) {
-      return "Kein Lebenszeichen vom Video Player."
+    const result = await vlc.getCurrentVideo()
+    if (!result) {
+      return
     }
-    if (vlcState.currentplid === -1) {
-      return "Gerade läuft nichts."
-    }
-    const videoFile = await vlc.getCurrentVideoPath()
-    if (!videoFile) {
-      return "Das gerade abgespielte Video finde ich nicht im Dateisystem, sorry!"
-    }
-    const info = await vlc.getMetaForVideo(videoFile)
-    if (!info) {
-      return "Dazu finde ich in meinen Unterlagen keine brauchbaren Informationen, sorry!"
-    }
+    const {videoInfo, vlcState, videoSize} = result
     const properties = []
-    if (info.height && info.fps) {
-      properties.push(`${info.height}p${info.fps}`)
+    if (videoInfo.height && videoInfo.fps) {
+      properties.push(`${videoInfo.height}p${videoInfo.fps}`)
     }
-    if (info.age_limit > 0) {
-      properties.push(`freigegeben ab ${info.age_limit} Jahren`)
+    if (videoInfo.age_limit > 0) {
+      properties.push(`freigegeben ab ${videoInfo.age_limit} Jahren`)
     }
-    if (info.duration) {
-      properties.push(`${moment.duration(info.duration, "seconds").format()} Laufzeit`)
+    if (videoInfo.duration) {
+      properties.push(`${moment.duration(videoInfo.duration, "seconds").format()} Laufzeit`)
     }
-    const {size} = await fsp.stat(videoFile)
-    if (size > 1000) {
-      properties.push(filesize(size, {round: 0}))
+    if (videoSize > 1000) {
+      properties.push(filesize(videoSize, {round: 0}))
     }
-    if (info.view_count) {
-      properties.push(`${millify(info.view_count, {precision: 0})} Views`)
+    if (videoInfo.view_count) {
+      properties.push(`${millify(videoInfo.view_count, {precision: 0})} Views`)
     }
-    if (info.like_count && info.dislike_count) {
-      const ratio = Math.floor((info.like_count / (info.like_count + info.dislike_count)) * 100)
-      properties.push(`${millify(info.like_count, {precision: 0})} Likes (${ratio}%)`)
+    if (isNumber(videoInfo.like_count) && isNumber(videoInfo.dislike_count)) {
+      if ((videoInfo.like_count + videoInfo.dislike_count) === 0) {
+        properties.push("keine Bewertungen")
+      } else {
+        let ratio
+        if (videoInfo.dislike_count === 0) {
+          ratio = 100
+        } else if (videoInfo.like_count === 0) {
+          ratio = 0
+        } else {
+          ratio = Math.floor((videoInfo.like_count / (videoInfo.like_count + videoInfo.dislike_count)) * 100)
+        }
+        properties.push(`${millify(videoInfo.like_count, {precision: 0})} Likes (${ratio}%)`)
+      }
     }
-    if (info.upload_date) {
-      properties.push(`${moment(info.upload_date).locale("de").fromNow()} erschienen`)
+    if (videoInfo.upload_date) {
+      properties.push(`${moment(videoInfo.upload_date).locale("de").fromNow()} erschienen`)
     }
     const currentTime = moment.duration(vlcState.time, "seconds").format()
-    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${info.fulltitle || info.title}" von ${info.uploader}. ${properties.join(", ")}.`
+    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${videoInfo.fulltitle || videoInfo.title}" von ${videoInfo.uploader}. ${properties.join(", ")}.`
   },
 }
