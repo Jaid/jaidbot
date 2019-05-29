@@ -1,98 +1,84 @@
-/* eslint-disable promise/avoid-new, prefer-promise-reject-errors */
-
 import twitch from "src/twitch"
 import server from "src/server"
+import emitPromise from "emit-promise"
+import config from "lib/config"
 
 export default {
-  getState() {
-    return new Promise(resolve => {
-      if (!server.client) {
-        twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
-        resolve(false)
-        return
-      }
-      server.client.emit("getVlcState", vlcState => {
-        if (vlcState === "noVlc") {
-          twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
-          resolve(false)
-          return
-        }
-        resolve(vlcState)
-      })
-    })
+  async getState() {
+    if (!server.client) {
+      twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+      return
+    }
+    const vlcState = await emitPromise(server.client, "getVlcState")
+    if (vlcState === "noVlc") {
+      twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+      return
+    }
+    return vlcState
   },
-  getCurrentVideo() {
-    return new Promise(resolve => {
-      if (!server.client) {
-        twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
-        resolve(false)
-        return
-      }
-      server.client.emit("getVlcVideo", videoInfo => {
-        if (videoInfo === "noVlc") {
-          twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
-          resolve(false)
-          return
-        }
-        if (videoInfo === "noVideo") {
-          twitch.say("Anscheinend läuft gerade gar kein Video.")
-          resolve(false)
-          return
-        }
-        if (videoInfo === "videoNotOnDisk") {
-          twitch.say("Das gerade laufende Video finde ich nicht im Dateisystem auf dem Computer von Jaidchen.")
-          resolve(false)
-          return
-        }
-        if (videoInfo === "noInfoFound") {
-          twitch.say("Zu dem gerade laufenden Video finde ich keine Informationsunterlagen im Dateisystem auf dem Computer von Jaidchen.")
-          resolve(false)
-          return
-        }
-        resolve(videoInfo)
-      })
-    })
+  async getCurrentVideo() {
+    if (!server.client) {
+      twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+      return
+    }
+    const videoInfo = await emitPromise(server.client, "getVlcVideo")
+    if (videoInfo === "noVlc") {
+      twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+      return
+    }
+    if (videoInfo === "noVideo") {
+      twitch.say("Anscheinend läuft gerade gar kein Video.")
+      return
+    }
+    if (videoInfo === "videoNotOnDisk") {
+      twitch.say("Das gerade laufende Video finde ich nicht im Dateisystem auf dem Computer von Jaidchen.")
+      return
+    }
+    if (videoInfo === "noInfoFound") {
+      twitch.say("Zu dem gerade laufenden Video finde ich keine Informationsunterlagen im Dateisystem auf dem Computer von Jaidchen.")
+      return
+    }
+    return videoInfo
   },
-  getCurrentYoutubeVideo() {
-    return new Promise((resolve, reject) => {
-      this.getCurrentVideo().then(info => {
-        if (!info?.videoInfo) {
-          resolve(false)
-          return
-        }
-        if (info.videoInfo.extractor !== "youtube") {
-          twitch.say("Beim abgespielten Video scheint es sich nicht um ein YouTube-Video zu handeln.")
-          resolve(false)
-          return
-        }
-        resolve(info)
-      }).catch(reject)
-    })
+  async getCurrentYoutubeVideo() {
+    const info = await this.getCurrentVideo()
+    if (!info?.videoInfo) {
+      return
+    }
+    if (info.videoInfo.extractor !== "youtube") {
+      twitch.say("Beim abgespielten Video scheint es sich nicht um ein YouTube-Video zu handeln.")
+      return
+    }
+    return info
   },
-  sendCommand(command, values) {
-    return new Promise(resolve => {
-      if (!server.client) {
-        twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
-        resolve(false)
-        return
-      }
-      const commandAction = {
-        command,
-        ...values,
-      }
-      server.client.emit("sendVlcCommand", commandAction, commandResult => {
-        if (commandResult === "noVlc") {
-          twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
-          resolve(false)
-          return
-        }
-        if (commandResult === "commandFailed") {
-          twitch.say("Die Anweisung ans Kino hat jetzt nicht so richtig geklappt.")
-          resolve(false)
-          return
-        }
-        resolve(commandResult)
-      })
-    })
+  async sendCommand(command, values) {
+    if (!server.client) {
+      twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+      return
+    }
+    const commandAction = {
+      command,
+      ...values,
+    }
+    const commandResult = await emitPromise(server.client, "sendVlcCommand", commandAction)
+    if (commandResult === "noVlc") {
+      twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+      return
+    }
+    if (commandResult === "commandFailed") {
+      twitch.say("Die Anweisung ans Kino hat jetzt nicht so richtig geklappt.")
+      return
+    }
+    return commandResult
   },
+  youtubeDlParams: [
+    "--no-color",
+    "--ignore-config",
+    "--abort-on-error",
+    "--netrc",
+    "--format",
+    "bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best",
+    "--cookies",
+    config.youtubeDl.cookieFile,
+  ],
 }

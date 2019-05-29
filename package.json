@@ -5,7 +5,9 @@
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@babel/runtime": "^7.4.5",
+    "appdata-path": "^1.0.0",
     "debug": "^4.1.1",
+    "emit-promise": "^1.0.0",
     "essential-config": "^1.2.0",
     "eventemitter3": "^3.1.2",
     "execa": "^1.0.0",

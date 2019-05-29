@@ -15,12 +15,11 @@ youtubeClient:
   refreshToken: INSERT
   redirectUrl: http://localhost
 hiMessages:
-  cybertuetue: Och nö, der Cybertütü!
   neydora: Seid gegrüßt, gnädige Quallenkönigin!
-  leaevil: <%= greeting %>, Lea! Hast du Kuchen mitgebracht?
-  polaceka: <%= greeting %>, Bruder! Ehre!
-  flomey_: Ja moinsen, Flöchen!
   35xy9om_uranus:
     - Na ihr Swiffer, was cruncht?
     - Na ihr Sniffer, was schnanscht?
     - Naan ayya fof wif fif fif flolf föf wääw cruaurc saas
+youtubeDl:
+  path: youtube-dl
+  cookieFile: /tmp/youtubeDlCookies.txt
