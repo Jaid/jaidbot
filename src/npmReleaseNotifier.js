@@ -1,5 +1,5 @@
 import got from "got"
-import {isEmpty, isString} from "lodash-es"
+import {isEmpty, isString} from "lodash"
 import moment from "lib/moment"
 import config from "lib/config"
 

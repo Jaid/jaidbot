@@ -1,5 +1,5 @@
 import moment from "lib/moment"
-import {template, sample, isArray} from "lodash-es"
+import {template, sample, isArray} from "lodash"
 import config from "lib/config"
 import twitch from "src/twitch"
 

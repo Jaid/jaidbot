@@ -1,6 +1,6 @@
 import afkManager from "src/twitch/afkManager"
 import parseDuration from "parse-duration"
-import {isInteger} from "lodash-es"
+import {isInteger} from "lodash"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 

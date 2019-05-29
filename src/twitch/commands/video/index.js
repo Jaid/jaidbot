@@ -2,7 +2,7 @@ import moment from "lib/moment"
 import millify from "millify"
 import filesize from "filesize"
 import vlc from "lib/vlc"
-import {isNumber} from "lodash-es"
+import {isNumber} from "lodash"
 
 export default {
   needsDesktopClient: true,
