@@ -1,4 +1,4 @@
-import {sample} from "lodash"
+import {sample} from "lodash-es"
 import twitch from "src/twitch"
 
 const people = require("./people.txt").default.split("\n")
