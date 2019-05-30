@@ -23,3 +23,5 @@ hiMessages:
 youtubeDl:
   path: youtube-dl
   cookieFile: /tmp/youtubeDlCookies.txt
+dota:
+  steamId32: "90387906"

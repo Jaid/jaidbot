@@ -46,7 +46,7 @@ class ReleaseNotifier extends EventEmitter {
       return
     }
     for (const build of tagBuilds) {
-      processedIds.add(build.id)
+      this.processedIds.add(build.id)
       if (moment(build.finished_at).isSameOrBefore(startDate)) {
         continue
       }
