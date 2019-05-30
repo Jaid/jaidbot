@@ -5,8 +5,7 @@ import {isEmpty, isString} from "lodash"
 import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
-
-import startDate from "./startDate"
+import startDate from "src/startDate"
 
 class ReleaseNotifier extends EventEmitter {
 
