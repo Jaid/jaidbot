@@ -8,6 +8,8 @@ twitchApiClient:
   id: INSERT
   token: INSERT
 travisToken: INSERT
+travis:
+  pollIntervalSeconds: 10
 youtubeClient:
   id: INSERT
   secret: INSERT
@@ -26,3 +28,4 @@ youtubeDl:
   format: bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best
 dota:
   steamId32: "90387906"
+  pollIntervalSeconds: 10

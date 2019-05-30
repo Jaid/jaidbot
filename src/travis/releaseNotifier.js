@@ -36,7 +36,13 @@ class ReleaseNotifier extends EventEmitter {
       }
       twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
     })
-    setInterval(() => this.check(), 10000)
+    setInterval(() => {
+      try {
+        this.check()
+      } catch (error) {
+        logger.error("Could not check Travis: %s", error)
+      }
+    }, config.travis.pollIntervalSeconds * 1000)
   }
 
   async check() {
