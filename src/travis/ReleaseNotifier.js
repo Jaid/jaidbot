@@ -1,45 +1,60 @@
+import EventEmitter from "events"
+
 import got from "got"
 import {isEmpty, isString} from "lodash"
 import moment from "lib/moment"
 import config from "lib/config"
+import twitch from "src/twitch"
 
 import startDate from "./startDate"
 
-const processedIds = new Set
+class ReleaseNotifier extends EventEmitter {
 
-const run = async say => {
-  const {body: result} = await got("https://api.travis-ci.com/builds", {
-    json: true,
-    headers: {
-      "Travis-API-Version": 3,
-      Authorization: `token ${config.travisToken}`,
-    },
-  })
-  const tagBuilds = result.builds.filter(({id, tag, finished_at}) => tag?.["@type"] === "tag" && isString(finished_at) && !processedIds.has(id))
-  if (tagBuilds |> isEmpty) {
-    return
-  }
-  for (const build of tagBuilds) {
-    processedIds.add(build.id)
-    if (moment(build.finished_at).isSameOrBefore(startDate)) {
-      continue
-    }
-    const getStateString = () => {
+  async init() {
+    this.processedIds = new Set
+    this.got = got.extend({
+      json: true,
+      baseUrl: "https://api.travis-ci.com",
+      headers: {
+        "Travis-API-Version": 3,
+        Authorization: `token ${config.travisToken}`,
+      },
+    })
+    this.on("newTagBuild", build => {
+      const buildName = `${build.repository.name} ${build.tag.name}`
       if (build.state === "passed") {
-        return "PartyHat Build abgeschlossen"
+        twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/tag/${build.tag.name}`)
+        return
       }
+      const buildLink = `travis-ci.com/${build.repository.slug}/builds/${build.id}`
       if (build.state === "canceled") {
-        return "ItsBoshyTime Build abgebrochen"
+        twitch.say(`ItsBoshyTime Build abgebrochen: ${buildLink}`)
+        return
       }
       if (build.state === "failed") {
-        return "ItsBoshyTime Build fehlgeschlagen"
+        twitch.say(`ItsBoshyTime Build fehlgeschlagen: ${buildLink}`)
+        return
       }
-      return "ItsBoshyTime Build aus unbekannten Gründen beendet"
-    }
-    say(`${getStateString()}: ${build.repository.name} ${build.tag.name}`)
+      twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
+    })
+    setInterval(() => this.check(), 10000)
   }
+
+  async check() {
+    const {body: result} = await this.got("builds")
+    const tagBuilds = result.builds.filter(({id, tag, finished_at}) => tag?.["@type"] === "tag" && isString(finished_at) && !this.processedIds.has(id))
+    if (tagBuilds |> isEmpty) {
+      return
+    }
+    for (const build of tagBuilds) {
+      processedIds.add(build.id)
+      if (moment(build.finished_at).isSameOrBefore(startDate)) {
+        continue
+      }
+      this.emit("newTagBuild", build)
+    }
+  }
+
 }
 
-export default say => {
-  setInterval(() => run(say), 10000)
-}
+export default new ReleaseNotifier
