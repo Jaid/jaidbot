@@ -4,6 +4,7 @@ import twitch from "src/twitch"
 import logger from "lib/logger"
 import server from "src/server"
 import releaseNotifier from "src/travis/releaseNotifier"
+import "./startDate"
 
 class Core extends EventEmitter {
 
