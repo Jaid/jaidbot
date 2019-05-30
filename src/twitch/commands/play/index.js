@@ -16,6 +16,7 @@ export default {
     twitch.say(`PopCorn ${sender.displayName} hat "${videoInfo.title}" hinzugefügt!`)
     await emitPromise(server.client, "queueInfo", {
       videoInfo,
+      downloadFormat: vlc.downloadFormat,
       commonParams: vlc.youtubeDlParams,
     })
     twitch.say(`PopCorn "${videoInfo.title}" ist jetzt heruntergeladen!`)

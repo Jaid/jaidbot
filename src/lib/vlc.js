@@ -3,7 +3,10 @@ import server from "src/server"
 import emitPromise from "emit-promise"
 import config from "lib/config"
 
+const downloadFormat = config.youtubeDl.format
+
 export default {
+  downloadFormat,
   async getState() {
     if (!server.client) {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
@@ -77,7 +80,7 @@ export default {
     "--abort-on-error",
     "--netrc",
     "--format",
-    "bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best",
+    downloadFormat,
     "--cookies",
     config.youtubeDl.cookieFile,
   ],

@@ -23,5 +23,6 @@ hiMessages:
 youtubeDl:
   path: youtube-dl
   cookieFile: /tmp/youtubeDlCookies.txt
+  format: bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best
 dota:
   steamId32: "90387906"
