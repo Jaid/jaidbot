@@ -1,28 +1,32 @@
-import EventEmitter from "events"
-
+import PollingEmitter from "lib/PollingEmitter"
 import got from "got"
-import {isEmpty, isString} from "lodash"
 import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
-import startDate from "src/startDate"
 
-class ReleaseNotifier extends EventEmitter {
+class ReleaseNotifier extends PollingEmitter {
 
-  async init() {
-    this.processedIds = new Set
+  constructor() {
+    super({
+      pollIntervalSeconds: config.travisPollIntervalSeconds,
+      autostart: false,
+    })
+    this.startDate = Date.now()
     this.got = got.extend({
       json: true,
-      baseUrl: "https://api.travis-ci.com",
+      baseUrl: "https://api.travis-ci.com/",
       headers: {
         "Travis-API-Version": 3,
         Authorization: `token ${config.travisToken}`,
       },
     })
-    this.on("newTagBuild", build => {
+  }
+
+  async init() {
+    this.on("newEntry", build => {
       const buildName = `${build.repository.name} ${build.tag.name}`
       if (build.state === "passed") {
-        twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/tag/${build.tag.name}`)
+        twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/releases/tag/${build.tag.name}`)
         return
       }
       const buildLink = `travis-ci.com/${build.repository.slug}/builds/${build.id}`
@@ -36,28 +40,29 @@ class ReleaseNotifier extends EventEmitter {
       }
       twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
     })
-    setInterval(() => {
-      try {
-        this.check()
-      } catch (error) {
-        logger.error("Could not check Travis: %s", error)
-      }
-    }, config.travis.pollIntervalSeconds * 1000)
+    this.start()
   }
 
-  async check() {
-    const {body: result} = await this.got("builds")
-    const tagBuilds = result.builds.filter(({id, tag, finished_at}) => tag?.["@type"] === "tag" && isString(finished_at) && !this.processedIds.has(id))
-    if (tagBuilds |> isEmpty) {
-      return
+  async fetchEntries() {
+    const response = await this.got("builds")
+    return response.body.builds
+  }
+
+  async processEntry(build, id) {
+    if (!build.finished_at) {
+      return false
     }
-    for (const build of tagBuilds) {
-      this.processedIds.add(build.id)
-      if (moment(build.finished_at).isSameOrBefore(startDate)) {
-        continue
-      }
-      this.emit("newTagBuild", build)
+    build.isTag = build.tag?.["@type"] === "tag"
+    if (!build.isTag) {
+      return false
     }
+    if (moment(build.finished_at).isSameOrBefore(this.startDate)) {
+      return false
+    }
+  }
+
+  handleError(error) {
+    logger.error("Could not check Travis: %s", error)
   }
 
 }

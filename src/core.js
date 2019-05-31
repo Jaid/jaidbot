@@ -4,7 +4,8 @@ import twitch from "src/twitch"
 import logger from "lib/logger"
 import server from "src/server"
 import releaseNotifier from "src/travis/releaseNotifier"
-import resultNotifier from "src/dota/resultNotifier"
+import opendota from "src/dota/opendota"
+import "src/youtube/subscriptionWatcher"
 import "src/startDate"
 
 class Core extends EventEmitter {
@@ -14,7 +15,7 @@ class Core extends EventEmitter {
     await server.init()
     await twitch.init()
     await releaseNotifier.init()
-    await resultNotifier.init()
+    await opendota.init()
     twitch.say("TBAngel Da bin ich!")
     logger.info("Ready!")
     this.emit("ready")

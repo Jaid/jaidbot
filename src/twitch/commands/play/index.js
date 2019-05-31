@@ -20,10 +20,5 @@ export default {
       commonParams: vlc.youtubeDlParams,
     })
     twitch.say(`PopCorn "${videoInfo.title}" ist jetzt heruntergeladen!`)
-    // await execa("E:/Projects/node-scripts/dist/exe/playVideo.exe", [video])
-    // const vlcState = await vlc.getState()
-    // if (!vlcState) {
-    //   return "Kein Lebenszeichen vom Video Player."
-    // }
   },
 }
