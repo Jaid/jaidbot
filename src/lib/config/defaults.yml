@@ -28,7 +28,7 @@ youtubeDl:
   format: bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best
 dotaSteamId32: "90387906"
 dotaPollIntervalSeconds: 30
-travisPollIntervalSeconds: 10
-youtubeSubscriptionsPollIntervalSeconds: 30
+travisPollIntervalSeconds: 30
+youtubeSubscriptionsPollIntervalSeconds: 300
 observedYoutubeChannels:
   - UCdC0An4ZPNr_YiFiYoVbwaw # ID of Daily Dose of Internet

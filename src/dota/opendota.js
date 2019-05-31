@@ -9,7 +9,7 @@ class Opendota extends PollingEmitter {
 
   constructor() {
     super({
-      pollIntervalSeconds: config.dotaPollIntervalSeconds * 1000,
+      pollIntervalSeconds: config.dotaPollIntervalSeconds,
       autostart: false,
     })
     this.startDate = Date.now()
