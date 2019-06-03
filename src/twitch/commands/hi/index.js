@@ -34,13 +34,15 @@ export default {
       }
       userName = sender.name
       displayName = sender.displayName
+      if (sender.isVip) {
+        displayName = `höchstgeachteter ${displayname}`
+      }
     }
     const hiMessage = config.hiMessages[userName]
     if (hiMessage) {
       const customMessage = isArray(hiMessage) ? sample(hiMessage) : hiMessage
       return template(customMessage)({greeting})
     }
-    const vipString = sender.isVip ? "höchstgeachteter " : ""
-    return `${greeting}, ${vipString}${displayName}!`
+    return `${greeting}, ${displayName}!`
   },
 }
