@@ -3,6 +3,7 @@ import got from "got"
 import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
+import logger from "lib/logger"
 
 class ReleaseNotifier extends PollingEmitter {
 
@@ -41,6 +42,7 @@ class ReleaseNotifier extends PollingEmitter {
       twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
     })
     this.start()
+    logger.info("Started Travis releaseNotifier")
   }
 
   async fetchEntries() {

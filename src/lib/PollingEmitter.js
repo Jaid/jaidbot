@@ -8,10 +8,14 @@ export default class extends EventEmitter {
     super()
     this.options = {
       pollIntervalSeconds: 10,
+      invalidateInitialEntries: false,
       autostart: true,
       ...options,
     }
     this.processedEntryIds = new Set
+    if (this.options.invalidateInitialEntries) {
+      this.invalidateEntries()
+    }
     if (this.options.autostart) {
       this.start()
     }
@@ -19,7 +23,8 @@ export default class extends EventEmitter {
 
   start() {
     if (this.interval) {
-      this.interval.unref()
+      clearInterval(this.interval)
+      delete this.interval
     }
     this.interval = setInterval(async () => {
       try {
@@ -46,6 +51,22 @@ export default class extends EventEmitter {
         this.handleError?.(error)
       }
     }, this.options.pollIntervalSeconds * 1000)
+  }
+
+  async invalidateEntries() {
+    try {
+      const fetchedEntries = await this.fetchEntries()
+      if (!fetchedEntries) {
+        return
+      }
+      for (const entry of fetchedEntries) {
+        const id = this.getIdFromEntry(entry)
+        this.processedEntryIds.add(id)
+        this.emit("invalidatedEntry", entry, id)
+      }
+    } catch (error) {
+      this.handleError?.(error)
+    }
   }
 
   hasAlreadyProcessedEntry(entry) {

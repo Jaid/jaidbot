@@ -5,7 +5,7 @@ import logger from "lib/logger"
 import server from "src/server"
 import releaseNotifier from "src/travis/releaseNotifier"
 import opendota from "src/dota/opendota"
-import "src/youtube/subscriptionWatcher"
+import subscriptionWatcher from "src/youtube/subscriptionWatcher"
 import "src/startDate"
 
 class Core extends EventEmitter {
@@ -14,8 +14,11 @@ class Core extends EventEmitter {
     logger.info(`${_PKG_TITLE} v${_PKG_VERSION}`)
     await server.init()
     await twitch.init()
-    await releaseNotifier.init()
-    await opendota.init()
+    await Promise.all([
+      releaseNotifier.init(),
+      opendota.init(),
+      subscriptionWatcher.init(),
+    ])
     twitch.say("TBAngel Da bin ich!")
     logger.info("Ready!")
     this.emit("ready")

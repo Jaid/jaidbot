@@ -1,16 +1,13 @@
 import PollingEmitter from "lib/PollingEmitter"
-import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
-import youtube from "lib/youtube"
-import {flatten} from "lodash"
 import execa from "execa"
 import vlc from "lib/vlc"
 import server from "src/server"
 import emitPromise from "emit-promise"
-
-const extractVideoIdFromThumbnailRegex = /\/(?<id>[^/]+)\/default/
+import fetchYoutubeUploads from "fetch-youtube-uploads"
+import {flatten} from "lodash"
 
 class SubscriptionWatcher extends PollingEmitter {
 
@@ -20,8 +17,11 @@ class SubscriptionWatcher extends PollingEmitter {
     })
     this.startDate = Date.now()
     this.on("newEntry", async video => {
-      twitch.say(`PopCorn Neues Video "${video.snippet.title}" von ${video.snippet.channelTitle}: youtu.be/${video.videoId}`)
-      const execResult = await execa(config.youtubeDl.path, [...vlc.youtubeDlParams, "--dump-single-json", video.videoId])
+      if (!server.client) {
+        return
+      }
+      twitch.say(`PopCorn Neues Video "${video.title}": youtu.be/${video.id}`)
+      const execResult = await execa(config.youtubeDl.path, [...vlc.youtubeDlParams, "--dump-single-json", video.id])
       const videoInfo = execResult.stdout |> JSON.parse
       await emitPromise(server.client, "queueInfo", {
         videoInfo,
@@ -32,33 +32,15 @@ class SubscriptionWatcher extends PollingEmitter {
     })
   }
 
+  async init() {
+    await this.invalidateEntries()
+    logger.info("Started YouTube subscriptionWatcher")
+  }
+
   async fetchEntries() {
-    const apiJobs = config.observedYoutubeChannels.map(async channelId => {
-      const result = await youtube.activities.list({
-        channelId,
-        part: "snippet",
-        fields: "items(id,snippet(type,title,publishedAt,thumbnails,channelTitle))",
-      })
-      return result.data.items
-    })
-    const jobResults = await Promise.all(apiJobs)
-    const activities = jobResults
-    |> flatten
-    |> #.filter(({snippet}) => snippet.type === "upload")
-    for (const activity of activities) {
-      activity.videoId = extractVideoIdFromThumbnailRegex.exec(activity.snippet.thumbnails.default.url).groups.id
-    }
-    return [activities[0]]
-  }
-
-  getIdFromEntry(activity) {
-    return activity.videoId
-  }
-
-  async processEntry(activity) {
-    if (moment(activity.snippet.publishedAt).isSameOrBefore(this.startDate)) {
-      return false
-    }
+    const fetchJobs = config.observedYoutubeChannels.map(async channelId => fetchYoutubeUploads(channelId))
+    const results = await Promise.all(fetchJobs)
+    return results |> flatten
   }
 
   handleError(error) {

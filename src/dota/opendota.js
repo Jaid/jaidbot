@@ -25,12 +25,14 @@ class Opendota extends PollingEmitter {
       twitch.say(`OSFrog ${match.hero.localized_name} hat mit ${match.kills}/${match.deaths}/${match.assists} ${verbString}: opendota.com/matches/${match.match_id}`)
     })
     this.start()
+    logger.info("Started OpenDota notifier")
   }
 
   async fetchEntries() {
     if (!this.heroes) {
       const heroesResponse = await this.got("heroes")
       this.heroes = heroesResponse.body
+      logger.info("Loaded %s heroes from OpenDota", this.heroes.length)
     }
     const response = await this.got(`players/${config.dotaSteamId32}/recentMatches`)
     return response.body
