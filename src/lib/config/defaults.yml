@@ -32,3 +32,10 @@ travisPollIntervalSeconds: 30
 youtubeSubscriptionsPollIntervalSeconds: 300
 observedYoutubeChannels:
   - UCdC0An4ZPNr_YiFiYoVbwaw # ID of Daily Dose of Internet
+twitterConsumerKey: INSERT
+twitterConsumerSecret: INSERT
+twitterAccessToken: INSERT
+twitterAccessSecret: INSERT
+twitterFollowedIds:
+  - "1910506442" # @jaidchen
+  - "437210567" # @TwitchSupport

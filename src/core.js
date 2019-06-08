@@ -6,6 +6,7 @@ import server from "src/server"
 import releaseNotifier from "src/travis/releaseNotifier"
 import opendota from "src/dota/opendota"
 import subscriptionWatcher from "src/youtube/subscriptionWatcher"
+import tweetNotifier from "src/twitter/tweetNotifier"
 import "src/startDate"
 
 class Core extends EventEmitter {
@@ -18,6 +19,7 @@ class Core extends EventEmitter {
       releaseNotifier.init(),
       opendota.init(),
       subscriptionWatcher.init(),
+      tweetNotifier.init(),
     ])
     twitch.say("TBAngel Da bin ich!")
     logger.info("Ready!")
