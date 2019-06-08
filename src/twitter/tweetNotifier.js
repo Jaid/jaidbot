@@ -35,13 +35,13 @@ class TweetNotifier {
         return
       }
       debugger
-      twitch.say(`Tweet von ${tweet.user.name}: ${tweet |> getTweetText}`)
+      twitch.say(`MercyWing2 Tweet von ${tweet.user.name}: ${tweet |> getTweetText}`)
     })
     tweetEmitter.on("delete", tweet => {
       if (!isOwnTweet(tweet)) {
         return
       }
-      twitch.say(`${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
+      twitch.say(`CurseLit ${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
     })
     logger.info("Started Tweet notifier")
   }
