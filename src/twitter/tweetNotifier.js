@@ -3,6 +3,17 @@ import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
 
+const isOwnTweet = tweet => {
+  if (tweet.retweeted_status) {
+    return false
+  }
+  return config.twitterFollowedIds.includes(tweet.in_reply_to_id_str)
+}
+
+const getTweetText = tweet => {
+  return tweet.extended_tweet?.full_text || tweet.text
+}
+
 class TweetNotifier {
 
   constructor() {
@@ -15,11 +26,21 @@ class TweetNotifier {
   }
 
   async init() {
-    const tweetEmitter = this.twit.stream("statuses/filter", {follow: config.twitterFollowedIds})
+    const tweetEmitter = this.twit.stream("statuses/filter", {
+      follow: config.twitterFollowedIds,
+      filter_level: "none",
+    })
     tweetEmitter.on("tweet", tweet => {
-      twitch.say(`Tweet von ${tweet.user.name}: ${tweet.text}`)
+      if (!isOwnTweet(tweet)) {
+        return
+      }
+      debugger
+      twitch.say(`Tweet von ${tweet.user.name}: ${tweet |> getTweetText}`)
     })
     tweetEmitter.on("delete", tweet => {
+      if (!isOwnTweet(tweet)) {
+        return
+      }
       twitch.say(`${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
     })
     logger.info("Started Tweet notifier")
