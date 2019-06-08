@@ -17,12 +17,13 @@ class SubscriptionWatcher extends PollingEmitter {
     })
     this.startDate = Date.now()
     this.on("newEntry", async video => {
-      if (!server.client) {
-        return
-      }
-      twitch.say(`PopCorn Neues Video "${video.title}": youtu.be/${video.id}`)
       const execResult = await execa(config.youtubeDl.path, [...vlc.youtubeDlParams, "--dump-single-json", video.id])
       const videoInfo = execResult.stdout |> JSON.parse
+      if (!server.client) {
+        twitch.say(`PopCorn Neues Video "${video.title}" von ${video.uploader || "unbekannt"} ist da, aber es besteht keine Verbindung zum Computer von Jaidchen.`)
+        return
+      }
+      twitch.say(`PopCorn Neues Video "${video.title}" von ${video.uploader || "unbekannt"}: youtu.be/${video.id}`)
       await emitPromise(server.client, "queueInfo", {
         videoInfo,
         downloadFormat: vlc.downloadFormat,
