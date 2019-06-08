@@ -7,7 +7,7 @@ const isOwnTweet = tweet => {
   if (tweet.retweeted_status) {
     return false
   }
-  return config.twitterFollowedIds.includes(tweet.in_reply_to_id_str)
+  return config.twitterFollowedIds.includes(tweet.user.id_str)
 }
 
 const getTweetText = tweet => {
