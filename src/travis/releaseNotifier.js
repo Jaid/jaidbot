@@ -1,9 +1,9 @@
 import PollingEmitter from "lib/PollingEmitter"
 import got from "got"
-import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
+import {timeout} from "promise-timeout"
 
 class ReleaseNotifier extends PollingEmitter {
 
@@ -12,7 +12,6 @@ class ReleaseNotifier extends PollingEmitter {
       pollIntervalSeconds: config.travisPollIntervalSeconds,
       autostart: false,
     })
-    this.startDate = Date.now()
     this.got = got.extend({
       json: true,
       baseUrl: "https://api.travis-ci.com/",
@@ -23,24 +22,44 @@ class ReleaseNotifier extends PollingEmitter {
     })
   }
 
+  async checkBuild(buildId) {
+    const response = await this.got(`build/${buildId}`)
+    const build = response.body
+    logger.debug("Checked Travis build %s: %s", buildId, build.state)
+    if (!build.finished_at) {
+      return null
+    }
+    const buildName = `${build.repository.name} ${build.tag.name}`
+    if (build.state === "passed") {
+      twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/releases/tag/${build.tag.name}`)
+      return true
+    }
+    const buildLink = `travis-ci.com/${build.repository.slug}/builds/${build.id}`
+    if (build.state === "canceled") {
+      twitch.say(`ItsBoshyTime Build abgebrochen: ${buildLink}`)
+      return true
+    }
+    if (build.state === "failed") {
+      twitch.say(`ItsBoshyTime Build fehlgeschlagen: ${buildLink}`)
+      return true
+    }
+    twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
+    return true
+  }
+
   async init() {
     this.on("newEntry", build => {
-      const buildName = `${build.repository.name} ${build.tag.name}`
-      if (build.state === "passed") {
-        twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/releases/tag/${build.tag.name}`)
-        return
+      const checkBuildInterval = async () => {
+        const interval = setInterval(async () => {
+          const buildGotResolved = await this.checkBuild(build.id)
+          if (buildGotResolved) {
+            clearInterval(interval)
+          }
+        }, 1000 * 60)
       }
-      const buildLink = `travis-ci.com/${build.repository.slug}/builds/${build.id}`
-      if (build.state === "canceled") {
-        twitch.say(`ItsBoshyTime Build abgebrochen: ${buildLink}`)
-        return
-      }
-      if (build.state === "failed") {
-        twitch.say(`ItsBoshyTime Build fehlgeschlagen: ${buildLink}`)
-        return
-      }
-      twitch.say(`ItsBoshyTime Build aus unbekannten Gründen beendet: ${buildLink}`)
+      timeout(checkBuildInterval(), 1000 * 60 * 60)
     })
+    await this.invalidateEntries()
     this.start()
     logger.info("Started Travis releaseNotifier")
   }
@@ -50,15 +69,9 @@ class ReleaseNotifier extends PollingEmitter {
     return response.body.builds
   }
 
-  async processEntry(build, id) {
-    if (!build.finished_at) {
-      return false
-    }
+  async processEntry(build) {
     build.isTag = build.tag?.["@type"] === "tag"
     if (!build.isTag) {
-      return false
-    }
-    if (moment(build.finished_at).isSameOrBefore(this.startDate)) {
       return false
     }
   }

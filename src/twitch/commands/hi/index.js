@@ -37,7 +37,7 @@ export default {
       if (sender.isVip) {
         displayName = `höchstgeachteter ${displayName}`
       }
-    }f
+    }
     const hiMessage = config.hiMessages[userName]
     if (hiMessage) {
       const customMessage = isArray(hiMessage) ? sample(hiMessage) : hiMessage
