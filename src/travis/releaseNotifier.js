@@ -31,7 +31,7 @@ class ReleaseNotifier extends PollingEmitter {
     }
     const buildName = `${build.repository.name} ${build.tag.name}`
     if (build.state === "passed") {
-      twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/releases/tag/${build.tag.name}`)
+      twitch.say(`PartyHat ${buildName} ist da: github.com/${build.repository.slug}/releases/${build.tag.name}`)
       return true
     }
     const buildLink = `travis-ci.com/${build.repository.slug}/builds/${build.id}`
