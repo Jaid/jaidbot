@@ -7,10 +7,14 @@ const isOwnTweet = tweet => {
   if (tweet.retweeted_status) {
     return false
   }
+  if (tweet.in_reply_to_user_id && (tweet.in_reply_to_user_id !== tweet.user.id)) {
+    return false
+  }
   return config.twitterFollowedIds.includes(tweet.user.id_str)
 }
 
 const getTweetText = tweet => {
+  debugger
   return tweet.extended_tweet?.full_text || tweet.text
 }
 
@@ -34,8 +38,7 @@ class TweetNotifier {
       if (!isOwnTweet(tweet)) {
         return
       }
-      debugger
-      twitch.say(`MercyWing2 Tweet von ${tweet.user.name}: ${tweet |> getTweetText}`)
+      twitch.say(`MercyWing2 ${tweet.user.name} tweetet: ${tweet |> getTweetText}`)
     })
     tweetEmitter.on("delete", tweet => {
       if (!isOwnTweet(tweet)) {
