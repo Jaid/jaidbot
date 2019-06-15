@@ -1,7 +1,7 @@
-import {configureExecutable} from "webpack-config-jaid"
+import configure from "webpack-config-jaid"
 import {NormalModuleReplacementPlugin} from "webpack"
 
-export default configureExecutable({
+export default configure({
   publishimo: {
     fetchGithub: true,
   },
