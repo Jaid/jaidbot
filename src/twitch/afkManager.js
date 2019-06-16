@@ -4,7 +4,7 @@ import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
 import twitch from "src/twitch"
 import logger from "lib/logger"
-import ms from "macro.ms"
+import ms from "ms.macro"
 
 const extractTitleRegex = /(?<nontitle>(?<prefix>.*?)?\s*(?<emoji>💜)\s*)?(?<title>.*)/
 
