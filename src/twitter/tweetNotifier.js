@@ -2,6 +2,7 @@ import Twit from "twit"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
+import {unpackObject} from "magina"
 
 const isOwnTweet = tweet => {
   if (tweet.retweeted_status) {
@@ -31,7 +32,7 @@ class TweetNotifier {
 
   async init() {
     const tweetEmitter = this.twit.stream("statuses/filter", {
-      follow: config.twitterFollowedIds,
+      follow: config.twitterFollowedIds.map(watchEntry => unpackObject(watchEntry, "id")),
       filter_level: "none",
     })
     tweetEmitter.on("tweet", tweet => {

@@ -8,6 +8,7 @@ import server from "src/server"
 import emitPromise from "emit-promise"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
+import {unpackObject} from "magina"
 
 class SubscriptionWatcher extends PollingEmitter {
 
@@ -39,7 +40,7 @@ class SubscriptionWatcher extends PollingEmitter {
   }
 
   async fetchEntries() {
-    const fetchJobs = config.observedYoutubeChannels.map(async channelId => fetchYoutubeUploads(channelId))
+    const fetchJobs = config.observedYoutubeChannels.map(async youtubeChannel => fetchYoutubeUploads(unpackObject(youtubeChannel, "id")))
     const results = await Promise.all(fetchJobs)
     return results |> flatten
   }

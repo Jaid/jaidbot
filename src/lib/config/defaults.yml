@@ -24,11 +24,14 @@ dotaPollIntervalSeconds: 30
 travisPollIntervalSeconds: 30
 youtubeSubscriptionsPollIntervalSeconds: 300
 observedYoutubeChannels:
-  - UCdC0An4ZPNr_YiFiYoVbwaw # ID of Daily Dose of Internet
+  - name: Daily Dose
+    id: UCdC0An4ZPNr_YiFiYoVbwaw
 twitterConsumerKey: INSERT
 twitterConsumerSecret: INSERT
 twitterAccessToken: INSERT
 twitterAccessSecret: INSERT
 twitterFollowedIds:
-  - "1910506442" # @jaidchen
-  - "437210567" # @TwitchSupport
+  - name: Jaidchen
+    id: "1910506442"
+  - name: Twitch
+    id: "437210567"
