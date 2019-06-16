@@ -1,16 +1,16 @@
 import {sample} from "lodash"
 import twitch from "src/twitch"
+import config from "lib/config"
 
 const people = require("./people.txt").default.split("\n")
-const shortcuts = require("./shortcuts.yml")
 
 export default {
   permission: "mod",
   requiredArguments: 1,
   async handle({combinedArguments: newGame}) {
     const {game: currentGame} = await twitch.getMyStream()
-    if (shortcuts[newGame]) {
-      newGame = shortcuts[newGame]
+    if (config.categoryShortcuts[newGame]) {
+      newGame = config.categoryShortcuts[newGame]
     }
     if (newGame === currentGame) {
       return "Uff, da ändert sich nicht viel."
