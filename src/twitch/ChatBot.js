@@ -35,6 +35,16 @@ export default class ChatBot extends EventEmitter {
       twitch.say(`Verstehe ich jetzt nicht, ${message.sender.displayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
       return
     }
+    if (!message.sender.isBroadcaster) {
+      if (command.permission === "sub-or-vip" && !message.sender.isVip && !message.sender.isSub && !message.sender.isMod) {
+        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
+        return
+      }
+      if (command.permission === "mod" && !message.sender.hasElevatedPermission) {
+        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator sein!`)
+        return
+      }
+    }
     if (command.needsDesktopClient && !server?.client) {
       twitch.say(`Es besteht gerade keine Verbindung zum Computer von ${twitch.broadcaster.displayName}. ResidentSleeper`)
       return
@@ -47,16 +57,6 @@ export default class ChatBot extends EventEmitter {
       const givenArgumentsLength = positionalArguments.length
       if (command.requiredArguments > givenArgumentsLength) {
         twitch.say(`${message.sender.displayName}, dieser Befehl benötigt ${command.requiredArguments} Arguments!`)
-        return
-      }
-    }
-    if (!message.sender.isBroadcaster) {
-      if (command.permission === "sub-or-vip" && !message.sender.isVip && !message.sender.isSub && !message.sender.isMod) {
-        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
-        return
-      }
-      if (command.permission === "mod" && !message.sender.hasElevatedPermission) {
-        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator sein!`)
         return
       }
     }
