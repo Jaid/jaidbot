@@ -3,7 +3,7 @@ import server from "src/server"
 import emitPromise from "emit-promise"
 import config from "lib/config"
 
-const downloadFormat = config.youtubeDl.format
+const downloadFormat = config.youtubeDlFormat
 
 export default {
   downloadFormat,
@@ -82,6 +82,6 @@ export default {
     "--format",
     downloadFormat,
     "--cookies",
-    config.youtubeDl.cookieFile,
+    config.youtubeDlCookieFile,
   ],
 }

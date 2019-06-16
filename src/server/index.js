@@ -15,7 +15,7 @@ class Server extends EventEmitter {
       wsEngine: "ws",
     })
     this.io.on("connection", client => {
-      if (client.handshake.query.password !== config.server.password) {
+      if (client.handshake.query.password !== config.serverPassword) {
         logger.warn("Received wrong password from client %s, disconnecting", client.handshake.address)
         client.disconnect()
       }
@@ -32,7 +32,7 @@ class Server extends EventEmitter {
       logger.info("New connection from %s", client.handshake.address)
       twitch?.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
     })
-    const port = config.server.port
+    const port = config.serverPort
     this.io.listen(port)
     logger.info("Jaidbot server runs on port %s", port)
   }

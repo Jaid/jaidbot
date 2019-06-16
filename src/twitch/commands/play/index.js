@@ -11,7 +11,7 @@ export default {
   requiredArguments: 1,
   async handle({commandArguments, sender}) {
     const video = commandArguments._[0]
-    const execResult = await execa(config.youtubeDl.path, [...vlc.youtubeDlParams, "--dump-single-json", video])
+    const execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", video])
     const videoInfo = execResult.stdout |> JSON.parse
     twitch.say(`PopCorn ${sender.displayName} hat "${videoInfo.title}" hinzugefügt!`)
     await emitPromise(server.client, "queueInfo", {

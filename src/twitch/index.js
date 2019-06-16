@@ -21,8 +21,8 @@ class TwitchCore extends EventEmitter {
 
   async init() {
     const [botClient, streamerClient] = await Promise.all([
-      twitch.withCredentials(config.twitchBotClient.id, config.twitchBotClient.token),
-      twitch.withCredentials(config.twitchApiClient.id, config.twitchApiClient.token, streamerScopes),
+      twitch.withCredentials(config.twitchBotClientId, config.twitchBotClientToken),
+      twitch.withCredentials(config.twitchApiClientId, config.twitchApiClientToken, streamerScopes),
     ])
     this.broadcaster = await streamerClient.helix.users.getMe()
     logger.info("Initialized Twitch clients")
