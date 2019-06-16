@@ -1,15 +1,14 @@
 import configure from "webpack-config-jaid"
-import {NormalModuleReplacementPlugin} from "webpack"
 
 export default configure({
   publishimo: {
     fetchGithub: true,
   },
   extra: {
-    plugins: [
-      new NormalModuleReplacementPlugin(/index\.es\.js$/, resource => {
-        resource.resource = resource.resource.replace("es.js", "js")
-      }),
-    ],
+    resolve: {
+      alias: {
+        "node-fetch$": "node-fetch/lib/index.js", // https://github.com/bitinn/node-fetch/issues/493#issuecomment-414111024
+      },
+    },
   },
 })
