@@ -1,7 +1,7 @@
 import {google} from "googleapis"
 import config from "lib/config"
 
-const auth = new google.auth.OAuth2(config.youtubeClientId, config.youtubeClient.secret, config.youtubeClientRedirectUrl)
+const auth = new google.auth.OAuth2(config.youtubeClientId, config.youtubeClientSecret, config.youtubeClientRedirectUrl)
 auth.setCredentials({
   refresh_token: config.youtubeClientRefreshToken,
 })
