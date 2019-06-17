@@ -1,14 +1,4 @@
 serverPort: 9411
-serverPassword: INSERT
-twitchBotClientId: INSERT
-twitchBotClientToken: INSERT
-twitchApiClientId: INSERT
-twitchApiClientToken: INSERT
-travisToken: INSERT
-youtubeClientId: INSERT
-youtubeClientSecret: INSERT
-youtubeClientAccessToken: INSERT
-youtubeClientRefreshToken: INSERT
 youtubeClientRedirectUrl: http://localhost
 hiMessages:
   neydora: Seid gegrüßt, gnädige Quallenkönigin!
@@ -26,10 +16,6 @@ youtubeSubscriptionsPollIntervalSeconds: 300
 observedYoutubeChannels:
   - name: Daily Dose
     id: UCdC0An4ZPNr_YiFiYoVbwaw
-twitterConsumerKey: INSERT
-twitterConsumerSecret: INSERT
-twitterAccessToken: INSERT
-twitterAccessSecret: INSERT
 twitterFollowedIds:
   - name: Jaidchen
     id: "1910506442"
