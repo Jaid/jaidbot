@@ -10,7 +10,7 @@
     "debug": "^4.1.1",
     "emit-promise": "^1.0.1",
     "essential-config": "^3.0.1",
-    "eventemitter3": "^3.1.2",
+    "eventemitter3": "^4.0.0",
     "execa": "^1.0.0",
     "fast-decode-uri-component": "^1.0.1",
     "fetch-youtube-uploads": "^0.2.1",
@@ -45,12 +45,12 @@
     "ajv": "^6.10.0",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.7.0",
-    "caniuse-lite": "^1.0.30000974",
+    "caniuse-lite": "^1.0.30000975",
     "eslint": "^5.16.0",
-    "eslint-config-jaid": "^1.14.0",
+    "eslint-config-jaid": "^1.15.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^5.7.0"
+    "webpack-config-jaid": "^5.7.1"
   },
   "scripts": {
     "clean": "rimraf dist/",
