@@ -44,13 +44,13 @@
     "acorn": "^6.1.1",
     "ajv": "^6.10.0",
     "babel-jest": "^24.8.0",
-    "babel-preset-jaid": "^6.7.0",
-    "caniuse-lite": "^1.0.30000975",
-    "eslint": "^5.16.0",
-    "eslint-config-jaid": "^1.15.0",
+    "babel-preset-jaid": "^6.8.0",
+    "caniuse-lite": "^1.0.30000976",
+    "eslint": "^6.0.0",
+    "eslint-config-jaid": "^1.16.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^5.7.1"
+    "webpack-config-jaid": "^5.11.0"
   },
   "scripts": {
     "clean": "rimraf dist/",
