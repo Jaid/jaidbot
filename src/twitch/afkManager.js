@@ -3,7 +3,6 @@ import EventEmitter from "events"
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
 import twitch from "src/twitch"
-import logger from "lib/logger"
 import ms from "ms.macro"
 
 const extractTitleRegex = /(?<nontitle>(?<prefix>.*?)?\s*(?<emoji>💜)\s*)?(?<title>.*)/
@@ -38,20 +37,16 @@ class AfkManager extends EventEmitter {
     return this.afkEnd - Date.now()
   }
 
-  getRemainingTimeString() {
-    const remainingTimeMs = this.getRemainingTime()
-    if (remainingTimeMs <= ms`1 minute`) {
-      return ""
-    }
-    const remainingTimeString = moment.duration(remainingTimeMs, "ms").format("h[h] m[m]")
-    return `, ${remainingTimeString}`
-  }
-
   getTitlePrefix() {
     if (!this.isAfk()) {
       return ""
     }
-    return `[${this.afkMessage}${this.getRemainingTimeString()}] `
+    const remainingTimeMs = this.getRemainingTime()
+    if (remainingTimeMs <= ms`1 minute`) {
+      return "[Im Verspätungsmodus] "
+    }
+    const remainingTimeString = moment.duration(remainingTimeMs, "ms").format("h[h] m[m]")
+    return `[Noch ${remainingTimeString} weg] `
   }
 
   async setTitle(title) {
@@ -79,9 +74,9 @@ class AfkManager extends EventEmitter {
   async deactivate() {
     const remainingTime = this.getRemainingTime()
     const getComment = () => {
-      if (remainingTime > (afkToleranceMinutes * ms`1 minute`)) {
+      if (remainingTime > afkToleranceMinutes * ms`1 minute`) {
         return `Oh, der ist ja schon wieder da, ${remainingTime |> humanizeDuration} früher als angekündigt! KomodoHype`
-      } else if (remainingTime > (-afkToleranceMinutes * ms`1 minute`)) {
+      } else if (remainingTime > afkToleranceMinutes * -ms`1 minute`) {
         return "Da ist er ja wieder! TPFufun"
       } else {
         return `"${this.afkMessage}", ja ja. Du wolltest doch eigentlich schon seit ${remainingTime |> Math.abs |> humanizeDuration} wieder da sein. Jaidchen, wo bist du gewesen? HotPokket`
