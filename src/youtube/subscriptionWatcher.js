@@ -30,7 +30,7 @@ class SubscriptionWatcher extends PollingEmitter {
         downloadFormat: vlc.downloadFormat,
         commonParams: vlc.youtubeDlParams,
       })
-      twitch.say(`PopCorn "${videoInfo.title}" ist jetzt heruntergeladen!`)
+    //  twitch.say(`PopCorn "${videoInfo.title}" ist jetzt heruntergeladen!`)
     })
   }
 
