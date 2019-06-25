@@ -34,8 +34,8 @@
     "socket.io": "^2.2.0",
     "string-argv": "^0.3.0",
     "twit": "^2.2.11",
-    "twitch": "^2.2.6",
-    "twitch-chat-client": "^2.3.9",
+    "twitch": "^2.2.7",
+    "twitch-chat-client": "^2.3.10",
     "url-parse": "^1.4.7",
     "uws": "uNetworking/uWebSockets.js#v15.10.0",
     "ws": "^7.0.1"
@@ -45,12 +45,12 @@
     "ajv": "^6.10.0",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.8.0",
-    "caniuse-lite": "^1.0.30000976",
-    "eslint": "^6.0.0",
+    "caniuse-lite": "^1.0.30000977",
+    "eslint": "^6.0.1",
     "eslint-config-jaid": "^1.16.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^5.13.0"
+    "webpack-config-jaid": "^5.14.0"
   },
   "scripts": {
     "clean": "rimraf dist/",
