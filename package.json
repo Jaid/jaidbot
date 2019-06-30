@@ -11,7 +11,7 @@
     "emit-promise": "^1.0.1",
     "essential-config": "^3.0.1",
     "eventemitter3": "^4.0.0",
-    "execa": "^1.0.0",
+    "execa": "^2.0.1",
     "fast-decode-uri-component": "^1.0.1",
     "fetch-youtube-uploads": "^0.2.1",
     "filesize": "^4.1.2",
@@ -34,8 +34,8 @@
     "socket.io": "^2.2.0",
     "string-argv": "^0.3.0",
     "twit": "^2.2.11",
-    "twitch": "^2.2.7",
-    "twitch-chat-client": "^2.3.10",
+    "twitch": "^2.2.8",
+    "twitch-chat-client": "^2.3.11",
     "url-parse": "^1.4.7",
     "uws": "uNetworking/uWebSockets.js#v15.10.0",
     "ws": "^7.0.1"
@@ -45,12 +45,12 @@
     "ajv": "^6.10.0",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.8.0",
-    "caniuse-lite": "^1.0.30000977",
+    "caniuse-lite": "^1.0.30000978",
     "eslint": "^6.0.1",
-    "eslint-config-jaid": "^1.16.0",
+    "eslint-config-jaid": "^1.17.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^5.14.0"
+    "webpack-config-jaid": "^5.17.0"
   },
   "scripts": {
     "clean": "rimraf dist/",
