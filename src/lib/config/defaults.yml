@@ -26,3 +26,9 @@ categoryShortcuts:
   chat: Just Chatting
 starredReleasesPollIntervalSeconds: 3600
 starredReleasesUser: Jaid
+watchedSteamDepotIds:
+  - name: Dota 2 (Windows x64)
+    id: "373303"
+  - name: Dead by Daylight
+    id: "381211"
+watchSteamGamesIntervalSeconds: 300

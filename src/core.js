@@ -8,6 +8,8 @@ import starredReleaseNotifier from "src/github/starredReleaseNotifier"
 import opendota from "src/dota/opendota"
 import subscriptionWatcher from "src/youtube/subscriptionWatcher"
 import tweetNotifier from "src/twitter/tweetNotifier"
+import gameUpdateWatcher from "src/steam/gameUpdateWatcher"
+
 import "src/startDate"
 
 class Core extends EventEmitter {
@@ -24,6 +26,7 @@ class Core extends EventEmitter {
       subscriptionWatcher.init(),
       tweetNotifier.init(),
       starredReleaseNotifier.init(),
+      gameUpdateWatcher.init(),
     ])
     logger.info("Extensions are ready!")
     this.emit("ready")
