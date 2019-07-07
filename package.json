@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "acorn": "^6.2.0",
-    "ajv": "^6.10.0",
+    "ajv": "^6.10.1",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.8.1",
     "caniuse-lite": "^1.0.30000980",
