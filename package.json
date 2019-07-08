@@ -5,7 +5,7 @@
   "version": "2.5.2",
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
-    "@babel/runtime": "^7.5.1",
+    "@babel/runtime": "^7.5.2",
     "@octokit/rest": "^16.28.2",
     "debug": "^4.1.1",
     "emit-promise": "^1.0.1",
@@ -18,7 +18,7 @@
     "googleapis": "^40.0.1",
     "got": "^9.6.0",
     "has-content": "^1.1.0",
-    "humanize-duration": "^3.18.0",
+    "humanize-duration": "^3.19.0",
     "jaid-logger": "^1.4.0",
     "lodash": "^4.17.11",
     "magina": "^1.1.0",
@@ -41,19 +41,19 @@
     "twitch-chat-client": "^3.0.0",
     "url-parse": "^1.4.7",
     "uws": "uNetworking/uWebSockets.js#v15.10.0",
-    "ws": "^7.0.1"
+    "ws": "^7.1.0"
   },
   "devDependencies": {
     "acorn": "^6.2.0",
     "ajv": "^6.10.1",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.8.1",
-    "caniuse-lite": "^1.0.30000980",
+    "caniuse-lite": "^1.0.30000981",
     "eslint": "^6.0.1",
     "eslint-config-jaid": "^1.18.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack-config-jaid": "^5.21.1"
+    "webpack-config-jaid": "^5.22.0"
   },
   "scripts": {
     "clean": "rimraf dist/",
