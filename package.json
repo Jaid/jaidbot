@@ -2,7 +2,7 @@
   "title": "Jaidbot",
   "private": true,
   "webpackConfigJaid": "executable",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@babel/runtime": "^7.5.4",
