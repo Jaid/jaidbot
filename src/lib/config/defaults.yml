@@ -32,4 +32,5 @@ watchedSteamDepotIds:
   - name: Dead by Daylight
     id: "381211"
 watchSteamGamesIntervalSeconds: 300
-twitchClientCallbackUrl: http://localhost:17441/callback
+twitchAuthPort: 17441
+twitchClientCallbackUrl: http://localhost:17441/auth/twitch/callback
