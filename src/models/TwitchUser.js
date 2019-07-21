@@ -21,6 +21,7 @@ export const schema = {
     unique: true,
     allowNull: false,
   },
+  nameColor: Sequelize.CHAR(6),
   displayName: Sequelize.STRING(64),
   loginName: {
     allowNull: false,
