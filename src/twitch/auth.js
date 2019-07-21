@@ -1,6 +1,6 @@
 import express from "express"
 import {Passport} from "passport"
-// import {Strategy as TwitchStrategy} from "passport-twitch"
+import {Strategy as TwitchStrategy} from "passport-twitch"
 import config from "lib/config"
 
 class Auth {
