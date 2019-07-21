@@ -5,6 +5,7 @@ import twitch from "twitch"
 import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
+import TwitchUser from "src/models/TwitchUser"
 
 import ChatBot from "./ChatBot"
 
@@ -20,6 +21,18 @@ const streamerScopes = [
 class TwitchCore extends EventEmitter {
 
   async init() {
+    const [streamerUser, botUser] = await Promise.all([
+      TwitchUser.getByTwitchLogin(config.twitchStreamerLogin),
+      TwitchUser.getByTwitchLogin(config.twitchBotLogin),
+    ])
+    if (!streamerUser) {
+      logger.warn("No user auth found for requested streamer user %s", config.twitchStreamerLogin)
+      return false
+    }
+    if (!botUser) {
+      logger.warn("No user auth found for requested streamer user %s", config.twitchBotLogin)
+      return false
+    }
     const [botClient, streamerClient] = await Promise.all([
       twitch.withCredentials(config.twitchBotClientId, config.twitchBotClientToken),
       twitch.withCredentials(config.twitchApiClientId, config.twitchApiClientToken, streamerScopes),

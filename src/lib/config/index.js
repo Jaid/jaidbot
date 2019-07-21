@@ -92,6 +92,8 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {string} twitterAccessSecret
  * @prop {string} githubToken
  * @prop {string} databasePassword
+ * @prop {string} twitchStreamerLogin
+ * @prop {string} twitchBotLogin
  */
 
 /**

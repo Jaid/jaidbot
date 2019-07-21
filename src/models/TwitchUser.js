@@ -4,8 +4,15 @@ class User extends Sequelize.Model {
 
   static async getByTwitchId(twitchId) {
     const user = await User.findOne({
+      where: {twitchId},
+    })
+    return user
+  }
+
+  static async getByTwitchLogin(twitchLogin) {
+    const user = await User.findOne({
       where: {
-        twitchId,
+        loginName: twitchLogin,
       },
     })
     return user

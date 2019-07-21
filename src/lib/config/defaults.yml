@@ -39,3 +39,5 @@ databasePort: 5432
 databaseName: jaidbot
 databaseUser: postgres
 databaseSchemaSync: sync
+twitchStreamerLogin: jaidchen
+twitchBotLogin: jaidbot
