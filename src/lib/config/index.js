@@ -11,6 +11,8 @@ const config = essentialConfig(_PKG_TITLE, {
     "twitchBotClientToken",
     "twitchApiClientId",
     "twitchApiClientToken",
+    "twitchClientId",
+    "twitchClientSecret",
     "travisToken",
     "youtubeClientId",
     "youtubeClientSecret",
