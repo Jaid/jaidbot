@@ -3,6 +3,7 @@ import {Passport} from "passport"
 import {Strategy as TwitchStrategy} from "passport-twitch-new"
 import config from "lib/config"
 import logger from "lib/logger"
+import TwitchUser from "src/models/TwitchUser"
 
 import indexContent from "!raw-loader!./index.html"
 
@@ -26,9 +27,26 @@ class Auth {
         "channel_editor",
         "channel_read",
       ],
-    }, (accessToken, refreshToken, profile, done) => {
-      logger.info("A")
-      debugger
+    }, async (accessToken, refreshToken, profile, done) => {
+      await TwitchUser.upsert({
+        accessToken,
+        refreshToken,
+        broadcasterType: profile.broadcaster_type,
+        description: profile.description,
+        displayName: profile.display_name,
+        twitchId: profile.id,
+        loginName: profile.login,
+        offlineImageUrl: profile.offline_image_url,
+        avatarUrl: profile.profile_image_url,
+        viewCount: profile.view_count,
+      })
+      const user = await TwitchUser.findOne({
+        where: {
+          twitchId: profile.id,
+        },
+      })
+      logger.info("Login from Twitch user %s", profile.login)
+      done(user.loginName)
     }))
 
     this.app.get("/", (request, response) => {

@@ -34,3 +34,8 @@ watchedSteamDepotIds:
 watchSteamGamesIntervalSeconds: 300
 twitchAuthPort: 17441
 twitchClientCallbackUrl: http://localhost:17441/auth/twitch/callback
+databaseHost: localhost
+databasePort: 5432
+databaseName: jaidbot
+databaseUser: postgres
+databaseSchemaSync: sync
