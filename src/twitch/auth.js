@@ -40,13 +40,8 @@ class Auth {
         avatarUrl: profile.profile_image_url,
         viewCount: profile.view_count,
       })
-      const user = await TwitchUser.findOne({
-        where: {
-          twitchId: profile.id,
-        },
-      })
       logger.info("Login from Twitch user %s", profile.login)
-      done(user.loginName)
+      done()
     }))
 
     this.app.get("/", (request, response) => {
