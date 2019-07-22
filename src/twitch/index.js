@@ -77,7 +77,7 @@ class TwitchCore extends EventEmitter {
   }
 
   async getMyStream() {
-    return this.streamerClient.kraken.streams.getStreamByChannel("73384386" || this.streamerUser.twitchId)
+    return this.streamerClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
   }
 
   async setCategory(game) {
