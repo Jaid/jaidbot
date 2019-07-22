@@ -10,7 +10,7 @@ class ReleaseNotifier extends PollingEmitter {
 
   constructor() {
     super({
-      pollInterval: config.travisPollIntervalSeconds,
+      pollInterval: config.travisPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
     this.got = got.extend({

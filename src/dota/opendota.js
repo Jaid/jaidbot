@@ -1,6 +1,5 @@
-import PollingEmitter from "lib/PollingEmitter"
+import PollingEmitter from "polling-emitter"
 import got from "got"
-import moment from "lib/moment"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
@@ -9,10 +8,9 @@ class Opendota extends PollingEmitter {
 
   constructor() {
     super({
-      pollIntervalSeconds: config.dotaPollIntervalSeconds,
-      autostart: false,
+      pollInterval: config.dotaPollIntervalSeconds * 1000,
+      invalidateInitialEntries: true,
     })
-    this.startDate = Date.now()
     this.got = got.extend({
       json: true,
       baseUrl: "https://api.opendota.com/api",
@@ -44,9 +42,6 @@ class Opendota extends PollingEmitter {
 
   async processEntry(match, id) {
     match.finish_time = match.start_time + match.duration
-    if (moment(match.finish_time * 1000).isSameOrBefore(this.startDate)) {
-      return false
-    }
     match.hero = this.getHeroById(match.hero_id)
     match.team = match.player_slot >= 128 ? "dire" : "radiant"
     if (match.team === "radiant") {
