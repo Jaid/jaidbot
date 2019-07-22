@@ -1,4 +1,4 @@
-import PollingEmitter from "lib/PollingEmitter"
+import PollingEmitter from "polling-emitter"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
@@ -14,7 +14,8 @@ class SubscriptionWatcher extends PollingEmitter {
 
   constructor() {
     super({
-      pollIntervalSeconds: config.youtubeSubscriptionsPollIntervalSeconds,
+      pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
+      invalidateInitialEntries: true,
     })
     this.startDate = Date.now()
     this.on("newEntry", async video => {
@@ -35,14 +36,19 @@ class SubscriptionWatcher extends PollingEmitter {
   }
 
   async init() {
-    await this.invalidateEntries()
+    this.start()
     logger.info("Started YouTube subscriptionWatcher")
   }
 
   async fetchEntries() {
-    const fetchJobs = config.observedYoutubeChannels.map(async youtubeChannel => fetchYoutubeUploads(unpackObject(youtubeChannel, "id")))
+    const fetchJobs = config.observedYoutubeChannels.map(async youtubeChannel => {
+      return fetchYoutubeUploads(unpackObject(youtubeChannel, "id"))
+    })
+    logger.debug("Fetching videos from %s YouTube channels", fetchJobs.length)
     const results = await Promise.all(fetchJobs)
-    return results |> flatten
+    const resultsList = flatten(results)
+    logger.debug("Fetched %s videos from %s YouTube channels", resultsList.length, fetchJobs.length)
+    return resultsList
   }
 
   handleError(error) {
