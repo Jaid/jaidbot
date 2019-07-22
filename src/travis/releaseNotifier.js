@@ -1,20 +1,21 @@
-import PollingEmitter from "lib/PollingEmitter"
+import PollingEmitter from "polling-emitter"
 import got from "got"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
 import {timeout} from "promise-timeout"
+import ms from "ms.macro"
 
 class ReleaseNotifier extends PollingEmitter {
 
   constructor() {
     super({
-      pollIntervalSeconds: config.travisPollIntervalSeconds,
-      autostart: false,
+      pollInterval: config.travisPollIntervalSeconds,
+      invalidateInitialEntries: true,
     })
     this.got = got.extend({
       json: true,
-      baseUrl: "https://api.travis-ci.com/",
+      baseUrl: "https://api.travis-ci.com",
       headers: {
         "Travis-API-Version": 3,
         Authorization: `token ${config.travisToken}`,
@@ -55,11 +56,10 @@ class ReleaseNotifier extends PollingEmitter {
           if (buildGotResolved) {
             clearInterval(interval)
           }
-        }, 1000 * 60)
+        }, ms`1 minute`)
       }
-      timeout(checkBuildInterval(), 1000 * 60 * 60)
+      timeout(checkBuildInterval(), ms`1 hour`)
     })
-    await this.invalidateEntries()
     this.start()
     logger.info("Started Travis releaseNotifier")
   }
