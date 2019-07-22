@@ -5,6 +5,8 @@ import config from "lib/config"
 import logger from "lib/logger"
 import TwitchUser from "src/models/TwitchUser"
 
+import scope from "./scope"
+
 import indexContent from "!raw-loader!./index.html"
 
 class Auth {
@@ -16,17 +18,10 @@ class Auth {
     this.app.use(this.passport.initialize())
 
     this.passport.use(new TwitchStrategy({
+      scope,
       clientID: config.twitchClientId,
       clientSecret: config.twitchClientSecret,
       callbackURL: config.twitchClientCallbackUrl,
-      scope: [
-        "user:edit:broadcast",
-        "user:edit",
-        "channel:read:subscriptions",
-        "user:read:broadcast",
-        "channel_editor",
-        "channel_read",
-      ],
     }, async (accessToken, refreshToken, profile, done) => {
       await TwitchUser.upsert({
         accessToken,

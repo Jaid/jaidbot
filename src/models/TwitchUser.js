@@ -1,21 +1,57 @@
 import Sequelize from "sequelize"
+import twitch from "twitch"
+import config from "lib/config"
+import scope from "src/twitch/scope"
+import logger from "lib/logger"
 
-class User extends Sequelize.Model {
+class TwitchUser extends Sequelize.Model {
 
   static async getByTwitchId(twitchId) {
-    const user = await User.findOne({
+    const user = await TwitchUser.findOne({
       where: {twitchId},
     })
     return user
   }
 
+  /**
+   * @async
+   * @param {string} twitchLogin
+   * @return {TwitchUser}
+   */
   static async getByTwitchLogin(twitchLogin) {
-    const user = await User.findOne({
+    const user = await TwitchUser.findOne({
       where: {
-        loginName: twitchLogin,
+        loginName: {
+          $iLike: twitchLogin.toLowerCase(),
+        },
       },
     })
     return user
+  }
+
+  async toTwitchClient() {
+    const client = await twitch.withCredentials(config.twitchClientId, this.accessToken, scope, {
+      clientSecret: config.twitchClientSecret,
+      refreshToken: this.refreshToken,
+      onRefresh: accessToken => this.updateToken(accessToken),
+    })
+    logger.info("Created client for user %s", this.loginName)
+    return client
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {import("twitch").AccessToken} token
+   */
+  async updateToken(token) {
+    logger.info("Refresh token of user %s", this.loginName)
+    this.accessToken = token.accessToken
+    this.refreshToken = token.refreshToken
+    this.tokenExpiryDate = token.expiryDate
+    await this.save({
+      fields: ["accessToken", "refreshToken", "tokenExpiryDate"],
+    })
   }
 
 }
@@ -43,6 +79,7 @@ export const schema = {
   accessToken: Sequelize.STRING,
   refreshToken: Sequelize.STRING,
   followDate: Sequelize.DATE,
+  tokenExpiryDate: Sequelize.DATE,
   offlineTimeMinutes: {
     type: Sequelize.INTEGER,
     defaultValue: 0,
@@ -60,4 +97,4 @@ export const schema = {
   },
 }
 
-export default User
+export default TwitchUser

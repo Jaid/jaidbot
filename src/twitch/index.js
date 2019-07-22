@@ -9,15 +9,6 @@ import TwitchUser from "src/models/TwitchUser"
 
 import ChatBot from "./ChatBot"
 
-const streamerScopes = [
-  "user:edit:broadcast",
-  "user:edit",
-  "channel:read:subscriptions",
-  "user:read:broadcast",
-  "channel_editor",
-  "channel_read",
-]
-
 class TwitchCore extends EventEmitter {
 
   async init() {
@@ -25,28 +16,28 @@ class TwitchCore extends EventEmitter {
       TwitchUser.getByTwitchLogin(config.twitchStreamerLogin),
       TwitchUser.getByTwitchLogin(config.twitchBotLogin),
     ])
-    if (!streamerUser) {
+    this.streamerUser = streamerUser
+    this.botUser = botUser
+    if (!streamerUser?.accessToken) {
       logger.warn("No user auth found for requested streamer user %s", config.twitchStreamerLogin)
       return false
     }
-    if (!botUser) {
-      logger.warn("No user auth found for requested streamer user %s", config.twitchBotLogin)
+    if (!botUser?.accessToken) {
+      logger.warn("No user auth found for requested bot user %s", config.twitchBotLogin)
       return false
     }
-    const [botClient, streamerClient] = await Promise.all([
-      twitch.withCredentials(config.twitchBotClientId, config.twitchBotClientToken),
-      twitch.withCredentials(config.twitchApiClientId, config.twitchApiClientToken, streamerScopes),
+    const [streamerClient, botClient] = await Promise.all([
+      streamerUser.toTwitchClient(),
+      botUser.toTwitchClient(),
     ])
-    this.broadcaster = await streamerClient.helix.users.getMe()
-    logger.info("Initialized Twitch clients")
+    this.streamerClient = streamerClient
+    this.botClient = botClient
     const chatClient = await ChatClient.forTwitchClient(botClient)
+    this.chatClient = chatClient
     await chatClient.connect()
     await chatClient.waitForRegistration()
     await chatClient.join(this.broadcaster.name)
     logger.info("Connected bot")
-    this.botClient = botClient
-    this.streamerClient = streamerClient
-    this.chatClient = chatClient
     this.chatBot = new ChatBot()
     chatClient.onPrivmsg((channel, user, message, msg) => {
       const messageInfo = {

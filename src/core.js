@@ -38,7 +38,7 @@ class Core extends EventEmitter {
       return
     }
     // await server.init()
-    //  twitch.say("TBAngel Da bin ich!")
+    twitch.say("TBAngel Da bin ich!")
     logger.info("Twitch is ready!")
     await Promise.all([
       twitchAuth.init(),

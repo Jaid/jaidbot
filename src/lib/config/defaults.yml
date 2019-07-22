@@ -41,3 +41,4 @@ databaseUser: postgres
 databaseSchemaSync: sync
 twitchStreamerLogin: jaidchen
 twitchBotLogin: jaidbot
+timezone: Europe/Berlin

@@ -9,6 +9,10 @@ const sequelize = new Sequelize({
   database: config.databaseName,
   username: config.databaseUser,
   password: config.databasePassword,
+  timezone: config.timezone,
+  logging: line => {
+    logger.debug(line)
+  },
 })
 
 const modelsRequire = require.context("../models/", true, /.js$/)

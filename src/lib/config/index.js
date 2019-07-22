@@ -7,10 +7,6 @@ const configResult = essentialConfig(_PKG_TITLE, {
   defaults,
   sensitiveKeys: [
     "serverPassword",
-    "twitchBotClientId",
-    "twitchBotClientToken",
-    "twitchApiClientId",
-    "twitchApiClientToken",
     "twitchClientId",
     "twitchClientSecret",
     "travisToken",
@@ -75,10 +71,6 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {string} databaseUser
  * @prop {string} databaseSchemaSync
  * @prop {string} serverPassword
- * @prop {string} twitchBotClientId
- * @prop {string} twitchBotClientToken
- * @prop {string} twitchApiClientId
- * @prop {string} twitchApiClientToken
  * @prop {string} twitchClientId
  * @prop {string} twitchClientSecret
  * @prop {string} travisToken
@@ -94,6 +86,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {string} databasePassword
  * @prop {string} twitchStreamerLogin
  * @prop {string} twitchBotLogin
+ * @prop {string} timezone
  */
 
 /**
