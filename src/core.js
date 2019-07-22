@@ -12,8 +12,9 @@ import tweetNotifier from "src/twitter/tweetNotifier"
 import gameUpdateWatcher from "src/steam/gameUpdateWatcher"
 import twitchAuth from "src/twitch/auth"
 import database from "lib/database"
-
+import Heartbeat from "src/models/Heartbeat"
 import "src/startDate"
+import ms from "ms.macro"
 
 class Core extends EventEmitter {
 
@@ -50,7 +51,12 @@ class Core extends EventEmitter {
       starredReleaseNotifier.init(),
       gameUpdateWatcher.init(),
     ])
+    setInterval(this.heartbeat, ms`1 second`)
     this.emit("ready")
+  }
+
+  async heartbeat() {
+    await Heartbeat.tick()
   }
 
 }

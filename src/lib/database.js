@@ -1,5 +1,5 @@
 import config from "lib/config"
-import Sequelize from "sequelize"
+import {Sequelize} from "sequelize"
 import logger from "lib/logger"
 
 /**
