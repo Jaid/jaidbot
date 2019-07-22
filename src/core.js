@@ -38,17 +38,17 @@ class Core extends EventEmitter {
       this.emit("ready")
       return
     }
-    // await server.init()
+    await server.init()
     twitch.say("TBAngel Da bin ich!")
     logger.info("Twitch is ready!")
     await Promise.all([
       twitchAuth.init(),
-      // releaseNotifier.init(),
-      // opendota.init(),
-      // subscriptionWatcher.init(),
-      // tweetNotifier.init(),
-      // starredReleaseNotifier.init(),
-      // gameUpdateWatcher.init(),
+      releaseNotifier.init(),
+      opendota.init(),
+      subscriptionWatcher.init(),
+      tweetNotifier.init(),
+      starredReleaseNotifier.init(),
+      gameUpdateWatcher.init(),
     ])
     this.emit("ready")
   }
