@@ -46,7 +46,7 @@ export default class ChatBot extends EventEmitter {
       }
     }
     if (command.needsDesktopClient && !server?.client) {
-      twitch.say(`Es besteht gerade keine Verbindung zum Computer von ${twitch.broadcaster.displayName}. ResidentSleeper`)
+      twitch.say(`Es besteht gerade keine Verbindung zum Computer von ${twitch.streamerUser.getDisplayName()}. ResidentSleeper`)
       return
     }
     if (command.requiredArguments) {

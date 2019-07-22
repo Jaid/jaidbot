@@ -21,9 +21,7 @@ class TwitchUser extends Sequelize.Model {
   static async getByTwitchLogin(twitchLogin) {
     const user = await TwitchUser.findOne({
       where: {
-        loginName: {
-          $iLike: twitchLogin.toLowerCase(),
-        },
+        loginName: twitchLogin.toLowerCase(),
       },
     })
     return user
@@ -54,10 +52,14 @@ class TwitchUser extends Sequelize.Model {
     })
   }
 
+  getDisplayName() {
+    return this.displayName || this.loginName || this.twitchId
+  }
+
 }
 
 export const schema = {
-  broadcasterType: Sequelize.STRING,
+  broadcasterType: Sequelize.CITEXT(16),
   description: Sequelize.STRING,
   twitchId: {
     type: Sequelize.STRING(16),
@@ -68,7 +70,7 @@ export const schema = {
   displayName: Sequelize.STRING(64),
   loginName: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: Sequelize.CITEXT(64),
   },
   offlineImageUrl: Sequelize.TEXT,
   avatarUrl: Sequelize.TEXT,

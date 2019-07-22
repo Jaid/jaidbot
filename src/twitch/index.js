@@ -1,7 +1,6 @@
 import EventEmitter from "events"
 
 import ChatClient from "twitch-chat-client"
-import twitch from "twitch"
 import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
@@ -36,7 +35,7 @@ class TwitchCore extends EventEmitter {
     this.chatClient = chatClient
     await chatClient.connect()
     await chatClient.waitForRegistration()
-    await chatClient.join(this.broadcaster.name)
+    await chatClient.join(this.streamerUser.getDisplayName())
     logger.info("Connected bot")
     this.chatBot = new ChatBot()
     chatClient.onPrivmsg((channel, user, message, msg) => {
@@ -70,7 +69,7 @@ class TwitchCore extends EventEmitter {
 
   async getFollowMoment(userName) {
     const user = await this.streamerClient.helix.users.getUserByName(userName)
-    const followResult = await user.getFollowTo(this.broadcaster)
+    const followResult = await user.getFollowTo(this.streamerUser.twitchId)
     if (followResult === null) {
       return false
     }
@@ -78,15 +77,15 @@ class TwitchCore extends EventEmitter {
   }
 
   async getMyStream() {
-    return this.streamerClient.kraken.streams.getStreamByChannel(this.broadcaster.id)
+    return this.streamerClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
   }
 
   async setCategory(game) {
-    await this.streamerClient.kraken.channels.updateChannel(this.broadcaster, {game})
+    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
   }
 
   async setTitle(title) {
-    await this.streamerClient.kraken.channels.updateChannel(this.broadcaster, {
+    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
       status: title.trim(),
     })
   }
@@ -96,7 +95,7 @@ class TwitchCore extends EventEmitter {
       logger.warn("Tried to say \"%s\", but chatClient was %s", message, this.chatClient)
       return
     }
-    this.chatClient.say(this.broadcaster.name, message)
+    this.chatClient.say(this.streamerUser.loginName, message)
   }
 
 }

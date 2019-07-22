@@ -2,6 +2,9 @@ import config from "lib/config"
 import Sequelize from "sequelize"
 import logger from "lib/logger"
 
+/**
+ * @type {import("sequelize").Sequelize}
+ */
 const sequelize = new Sequelize({
   dialect: "postgres",
   host: config.databaseHost,

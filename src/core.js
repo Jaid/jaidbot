@@ -30,6 +30,7 @@ class Core extends EventEmitter {
         force: true,
       })
     }
+    await database.query("CREATE EXTENSION IF NOT EXISTS citext", {raw: true})
     const twitchResult = await twitch.init()
     if (twitchResult === false) {
       await twitchAuth.init()
