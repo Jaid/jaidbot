@@ -22,10 +22,11 @@ const sequelize = new Sequelize({
 const modelsRequire = require.context("../models/", true, /.js$/)
 for (const value of modelsRequire.keys()) {
   const modelName = value.match(/\.\/(?<key>[\da-z]+)\./i).groups.key
-  const {schema, default: modelClass} = modelsRequire(value)
+  const {schema, indexes, default: modelClass} = modelsRequire(value)
   modelClass.init(schema |> sortKeys, {
     sequelize,
     modelName,
+    indexes,
   })
 }
 

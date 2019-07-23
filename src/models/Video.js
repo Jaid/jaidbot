@@ -5,6 +5,7 @@ import vlc from "lib/vlc"
 import execa from "execa"
 import {isString} from "lodash"
 import moment from "lib/moment"
+import server from "src/server"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -49,6 +50,12 @@ import moment from "lib/moment"
  * @prop {number} width
  */
 
+/**
+ * @typedef {Object} QueueResult
+ * @prop {Video} video
+ * @prop {YoutubeDlInfo} videoInfo
+ */
+
 class Video extends Sequelize.Model {
 
   static associate(models) {
@@ -58,12 +65,34 @@ class Video extends Sequelize.Model {
     })
   }
 
+  static start() {
+    server.on("gotClient", client => {
+      client.on("videoDownloaded", async ({videoId, bytes, videoFile, infoFile}) => {
+        const video = await Video.findByPk(videoId)
+        video.bytes = bytes
+        video.videoFile = videoFile
+        video.infoFile = infoFile
+        video.downloadedAt = new Date
+        await video.save({
+          fields: ["bytes", "videoFile", "infoFile", "downloadedAt"],
+        })
+      })
+    })
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {string} url
+   * @return {Promise<QueueResult>}
+   */
   static async queueByUrl(url) {
     let execResult
     try {
       execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
       const videoInfo = execResult.stdout |> JSON.parse
-      Video.queueByInfo(videoInfo)
+      const queueResult = await Video.queueByInfo(videoInfo)
+      return queueResult
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult.command, execResult.all)
     }
@@ -73,6 +102,7 @@ class Video extends Sequelize.Model {
    * @async
    * @function
    * @param {YoutubeDlInfo} info
+   * @return {Promise<QueueResult>}
    */
   static async queueByInfo(info) {
     const publishDateString = info.release_date || info.upload_date
@@ -80,7 +110,7 @@ class Video extends Sequelize.Model {
     if (publishDateString |> isString) {
       publishDate = moment(publishDateString, "YYYYMMDD").toDate()
     }
-    const video = await Video.create({
+    const videoValues = {
       title: info.title || info.webpage_url,
       duration: info.duration * 1000,
       views: info.view_count,
@@ -105,7 +135,25 @@ class Video extends Sequelize.Model {
       ageLimit: info.age_limit,
       publisher: info.uploader || info.uploader_id,
       publisherId: info.uploader_id,
+    }
+    const [video, isNew] = await Video.findOrCreate({
+      where: {
+        extractor: videoValues.extractor,
+        mediaId: videoValues.mediaId,
+      },
+      defaults: videoValues,
     })
+    if (!isNew) {
+      await video.update({
+        ...videoValues,
+        priority: video.priority + 10,
+      })
+      logger.info("Video #%s \"%s\" got requested again, increased priority from %s to %s", video.id, video.title, video.priority - 10, video.priority)
+    }
+    return {
+      video,
+      videoInfo: info,
+    }
   }
 
 }
@@ -139,7 +187,7 @@ export const schema = {
   ageLimit: Sequelize.INTEGER,
   publisher: Sequelize.STRING,
   publisherId: Sequelize.STRING,
-  // Etc
+  // Watching status
   priority: {
     allowNull: false,
     type: Sequelize.INTEGER,
@@ -150,6 +198,18 @@ export const schema = {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
+  // Desktop info
+  infoFile: Sequelize.STRING,
+  videoFile: Sequelize.STRING,
+  bytes: Sequelize.INTEGER,
+  downloadedAt: Sequelize.DATE,
 }
+
+export const indexes = [
+  {
+    unique: true,
+    fields: ["extractor", "mediaId"],
+  },
+]
 
 export default Video

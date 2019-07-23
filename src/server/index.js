@@ -30,6 +30,7 @@ class Server extends EventEmitter {
         twitch?.say("Uff, ich habe die Verbindung zum Computer von Jaidchen verloren.")
       })
       logger.info("New connection from %s", client.handshake.address)
+      this.emit("gotClient", client)
       twitch?.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
     })
     const port = config.serverPort
