@@ -40,7 +40,7 @@ class TwitchCore extends EventEmitter {
     this.chatBot = new ChatBot()
     chatClient.onPrivmsg((channel, user, message, msg) => {
       const messageInfo = {
-        text: message,
+        text: message.trim(),
         bits: msg.totalBits || 0,
         sender: {
           id: msg.userInfo.userId,
