@@ -2,15 +2,14 @@ import os from "os"
 
 import Sequelize from "sequelize"
 import measureTime from "measure-time"
-import Heartbeat from "src/models/Heartbeat"
 import twitch from "src/twitch"
 
-class HeartBeat extends Sequelize.Model {
+class Heartbeat extends Sequelize.Model {
 
   static currentStatus
 
   static async currentStatus() {
-    return HeartBeat.currentStatus
+    return Heartbeat.currentStatus
   }
 
   static async tick() {
@@ -27,13 +26,13 @@ class HeartBeat extends Sequelize.Model {
       values.game = twitchStatus.game
       values.videoHeight = twitchStatus.videoHeight
       values.streamType = twitchStatus.type
-      values.streamStartDate = twitchStatus.startDate
+      values.streamStartedAt = twitchStatus.startDate
       values.language = twitchStatus.channel.broadcasterLanguage
       values.isMature = twitchStatus.channel.isMature
       values.followers = twitchStatus.channel.followers
       values.streamTitle = twitchStatus.channel.status
     }
-    values.ramUsage = usedByes / totalBytes
+    values.ramUsage = Math.floor(usedByes / totalBytes * 100)
     values.executionTime = getTime().milliseconds
     await Heartbeat.create(values)
     Heartbeat.currentStatus = values
@@ -48,7 +47,7 @@ export const schema = {
   game: Sequelize.STRING,
   videoHeight: Sequelize.INTEGER,
   streamType: Sequelize.STRING(16),
-  streamStartDate: Sequelize.DATE,
+  streamStartedAt: Sequelize.DATE,
   isMature: Sequelize.BOOLEAN,
   followers: Sequelize.INTEGER,
   streamTitle: Sequelize.STRING,
@@ -57,7 +56,7 @@ export const schema = {
   // System
   ramUsage: {
     allowNull: false,
-    type: Sequelize.FLOAT,
+    type: Sequelize.INTEGER,
   },
   executionTime: {
     allowNull: false,
@@ -65,4 +64,4 @@ export const schema = {
   },
 }
 
-export default HeartBeat
+export default Heartbeat

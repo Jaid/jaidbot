@@ -27,6 +27,14 @@ class TwitchUser extends Sequelize.Model {
     return user
   }
 
+  static associate(models) {
+    TwitchUser.hasMany(models.ChatMessage, {
+      foreignKey: {
+        allowNull: false,
+      },
+    })
+  }
+
   async toTwitchClient() {
     const client = await twitch.withCredentials(config.twitchClientId, this.accessToken, scope, {
       clientSecret: config.twitchClientSecret,
@@ -59,18 +67,18 @@ class TwitchUser extends Sequelize.Model {
 }
 
 export const schema = {
-  broadcasterType: Sequelize.CITEXT(16),
+  broadcasterType: Sequelize.STRING(16),
   description: Sequelize.STRING,
   twitchId: {
     type: Sequelize.STRING(16),
     unique: true,
     allowNull: false,
   },
-  nameColor: Sequelize.CHAR(6),
+  nameColor: Sequelize.STRING,
   displayName: Sequelize.STRING(64),
   loginName: {
     allowNull: false,
-    type: Sequelize.CITEXT(64),
+    type: Sequelize.STRING(64),
   },
   offlineImageUrl: Sequelize.TEXT,
   avatarUrl: Sequelize.TEXT,

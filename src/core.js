@@ -12,51 +12,59 @@ import tweetNotifier from "src/twitter/tweetNotifier"
 import gameUpdateWatcher from "src/steam/gameUpdateWatcher"
 import twitchAuth from "src/twitch/auth"
 import database from "lib/database"
-import Heartbeat from "src/models/Heartbeat"
 import "src/startDate"
-import ms from "ms.macro"
 
 class Core extends EventEmitter {
 
   async init() {
-    this.on("ready", () => {
-      logger.info("Initialization done!")
-    })
-    await database.authenticate()
-    if (config.databaseSchemaSync === "sync") {
-      await database.sync()
-    }
-    if (config.databaseSchemaSync === "force") {
-      await database.sync({
-        force: true,
+    try {
+      this.on("ready", () => {
+        this.ready()
       })
-    }
-    await database.query("CREATE EXTENSION IF NOT EXISTS citext", {raw: true})
-    const twitchResult = await twitch.init()
-    if (twitchResult === false) {
-      await twitchAuth.init()
-      logger.info("Only Twitch auth server has been loaded!")
+      const databaseModels = Object.values(database.models)
+      for (const model of databaseModels) {
+        model.associate?.(database.models)
+      }
+      await database.authenticate()
+      if (config.databaseSchemaSync === "sync") {
+        await database.sync()
+      }
+      if (config.databaseSchemaSync === "force") {
+        await database.sync({
+          force: true,
+        })
+      }
+      const twitchResult = await twitch.init()
+      if (twitchResult === false) {
+        await twitchAuth.init()
+        logger.info("Only Twitch auth server has been loaded!")
+        this.emit("ready")
+        return
+      }
+      await server.init()
+      twitch.say("TBAngel Da bin ich!")
+      logger.info("Twitch is ready!")
+      await Promise.all([
+        twitchAuth.init(),
+        releaseNotifier.init(),
+        opendota.init(),
+        subscriptionWatcher.init(),
+        tweetNotifier.init(),
+        // starredReleaseNotifier.init(),
+        gameUpdateWatcher.init(),
+      ])
+      for (const model of databaseModels) {
+        model.start?.()
+      }
       this.emit("ready")
-      return
+    } catch (error) {
+      logger.error("Could not initialize: %s", error)
+      process.exit(1)
     }
-    await server.init()
-    twitch.say("TBAngel Da bin ich!")
-    logger.info("Twitch is ready!")
-    await Promise.all([
-      twitchAuth.init(),
-      releaseNotifier.init(),
-      opendota.init(),
-      subscriptionWatcher.init(),
-      tweetNotifier.init(),
-      starredReleaseNotifier.init(),
-      gameUpdateWatcher.init(),
-    ])
-    setInterval(this.heartbeat, ms`1 second`)
-    this.emit("ready")
   }
 
-  async heartbeat() {
-    await Heartbeat.tick()
+  async ready() {
+    logger.info("Initialization done!")
   }
 
 }

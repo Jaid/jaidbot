@@ -5,6 +5,7 @@ import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
+import ensureStart from "ensure-start"
 
 import ChatBot from "./ChatBot"
 
@@ -41,6 +42,7 @@ class TwitchCore extends EventEmitter {
     chatClient.onPrivmsg((channel, user, message, msg) => {
       const messageInfo = {
         text: message,
+        bits: msg.totalBits || 0,
         sender: {
           id: msg.userInfo.userId,
           name: msg.userInfo.userName,
@@ -48,18 +50,18 @@ class TwitchCore extends EventEmitter {
           isVip: msg.userInfo.badges.get("vip") === "1",
           isMod: msg.userInfo.isMod,
           isSub: msg.userInfo.isSubscriber,
+          color: msg.userInfo.color,
         },
       }
       messageInfo.sender.displayName = msg.userInfo.displayName || messageInfo.sender.name
       messageInfo.sender.hasElevatedPermission = Boolean(msg.userInfo.userType) || messageInfo.sender.isBroadcaster
-      this.handleChatMessage(messageInfo)
+      if (msg.userInfo._userData.has("tmi-sent-ts")) { // eslint-disable-line no-underscore-dangle
+        messageInfo.sentDate = new Date(Number(msg.userInfo._userData.get("tmi-sent-ts"))) // eslint-disable-line no-underscore-dangle
+      }
+      logger.debug(`${messageInfo.sender.displayName}: ${messageInfo.text}`)
+      this.emit("chat", messageInfo)
+      this.chatBot.handleMessage(messageInfo)
     })
-  }
-
-  handleChatMessage(message) {
-    logger.debug(`${message.sender.displayName}: ${message.text}`)
-    this.emit("chat", message)
-    this.chatBot.handleMessage(message)
   }
 
   async userNameToDisplayName(userName) {
