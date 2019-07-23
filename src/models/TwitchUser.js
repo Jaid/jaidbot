@@ -7,6 +7,18 @@ import logger from "lib/logger"
 
 class TwitchUser extends Sequelize.Model {
 
+  static associate(models) {
+    TwitchUser.hasMany(models.ChatMessage, {
+      foreignKey: {
+        allowNull: false,
+      },
+    })
+    TwitchUser.hasMany(models.Video, {
+      as: "RequestedVideos",
+      foreignKey: "RequesterId",
+    })
+  }
+
   static async getByTwitchId(twitchId) {
     const user = await TwitchUser.findOne({
       where: {twitchId},
@@ -59,14 +71,6 @@ class TwitchUser extends Sequelize.Model {
       ...defaults,
     })
     return newTwitchUser
-  }
-
-  static associate(models) {
-    TwitchUser.hasMany(models.ChatMessage, {
-      foreignKey: {
-        allowNull: false,
-      },
-    })
   }
 
   async toTwitchClient() {
