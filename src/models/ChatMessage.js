@@ -8,15 +8,10 @@ class ChatMessage extends Sequelize.Model {
 
   static start() {
     twitch.on("chat", async message => {
-      const [twitchUser] = await TwitchUser.findOrCreate({
-        where: {
-          twitchId: message.sender.id,
-        },
+      const twitchUser = await TwitchUser.prepareByTwitchId(message.sender.id, {
         defaults: {
-          displayName: message.sender.displayName,
-          loginName: message.sender.name,
+          nameColor: message.sender.color,
         },
-        attributes: ["id"],
       })
       await ChatMessage.create({
         TwitchUserId: twitchUser.id,

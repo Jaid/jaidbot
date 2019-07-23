@@ -3,10 +3,15 @@ import os from "os"
 import Sequelize from "sequelize"
 import measureTime from "measure-time"
 import twitch from "src/twitch"
+import ms from "ms.macro"
 
 class Heartbeat extends Sequelize.Model {
 
   static currentStatus
+
+  static start() {
+    setInterval(Heartbeat.tick, ms`1 minute`)
+  }
 
   static async currentStatus() {
     return Heartbeat.currentStatus

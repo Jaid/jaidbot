@@ -1,5 +1,6 @@
 import Sequelize from "sequelize"
 import twitch from "twitch"
+import twitchCore from "src/twitch"
 import config from "lib/config"
 import scope from "src/twitch/scope"
 import logger from "lib/logger"
@@ -25,6 +26,39 @@ class TwitchUser extends Sequelize.Model {
       },
     })
     return user
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {string} twitchId
+   * @param {Object} [options]
+   * @param {string[]} options.attributes
+   * @param {Object<string, *>} options.defaults
+   */
+  static async prepareByTwitchId(twitchId, {attributes, defaults}) {
+    const twitchUser = await TwitchUser.findOne({
+      where: {twitchId},
+      attributes,
+    })
+    if (twitchUser) {
+      return twitchUser
+    }
+    const helixUser = await twitchCore.getChannelInfo(twitchId)
+    const displayName = helixUser.displayName || helixUser.name
+    logger.info("New Twitch user %s", displayName)
+    const newTwitchUser = await TwitchUser.create({
+      twitchId,
+      displayName,
+      description: helixUser.description,
+      loginName: helixUser.name,
+      offlineImageUrl: helixUser.offlinePlaceholderUrl,
+      avatarUrl: helixUser.profilePictureUrl,
+      viewCount: helixUser.views,
+      broadcasterType: helixUser.broadcasterType,
+      ...defaults,
+    })
+    return newTwitchUser
   }
 
   static associate(models) {

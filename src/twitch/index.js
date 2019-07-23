@@ -85,6 +85,17 @@ class TwitchCore extends EventEmitter {
     await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
   }
 
+  /**
+   * @async
+   * @function
+   * @param {string} twitchId
+   * @return {Promise<import("twitch").HelixUser>}
+   */
+  async getChannelInfo(twitchId) {
+    const helixUser = await this.streamerClient.helix.users.getUserById(twitchId)
+    return helixUser
+  }
+
   async setTitle(title) {
     await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
       status: title.trim(),
