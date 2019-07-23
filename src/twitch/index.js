@@ -5,7 +5,6 @@ import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
-import ensureStart from "ensure-start"
 
 import ChatBot from "./ChatBot"
 
