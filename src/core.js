@@ -34,6 +34,11 @@ class Core extends EventEmitter {
           force: true,
         })
       }
+      if (config.databaseSchemaSync === "alter") {
+        await database.sync({
+          alter: true,
+        })
+      }
       const twitchResult = await twitch.init()
       if (twitchResult === false) {
         await twitchAuth.init()
