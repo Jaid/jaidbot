@@ -15,7 +15,6 @@ const isOwnTweet = tweet => {
 }
 
 const getTweetText = tweet => {
-  debugger
   return tweet.extended_tweet?.full_text || tweet.text
 }
 
