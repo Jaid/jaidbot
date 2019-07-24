@@ -59,12 +59,6 @@ import ms from "ms.macro"
  */
 
 /**
- * @typedef {Object} QueueResult
- * @prop {Video} video
- * @prop {YoutubeDlInfo} videoInfo
- */
-
-/**
  * @typedef {Object} VlcState
  * @prop {number} durationMs
  * @prop {string} file
@@ -154,15 +148,12 @@ class Video extends Sequelize.Model {
       client.on("getDownloadJobs", async callback => {
         const videosToDownload = await Video.findAll({
           where: {
-            infoFile: {
-              [Op.ne]: null,
-            },
             videoFile: {
               [Op.eq]: null,
             },
           },
           raw: true,
-          attributes: ["id", "infoFile", "createdAt"],
+          attributes: ["id", "downloadFormat", "info"],
         })
         callback(videosToDownload)
       })
@@ -174,15 +165,14 @@ class Video extends Sequelize.Model {
    * @function
    * @param {string} url
    * @param {QueueOptions} [options]
-   * @return {Promise<QueueResult>}
+   * @return {Promise<Video>}
    */
   static async queueByUrl(url, options) {
     let execResult
     try {
       execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
       const videoInfo = execResult.stdout |> JSON.parse
-      const queueResult = await Video.queueByInfo(videoInfo, options)
-      return queueResult
+      return await Video.queueByInfo(videoInfo, options)
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult.command, execResult.all)
     }
@@ -191,41 +181,43 @@ class Video extends Sequelize.Model {
   /**
    * @async
    * @function
-   * @param {YoutubeDlInfo} info
+   * @param {YoutubeDlInfo} videoInfo
    * @param {QueueOptions} [options]
-   * @return {Promise<QueueResult>}
+   * @return {Promise<Video>}
    */
-  static async queueByInfo(info, options) {
-    const publishDateString = info.release_date || info.upload_date
+  static async queueByInfo(videoInfo, options) {
+    const publishDateString = videoInfo.release_date || videoInfo.upload_date
     let publishDate
     if (publishDateString |> isString) {
       publishDate = moment(publishDateString, "YYYYMMDD").toDate()
     }
     const videoValues = {
-      title: info.title || info.webpage_url,
-      duration: info.duration * 1000,
-      views: info.view_count,
-      likes: info.like_count,
-      dislikes: info.dislike_count,
+      title: videoInfo.title || videoInfo.webpage_url,
+      duration: videoInfo.duration * 1000,
+      views: videoInfo.view_count,
+      likes: videoInfo.like_count,
+      dislikes: videoInfo.dislike_count,
       publishedAt: publishDate,
-      format: info.format,
-      extractor: info.extractor || info.extractor_key,
-      width: info.width,
-      height: info.height,
-      webUrl: info.webpage_url || info.channel_url || info.uploader_url,
-      audioCodec: info.acodec,
-      videoCodec: info.vcodec,
-      formatId: info.format_id,
-      fileExtension: info.ext,
-      description: info.description,
-      thumbnailUrl: info.thumbnail,
-      channelUrl: info.channel_url || info.uploader_url,
-      audioBitrate: info.abr,
-      videoBitrate: info.vbr,
-      mediaId: info.id,
-      ageLimit: info.age_limit,
-      publisher: info.uploader || info.uploader_id,
-      publisherId: info.uploader_id,
+      format: videoInfo.format,
+      extractor: videoInfo.extractor || videoInfo.extractor_key,
+      width: videoInfo.width,
+      height: videoInfo.height,
+      webUrl: videoInfo.webpage_url || videoInfo.channel_url || videoInfo.uploader_url,
+      audioCodec: videoInfo.acodec,
+      videoCodec: videoInfo.vcodec,
+      formatId: videoInfo.format_id,
+      fileExtension: videoInfo.ext,
+      description: videoInfo.description,
+      thumbnailUrl: videoInfo.thumbnail,
+      channelUrl: videoInfo.channel_url || videoInfo.uploader_url,
+      audioBitrate: videoInfo.abr,
+      videoBitrate: videoInfo.vbr,
+      mediaId: videoInfo.id,
+      ageLimit: videoInfo.age_limit,
+      publisher: videoInfo.uploader || videoInfo.uploader_id,
+      publisherId: videoInfo.uploader_id,
+      info: videoInfo,
+      downloadFormat: vlc.downloadFormat,
     }
     if (options.priority !== undefined) {
       videoValues.priority = options.priority
@@ -249,11 +241,15 @@ class Video extends Sequelize.Model {
       logger.info("Video #%s \"%s\" got requested again, increased priority from %s to %s", video.id, video.title, video.priority - 10, video.priority)
     } else {
       logger.info("Requested video #%s \"%s\" with priority %s", video.id, video.title, video.priority)
+      if (server.hasClient()) {
+        server.client.emit("queueInfo", {
+          videoInfo,
+          videoId: video.id,
+          downloadFormat: video.downloadFormat,
+        })
+      }
     }
-    return {
-      video,
-      videoInfo: info,
-    }
+    return video
   }
 
 }
@@ -287,6 +283,7 @@ export const schema = {
   ageLimit: Sequelize.INTEGER,
   publisher: Sequelize.STRING,
   publisherId: Sequelize.STRING,
+  info: Sequelize.JSONB,
   // Watching status
   priority: {
     allowNull: false,
@@ -301,6 +298,7 @@ export const schema = {
   bytes: Sequelize.INTEGER,
   downloadedAt: Sequelize.DATE,
   vlcDuration: Sequelize.INTEGER,
+  downloadFormat: Sequelize.STRING,
 }
 
 export const indexes = [

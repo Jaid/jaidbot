@@ -19,7 +19,7 @@ class Server extends EventEmitter {
         logger.warn("Received wrong password from client %s, disconnecting", client.handshake.address)
         client.disconnect()
       }
-      if (this.client) {
+      if (this.hasClient()) {
         logger.warn("Client %s tried to connect, but another client is already here", client.handshake.address)
         client.disconnect()
       }
@@ -36,6 +36,10 @@ class Server extends EventEmitter {
     const port = config.serverPort
     this.io.listen(port)
     logger.info("Jaidbot server runs on port %s", port)
+  }
+
+  hasClient() {
+    return Boolean(this.client)
   }
 
 }

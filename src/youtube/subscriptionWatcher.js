@@ -29,7 +29,7 @@ class SubscriptionWatcher extends PollingEmitter {
     this.startDate = Date.now()
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
       const url = `youtu.be/${youtubeVideo.id}`
-      const {video} = await Video.queueByUrl(url)
+      const video = await Video.queueByUrl(url)
       twitch.say(`PopCorn Video "${video.title}" von ${video.publisher}: ${url}`)
     })
   }
