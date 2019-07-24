@@ -87,7 +87,9 @@ class Video extends Sequelize.Model {
       client.on("getNextVideo", async callback => {
         const nextVideo = await Video.findOne({
           where: {
-            isWatched: false,
+            watchedAt: {
+              [Op.eq]: null,
+            },
             videoFile: {
               [Op.ne]: null,
             },
@@ -235,10 +237,7 @@ export const schema = {
     defaultValue: 100,
   },
   timestamp: Sequelize.INTEGER,
-  isWatched: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
+  watchedAt: Sequelize.DATE,
   // Desktop info
   infoFile: Sequelize.STRING,
   videoFile: Sequelize.STRING,
