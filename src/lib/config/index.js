@@ -32,6 +32,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {string} name
  * @prop {string} id
  * @prop {number} priority
+ * @prop {string} titleRegex
  */
 
 /**
@@ -93,6 +94,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {number} videoRequestPriorityVips
  * @prop {number} videoRequestPriorityMods
  * @prop {number} videoRequestPriorityBroadcaster
+ * @prop {number} videoSubscriptionPriority
  */
 
 /**

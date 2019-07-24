@@ -47,3 +47,4 @@ videoRequestPrioritySubs: 20
 videoRequestPriorityVips: 20
 videoRequestPriorityMods: 50
 videoRequestPriorityBroadcaster: 100
+videoSubscriptionPriority: 50

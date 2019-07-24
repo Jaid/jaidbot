@@ -6,12 +6,14 @@ import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
 import ensureObject from "ensure-object"
 import Video from "src/models/Video"
+import regexParser from "regex-parser"
 
 /**
  * @typedef {Object} YoutubeVideo
  * @prop {string} id
  * @prop {string} title
  * @prop {number} priority
+ * @prop {import("../lib/config").ObservedYoutubeChannel} channel
  */
 
 /**
@@ -28,9 +30,17 @@ class SubscriptionWatcher extends PollingEmitter {
     })
     this.startDate = Date.now()
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
+      if (youtubeVideo.channel.titleRegex) {
+        if (!regexParser(youtubeVideo.channel.titleRegex).test(youtubeVideo.title)) {
+          logger.info("Skipping new video \"%s\" by %s, because it failed RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegex)
+          return
+        }
+      }
       const url = `youtu.be/${youtubeVideo.id}`
-      const video = await Video.queueByUrl(url)
-      twitch.say(`PopCorn Video "${video.title}" von ${video.publisher}: ${url}`)
+      const video = await Video.queueByUrl(url, {
+        priority: youtubeVideo.channel.priority || config.videoSubscriptionPriority,
+      })
+      twitch.say(`PopCorn Video "${video.title}" von ${youtubeVideo.channel.name || video.publisher}: ${url}`)
     })
   }
 
@@ -49,7 +59,7 @@ class SubscriptionWatcher extends PollingEmitter {
        * @type {YoutubeVideo}
        */
       const youtubeVideo = await fetchYoutubeUploads(youtubeChannel.id)
-      youtubeVideo.priority = youtubeChannel.priority || 10
+      youtubeVideo.channel = youtubeChannel
       return youtubeVideo
     })
     logger.debug("Fetching videos from %s YouTube channels", fetchJobs.length)
