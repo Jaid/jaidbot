@@ -31,6 +31,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @typedef {Object} ObservedYoutubeChannel
  * @prop {string} name
  * @prop {string} id
+ * @prop {number} priority
  */
 
 /**

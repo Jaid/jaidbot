@@ -6,6 +6,7 @@ import execa from "execa"
 import {isString} from "lodash"
 import moment from "lib/moment"
 import server from "src/server"
+import TwitchUser from "src/models/TwitchUser"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -48,6 +49,12 @@ import server from "src/server"
  * @prop {string} webpage_url
  * @prop {string} webpage_url_basename
  * @prop {number} width
+ */
+
+/**
+ * @typedef {Object} QueueOptions
+ * @prop {number} priority
+ * @prop {string} requesterTwitchId
  */
 
 /**
@@ -107,14 +114,15 @@ class Video extends Sequelize.Model {
    * @async
    * @function
    * @param {string} url
+   * @param {QueueOptions} [options]
    * @return {Promise<QueueResult>}
    */
-  static async queueByUrl(url) {
+  static async queueByUrl(url, options) {
     let execResult
     try {
       execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
       const videoInfo = execResult.stdout |> JSON.parse
-      const queueResult = await Video.queueByInfo(videoInfo)
+      const queueResult = await Video.queueByInfo(videoInfo, options)
       return queueResult
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult.command, execResult.all)
@@ -125,9 +133,10 @@ class Video extends Sequelize.Model {
    * @async
    * @function
    * @param {YoutubeDlInfo} info
+   * @param {QueueOptions} [options]
    * @return {Promise<QueueResult>}
    */
-  static async queueByInfo(info) {
+  static async queueByInfo(info, options) {
     const publishDateString = info.release_date || info.upload_date
     let publishDate
     if (publishDateString |> isString) {
@@ -159,6 +168,13 @@ class Video extends Sequelize.Model {
       publisher: info.uploader || info.uploader_id,
       publisherId: info.uploader_id,
     }
+    if (options.priority !== undefined) {
+      videoValues.priority = options.priority
+    }
+    if (options.requesterTwitchId) {
+      const twitchUser = await TwitchUser.getByTwitchId(options.requesterTwitchId)
+      videoValues.RequesterId = twitchUser.id
+    }
     const [video, isNew] = await Video.findOrCreate({
       where: {
         extractor: videoValues.extractor,
@@ -172,6 +188,8 @@ class Video extends Sequelize.Model {
         priority: video.priority + 10,
       })
       logger.info("Video #%s \"%s\" got requested again, increased priority from %s to %s", video.id, video.title, video.priority - 10, video.priority)
+    } else {
+      logger.info("Requested video #%s \"%s\" with priority %s", video.id, video.title, video.priority)
     }
     return {
       video,

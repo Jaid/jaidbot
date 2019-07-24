@@ -12,7 +12,17 @@ export default {
   requiredArguments: 1,
   async handle({commandArguments, sender}) {
     const url = commandArguments._[0]
-    const {video, videoInfo} = await Video.queueByUrl(url)
+    let priority = 100
+    if (sender.isSub && sender.isVip) {
+      priority += 20
+    }
+    if (sender.isMod || sender.isBroadcaster) {
+      priority += 50
+    }
+    const {video, videoInfo} = await Video.queueByUrl(url, {
+      priority,
+      requesterTwitchId: sender.id,
+    })
     twitch.say(`PopCorn ${sender.displayName} hat "${video.title}" hinzugefügt!`)
     server.client.emit("queueInfo", {
       videoInfo,

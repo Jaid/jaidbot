@@ -2,13 +2,22 @@ import PollingEmitter from "polling-emitter"
 import config from "lib/config"
 import twitch from "src/twitch"
 import logger from "lib/logger"
-import execa from "execa"
-import vlc from "lib/vlc"
-import server from "src/server"
-import emitPromise from "emit-promise"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
-import {unpackObject} from "magina"
+import ensureObject from "ensure-object"
+import Video from "src/models/Video"
+
+/**
+ * @typedef {Object} YoutubeVideo
+ * @prop {string} id
+ * @prop {string} title
+ * @prop {number} priority
+ */
+
+/**
+ * @callback newEntryHandler
+ * @param {YoutubeVideo} youtubeVideo
+ */
 
 class SubscriptionWatcher extends PollingEmitter {
 
@@ -18,20 +27,10 @@ class SubscriptionWatcher extends PollingEmitter {
       invalidateInitialEntries: true,
     })
     this.startDate = Date.now()
-    this.on("newEntry", async video => {
-      const execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", video.id])
-      const videoInfo = execResult.stdout |> JSON.parse
-      if (!server.client) {
-        twitch.say(`PopCorn Neues Video "${videoInfo.title}" von ${videoInfo.uploader || "unbekannt"} ist da, aber es besteht keine Verbindung zum Computer von Jaidchen.`)
-        return
-      }
-      twitch.say(`PopCorn Video "${videoInfo.title}" von ${videoInfo.uploader || "unbekannt"}: youtu.be/${video.id}`)
-      await emitPromise(server.client, "queueInfo", {
-        videoInfo,
-        downloadFormat: vlc.downloadFormat,
-        commonParams: vlc.youtubeDlParams,
-      })
-    //  twitch.say(`PopCorn "${videoInfo.title}" ist jetzt heruntergeladen!`)
+    this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
+      const url = `youtu.be/${youtubeVideo.id}`
+      const {video} = await Video.queueByUrl(url)
+      twitch.say(`PopCorn Video "${video.title}" von ${video.publisher}: ${url}`)
     })
   }
 
@@ -41,8 +40,17 @@ class SubscriptionWatcher extends PollingEmitter {
   }
 
   async fetchEntries() {
-    const fetchJobs = config.observedYoutubeChannels.map(async youtubeChannel => {
-      return fetchYoutubeUploads(unpackObject(youtubeChannel, "id"))
+    const fetchJobs = config.observedYoutubeChannels.map(async entry => {
+      /**
+       * @type {import("../lib/config").ObservedYoutubeChannel}
+       */
+      const youtubeChannel = ensureObject(entry, "id")
+      /**
+       * @type {YoutubeVideo}
+       */
+      const youtubeVideo = await fetchYoutubeUploads(youtubeChannel.id)
+      youtubeVideo.priority = youtubeChannel.priority || 10
+      return youtubeVideo
     })
     logger.debug("Fetching videos from %s YouTube channels", fetchJobs.length)
     const results = await Promise.all(fetchJobs)
