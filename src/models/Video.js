@@ -174,7 +174,7 @@ class Video extends Sequelize.Model {
       const videoInfo = execResult.stdout |> JSON.parse
       return await Video.queueByInfo(videoInfo, options)
     } catch (error) {
-      logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult.command, execResult.all)
+      logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command, execResult?.all)
     }
   }
 
