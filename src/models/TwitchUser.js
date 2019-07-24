@@ -78,7 +78,15 @@ class TwitchUser extends Sequelize.Model {
       clientSecret: config.twitchClientSecret,
       refreshToken: this.refreshToken,
       onRefresh: accessToken => this.updateToken(accessToken),
+      expiry: this.expiryDate,
+    }, {
+      preAuth: true,
+      initialScopes: scope,
     })
+    if (!this.tokenExpiryDate) {
+      logger.info("Initial expiry date not set for user %s. Forcing access token refresh.", this.loginName)
+      await client.refreshAccessToken()
+    }
     logger.info("Created client for user %s", this.loginName)
     return client
   }
