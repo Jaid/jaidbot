@@ -42,3 +42,8 @@ databaseSchemaSync: sync
 twitchStreamerLogin: jaidchen
 twitchBotLogin: jaidbot
 timezone: Europe/Berlin
+videoRequestPriorityBase: 100
+videoRequestPrioritySubs: 20
+videoRequestPriorityVips: 20
+videoRequestPriorityMods: 50
+videoRequestPriorityBroadcaster: 100

@@ -88,6 +88,11 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {string} twitchStreamerLogin
  * @prop {string} twitchBotLogin
  * @prop {string} timezone
+ * @prop {number} videoRequestPriorityBase
+ * @prop {number} videoRequestPrioritySubs
+ * @prop {number} videoRequestPriorityVips
+ * @prop {number} videoRequestPriorityMods
+ * @prop {number} videoRequestPriorityBroadcaster
  */
 
 /**
