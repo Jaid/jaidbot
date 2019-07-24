@@ -8,6 +8,7 @@ import moment from "lib/moment"
 import server from "src/server"
 import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
+import emitPromise from "emit-promise"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -169,12 +170,21 @@ class Video extends Sequelize.Model {
    */
   static async queueByUrl(url, options) {
     let execResult
+    let videoInfo
     try {
       execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
-      const videoInfo = execResult.stdout |> JSON.parse
-      return await Video.queueByInfo(videoInfo, options)
+      videoInfo = execResult.stdout |> JSON.parse
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command, execResult?.all)
+    }
+    if (!videoInfo && server.hasClient()) {
+      logger.warn("Could not fetch info for %s, trying on Desktop instead", url)
+      videoInfo = await emitPromise(server.client, "fetchVideoInfo", url)
+    }
+    if (videoInfo) {
+      return Video.queueByInfo(videoInfo, options)
+    } else {
+      throw new Error(`Could not fetch info for video URL ${url}`)
     }
   }
 
