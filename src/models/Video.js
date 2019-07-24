@@ -7,6 +7,7 @@ import {isString} from "lodash"
 import moment from "lib/moment"
 import server from "src/server"
 import TwitchUser from "src/models/TwitchUser"
+import ms from "ms.macro"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -63,6 +64,20 @@ import TwitchUser from "src/models/TwitchUser"
  * @prop {YoutubeDlInfo} videoInfo
  */
 
+/**
+ * @typedef {Object} VlcState
+ * @prop {number} durationMs
+ * @prop {string} file
+ * @prop {number} position
+ * @prop {string} state
+ * @prop {number} timestampMs
+ */
+
+/**
+ * @callback VlcStateEvent
+ * @param {VlcState} state
+ */
+
 class Video extends Sequelize.Model {
 
   static associate(models) {
@@ -108,6 +123,48 @@ class Video extends Sequelize.Model {
           callback(false)
           return
         }
+      })
+      client.on("vlcState", /** @type {VlcState} */ async state => {
+        const unwatchedVideo = await Video.findOne({
+          where: {
+            watchedAt: {
+              [Op.eq]: null,
+            },
+            videoFile: state.file,
+          },
+        })
+        if (!unwatchedVideo) {
+          return
+        }
+        unwatchedVideo.vlcDuration = state.durationMs
+        unwatchedVideo.timestamp = state.timestampMs
+        const remainingTime = state.durationMs - state.timestampMs
+        if (remainingTime < ms`10 seconds`) {
+          unwatchedVideo.watchedAt = moment().add(remainingTime, "ms").toDate()
+        }
+        await unwatchedVideo.save()
+      })
+      client.on("setInfoFile", async ({videoId, infoFile}) => {
+        await Video.update({infoFile}, {
+          where: {
+            id: videoId,
+          },
+        })
+      })
+      client.on("getDownloadJobs", async callback => {
+        const videosToDownload = await Video.findAll({
+          where: {
+            infoFile: {
+              [Op.ne]: null,
+            },
+            videoFile: {
+              [Op.eq]: null,
+            },
+          },
+          raw: true,
+          attributes: ["id", "infoFile", "createdAt"],
+        })
+        callback(videosToDownload)
       })
     })
   }
@@ -243,6 +300,7 @@ export const schema = {
   videoFile: Sequelize.STRING,
   bytes: Sequelize.INTEGER,
   downloadedAt: Sequelize.DATE,
+  vlcDuration: Sequelize.INTEGER,
 }
 
 export const indexes = [
