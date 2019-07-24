@@ -78,7 +78,7 @@ class TwitchUser extends Sequelize.Model {
       clientSecret: config.twitchClientSecret,
       refreshToken: this.refreshToken,
       onRefresh: accessToken => this.updateToken(accessToken),
-      expiry: this.expiryDate,
+      expiry: this.tokenExpiryDate,
     }, {
       preAuth: true,
       initialScopes: scope,
