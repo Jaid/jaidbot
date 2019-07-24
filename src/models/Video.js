@@ -1,4 +1,4 @@
-import Sequelize from "sequelize"
+import Sequelize, {Op} from "sequelize"
 import logger from "lib/logger"
 import config from "lib/config"
 import vlc from "lib/vlc"
@@ -76,6 +76,29 @@ class Video extends Sequelize.Model {
         await video.save({
           fields: ["bytes", "videoFile", "infoFile", "downloadedAt"],
         })
+      })
+      client.on("getNextVideo", async callback => {
+        const nextVideo = await Video.findOne({
+          where: {
+            isWatched: false,
+            videoFile: {
+              [Op.ne]: null,
+            },
+          },
+          order: [
+            ["priority", "desc"],
+            ["createdAt", "asc"],
+          ],
+          attributes: ["infoFile", "videoFile", "timestamp"],
+          raw: true,
+        })
+        if (nextVideo) {
+          callback(nextVideo)
+          return
+        } else {
+          callback(false)
+          return
+        }
       })
     })
   }
