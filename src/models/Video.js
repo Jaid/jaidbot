@@ -121,7 +121,7 @@ class Video extends Sequelize.Model {
           return
         }
       })
-      client.on("vlcState", /** @type {VlcState} */ async state => {
+      client.on("vlcState", /** @type {VlcState} */ state => {
         database.transaction(async transaction => {
           const video = await Video.findOne({
             transaction,
@@ -144,6 +144,8 @@ class Video extends Sequelize.Model {
             logger.debug("Video #%s will be marked as watched", video.id)
           }
           await video.save({transaction})
+        }).catch(error => {
+          logger.error("Error in vlcState handler: %s", error)
         })
       })
       client.on("setInfoFile", async ({videoId, infoFile}) => {
