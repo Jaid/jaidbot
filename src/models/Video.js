@@ -9,6 +9,7 @@ import server from "src/server"
 import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
 import emitPromise from "emit-promise"
+import database from "lib/database"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -121,24 +122,29 @@ class Video extends Sequelize.Model {
         }
       })
       client.on("vlcState", /** @type {VlcState} */ async state => {
-        const unwatchedVideo = await Video.findOne({
-          where: {
-            watchedAt: {
-              [Op.eq]: null,
+        database.transaction(async transaction => {
+          const video = await Video.findOne({
+            transaction,
+            attributes: ["id", "watchedAt"],
+            where: {
+              videoFile: state.file,
             },
-            videoFile: state.file,
-          },
+          })
+          if (!video) {
+            return
+          }
+          if (video.watchedAt !== null) {
+            return
+          }
+          video.vlcDuration = state.durationMs
+          video.timestamp = state.timestampMs
+          const remainingTime = state.durationMs - state.timestampMs
+          if (remainingTime < ms`10 seconds`) {
+            video.watchedAt = moment().add(remainingTime, "ms").toDate()
+            logger.debug("Video #%s will be marked as watched", video.id)
+          }
+          await video.save({transaction})
         })
-        if (!unwatchedVideo) {
-          return
-        }
-        unwatchedVideo.vlcDuration = state.durationMs
-        unwatchedVideo.timestamp = state.timestampMs
-        const remainingTime = state.durationMs - state.timestampMs
-        if (remainingTime < ms`10 seconds`) {
-          unwatchedVideo.watchedAt = moment().add(remainingTime, "ms").toDate()
-        }
-        await unwatchedVideo.save()
       })
       client.on("setInfoFile", async ({videoId, infoFile}) => {
         await Video.update({infoFile}, {
