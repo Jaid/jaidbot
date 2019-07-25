@@ -57,7 +57,7 @@ class SubscriptionWatcher extends PollingEmitter {
   }
 
   async fetchEntries() {
-    const fetchJobs = [config.observedYoutubeChannels].map(async entry => {
+    const fetchJobs = config.observedYoutubeChannels.map(async entry => {
       /**
        * @type {import("../lib/config").ObservedYoutubeChannel}
        */
