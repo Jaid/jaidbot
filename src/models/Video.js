@@ -279,9 +279,9 @@ class Video extends Sequelize.Model {
 
 }
 
-/**
- * @type {import("sequelize").Mod}
- */
+// /**
+//  * @type {import("sequelize").Mod}
+//  */
 export const schema = {
   // Video meta
   title: {

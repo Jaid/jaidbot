@@ -21,6 +21,7 @@ class Core extends EventEmitter {
       this.on("ready", () => {
         this.ready()
       })
+      database.loadModels()
       const databaseModels = Object.values(database.models)
       for (const model of databaseModels) {
         model.associate?.(database.models)
