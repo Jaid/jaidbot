@@ -175,7 +175,7 @@ class Video extends Sequelize.Model {
       execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
       videoInfo = execResult.stdout |> JSON.parse
     } catch (error) {
-      logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command, execResult?.all)
+      logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command || error?.command, execResult?.all || error?.all)
     }
     if (!videoInfo && server.hasClient()) {
       logger.warn("Could not fetch info for %s, trying on Desktop instead", url)
