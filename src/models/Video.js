@@ -57,6 +57,7 @@ import emitPromise from "emit-promise"
  * @typedef {Object} QueueOptions
  * @prop {number} priority
  * @prop {string} requesterTwitchId
+ * @prop {string} requestUrl
  */
 
 /**
@@ -182,7 +183,10 @@ class Video extends Sequelize.Model {
       videoInfo = await emitPromise(server.client, "fetchVideoInfo", url)
     }
     if (videoInfo) {
-      return Video.queueByInfo(videoInfo, options)
+      return Video.queueByInfo(videoInfo, {
+        requestUrl: url,
+        ...options,
+      })
     } else {
       throw new Error(`Could not fetch info for video URL ${url}`)
     }
@@ -236,6 +240,9 @@ class Video extends Sequelize.Model {
       const twitchUser = await TwitchUser.getByTwitchId(options.requesterTwitchId)
       videoValues.RequesterId = twitchUser.id
     }
+    if (options.requestUrl) {
+      videoValues.requestUrl = options.requestUrl
+    }
     const [video, isNew] = await Video.findOrCreate({
       where: {
         extractor: videoValues.extractor,
@@ -264,6 +271,9 @@ class Video extends Sequelize.Model {
 
 }
 
+/**
+ * @type {import("sequelize").Mod}
+ */
 export const schema = {
   // Video meta
   title: {
@@ -302,6 +312,13 @@ export const schema = {
   },
   timestamp: Sequelize.INTEGER,
   watchedAt: Sequelize.DATE,
+  skipped: {
+    allowNull: false,
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  },
+  liked: Sequelize.BOOLEAN,
+  requestUrl: Sequelize.TEXT,
   // Desktop info
   infoFile: Sequelize.STRING,
   videoFile: Sequelize.STRING,

@@ -31,7 +31,6 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "openurl2": "^1.0.1",
-    "p-all": "^2.1.0",
     "p-map": "^3.0.0",
     "p-min-delay": "^3.1.0",
     "parse-duration": "^0.1.1",

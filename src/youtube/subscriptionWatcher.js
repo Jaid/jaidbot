@@ -9,7 +9,7 @@ import Video from "src/models/Video"
 import regexParser from "regex-parser"
 import pMinDelay from "p-min-delay"
 import ms from "ms.macro"
-import pAll from "p-all"
+import pMap from "p-map"
 
 /**
  * @typedef {Object} YoutubeVideo
@@ -29,7 +29,7 @@ class SubscriptionWatcher extends PollingEmitter {
   constructor() {
     super({
       pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
-      invalidateInitialEntries: false,
+      invalidateInitialEntries: true,
     })
     this.startDate = Date.now()
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
@@ -53,11 +53,11 @@ class SubscriptionWatcher extends PollingEmitter {
 
   async init() {
     this.start()
-    logger.info("Started YouTube subscriptionWatcher")
+    logger.info("Started YouTube subscriptionWatcher for %s subscriptions", config.observedYoutubeChannels.length)
   }
 
   async fetchEntries() {
-    const fetchJobs = config.observedYoutubeChannels.map(async entry => {
+    const mapper = async entry => {
       /**
        * @type {import("../lib/config").ObservedYoutubeChannel}
        */
@@ -73,11 +73,10 @@ class SubscriptionWatcher extends PollingEmitter {
         ...video,
         channel,
       }))
-    })
-    logger.debug("Fetching videos from %s YouTube channels", fetchJobs.length)
-    const results = await pAll(fetchJobs, {concurrency: 3})
+    }
+    const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 3})
     const resultsList = flatten(results)
-    logger.debug("Fetched %s videos from %s YouTube channels", resultsList.length, fetchJobs.length)
+    logger.debug("Fetched %s videos from %s YouTube channels", resultsList.length, config.observedYoutubeChannels.length)
     return resultsList
   }
 
