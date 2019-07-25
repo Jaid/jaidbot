@@ -56,7 +56,7 @@ class Core extends EventEmitter {
         opendota.init(),
         subscriptionWatcher.init(),
         tweetNotifier.init(),
-        // starredReleaseNotifier.init(),
+        starredReleaseNotifier.init(),
         gameUpdateWatcher.init(),
       ])
       for (const model of databaseModels) {
