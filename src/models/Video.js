@@ -303,11 +303,19 @@ class Video extends Sequelize.Model {
     return video
   }
 
+  static async getCurrentlyPlayed() {
+    const {videoInfo} = await vlc.getCurrentVideo()
+    if (!videoInfo?.videoId) {
+      return null
+    }
+    return Video.findByPk(videoInfo.videoId)
+  }
+
 }
 
-// /**
-//  * @type {import("sequelize").Mod}
-//  */
+/**
+ * @type {import("sequelize").ModelAttributes}
+ */
 export const schema = {
   // Video meta
   title: {

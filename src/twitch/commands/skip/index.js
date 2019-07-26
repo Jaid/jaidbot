@@ -1,12 +1,21 @@
 import vlc from "lib/vlc"
+import Video from "src/models/Video"
 
 export default {
   permission: "mod",
   needsDesktopClient: true,
   async handle() {
-    const result = await vlc.sendCommand("pl_next")
+    const video = await Video.getCurrentlyPlayed()
+    if (!video) {
+      return "Kein Video gefunden."
+    }
+    await video.update({
+      skipped: true,
+      watchedAt: new Date,
+    })
+    const result = await vlc.sendCommand("pl_stop")
     if (result) {
-      return "Skippie!"
+      return `Skippie! Weg mit "${video.title}"!`
     }
   },
 }
