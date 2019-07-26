@@ -87,85 +87,111 @@ class Video extends Sequelize.Model {
   static start() {
     server.on("gotClient", client => {
       client.on("videoDownloaded", async ({videoId, bytes, videoFile, infoFile}) => {
-        const video = await Video.findByPk(videoId)
-        video.bytes = bytes
-        video.videoFile = videoFile
-        video.infoFile = infoFile
-        video.downloadedAt = new Date
-        await video.save({
-          fields: ["bytes", "videoFile", "infoFile", "downloadedAt"],
-        })
+        try {
+          await Video.update({
+            bytes,
+            videoFile,
+            infoFile,
+            downloadedAt: new Date,
+          }, {
+            where: {
+              id: videoId,
+            },
+          })
+        } catch (error) {
+          logger.error("Error at videoDownloaded handler: %s", error)
+        }
       })
       client.on("getNextVideo", async callback => {
-        const nextVideo = await Video.findOne({
-          where: {
-            watchedAt: {
-              [Op.eq]: null,
+        try {
+          const nextVideo = await Video.findOne({
+            where: {
+              watchedAt: {
+                [Op.eq]: null,
+              },
+              videoFile: {
+                [Op.ne]: null,
+              },
             },
-            videoFile: {
-              [Op.ne]: null,
-            },
-          },
-          order: [
-            ["priority", "desc"],
-            ["createdAt", "asc"],
-          ],
-          attributes: ["infoFile", "videoFile", "timestamp"],
-          raw: true,
-        })
-        if (nextVideo) {
-          callback(nextVideo)
-          return
-        } else {
+            order: [
+              ["priority", "desc"],
+              ["createdAt", "asc"],
+            ],
+            attributes: ["infoFile", "videoFile", "timestamp"],
+            raw: true,
+          })
+          if (nextVideo) {
+            callback(nextVideo)
+            return
+          } else {
+            callback(false)
+            return
+          }
+        } catch (error) {
+          logger.error("Error at getNextVideo handler: %s", error)
           callback(false)
           return
         }
       })
-      client.on("vlcState", /** @type {VlcState} */ state => {
-        database.transaction(async transaction => {
-          const video = await Video.findOne({
-            transaction,
-            attributes: ["id", "watchedAt"],
-            where: {
-              videoFile: state.file,
-            },
+      client.on("vlcState", /** @type {VlcStateEvent} */ async state => {
+        try {
+          await database.transaction(async transaction => {
+            const video = await Video.findOne({
+              transaction,
+              attributes: ["id", "watchedAt"],
+              where: {
+                videoFile: state.file,
+              },
+            })
+            if (!video) {
+              return
+            }
+            if (video.watchedAt !== null) {
+              return
+            }
+            video.vlcDuration = state.durationMs
+            video.timestamp = state.timestampMs
+            const remainingTime = state.durationMs - state.timestampMs
+            if (remainingTime < ms`10 seconds`) {
+              video.watchedAt = moment().add(remainingTime, "ms").toDate()
+              logger.debug("Video #%s will be marked as watched", video.id)
+            }
+            await video.save({transaction})
           })
-          if (!video) {
-            return
-          }
-          if (video.watchedAt !== null) {
-            return
-          }
-          video.vlcDuration = state.durationMs
-          video.timestamp = state.timestampMs
-          const remainingTime = state.durationMs - state.timestampMs
-          if (remainingTime < ms`10 seconds`) {
-            video.watchedAt = moment().add(remainingTime, "ms").toDate()
-            logger.debug("Video #%s will be marked as watched", video.id)
-          }
-          await video.save({transaction})
-        }).catch(error => {
-          logger.error("Error in vlcState handler: %s", error)
-        })
+        } catch (error) {
+          logger.error("Error at vlcState handler: %s", error)
+        }
       })
       client.on("setInfoFile", async ({videoId, infoFile}) => {
-        await Video.update({infoFile}, {
-          where: {
-            id: videoId,
-          },
-        })
+        try {
+          await Video.update({infoFile}, {
+            where: {
+              id: videoId,
+            },
+          })
+          logger.debug("Got info file path for video #%s", videoId)
+        } catch (error) {
+          logger.error("Error at setInfoFile handler: %s", error)
+        }
       })
       client.on("getDownloadJobs", async callback => {
-        const videosToDownload = await Video.findAll({
-          where: {
-            videoFile: {
-              [Op.eq]: null,
+        try {
+          const videosToDownload = await Video.findAll({
+            where: {
+              videoFile: {
+                [Op.eq]: null,
+              },
             },
-          },
-          raw: true,
-          attributes: ["id", "downloadFormat", "info"],
-        })
-        callback(videosToDownload)
+            raw: true,
+            attributes: ["id", "downloadFormat", "info"],
+          })
+          callback(videosToDownload)
+          return
+        } catch (error) {
+          logger.error("Error at getDownloadJobs handler: %s", error)
+          callback(false)
+          return
+        }
       })
     })
   }
