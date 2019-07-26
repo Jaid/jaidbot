@@ -43,10 +43,10 @@ class Heartbeat extends Sequelize.Model {
 
 export const schema = {
   // Twitch
-  averageFps: Sequelize.INTEGER,
-  delay: Sequelize.INTEGER,
+  averageFps: Sequelize.SMALLINT,
+  delay: Sequelize.SMALLINT,
   game: Sequelize.STRING,
-  videoHeight: Sequelize.INTEGER,
+  videoHeight: Sequelize.SMALLINT,
   streamType: Sequelize.STRING(16),
   streamStartedAt: Sequelize.DATE,
   isMature: Sequelize.BOOLEAN,
@@ -57,7 +57,7 @@ export const schema = {
   // System
   ramUsage: {
     allowNull: false,
-    type: Sequelize.INTEGER,
+    type: Sequelize.SMALLINT,
   },
   executionTime: {
     allowNull: false,
