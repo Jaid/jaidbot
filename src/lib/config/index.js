@@ -95,6 +95,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {number} videoRequestPriorityMods
  * @prop {number} videoRequestPriorityBroadcaster
  * @prop {number} videoSubscriptionPriority
+ * @prop {string|string[]} neutralTitles
  */
 
 /**

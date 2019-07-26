@@ -9,6 +9,7 @@
     "@octokit/rest": "^16.28.6",
     "debug": "^4.1.1",
     "emit-promise": "^1.0.1",
+    "ensure-array": "^1.0.0",
     "ensure-object": "^1.0.1",
     "ensure-start": "^1.0.4",
     "essential-config": "^3.0.1",

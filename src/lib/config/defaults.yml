@@ -48,3 +48,6 @@ videoRequestPriorityVips: 20
 videoRequestPriorityMods: 50
 videoRequestPriorityBroadcaster: 100
 videoSubscriptionPriority: 50
+neutralTitles:
+  - Moin, servus, moin!
+  - Hi
