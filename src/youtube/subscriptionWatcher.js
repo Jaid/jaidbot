@@ -66,7 +66,7 @@ class SubscriptionWatcher extends PollingEmitter {
        * @type {YoutubeVideo}
        */
       logger.debug("Fetching YouTube videos from %s", channel.name)
-      const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), ms`1 minute`, {
+      const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), config.secondsBetweenYoutubeChecks * 1000, {
         delayRejection: false,
       })
       return youtubeVideos.map(video => ({
@@ -74,7 +74,7 @@ class SubscriptionWatcher extends PollingEmitter {
         channel,
       }))
     }
-    const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 3})
+    const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 1})
     const resultsList = flatten(results)
     logger.debug("Fetched %s videos from %s YouTube channels", resultsList.length, config.observedYoutubeChannels.length)
     return resultsList
