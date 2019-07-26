@@ -8,7 +8,6 @@ import ensureObject from "ensure-object"
 import Video from "src/models/Video"
 import regexParser from "regex-parser"
 import pMinDelay from "p-min-delay"
-import ms from "ms.macro"
 import pMap from "p-map"
 
 /**
