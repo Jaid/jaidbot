@@ -13,10 +13,6 @@ class Heartbeat extends Sequelize.Model {
     setInterval(Heartbeat.tick, ms`1 minute`)
   }
 
-  static async currentStatus() {
-    return Heartbeat.currentStatus
-  }
-
   static async tick() {
     const getTime = measureTime()
     const values = {}

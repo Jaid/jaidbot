@@ -29,7 +29,7 @@ export default {
       properties.push(`${millify(videoInfo.view_count, {precision: 0})} Views`)
     }
     if (isNumber(videoInfo.like_count) && isNumber(videoInfo.dislike_count)) {
-      if ((videoInfo.like_count + videoInfo.dislike_count) === 0) {
+      if (videoInfo.like_count + videoInfo.dislike_count === 0) {
         properties.push("keine Bewertungen")
       } else {
         let ratio
@@ -38,13 +38,13 @@ export default {
         } else if (videoInfo.like_count === 0) {
           ratio = 0
         } else {
-          ratio = Math.floor((videoInfo.like_count / (videoInfo.like_count + videoInfo.dislike_count)) * 100)
+          ratio = Math.floor(videoInfo.like_count / (videoInfo.like_count + videoInfo.dislike_count) * 100)
         }
         properties.push(`${millify(videoInfo.like_count, {precision: 0})} Likes (${ratio}%)`)
       }
     }
     if (videoInfo.upload_date) {
-      properties.push(`${moment(videoInfo.upload_date).locale("de").fromNow()} erschienen`)
+      properties.push(`${moment(videoInfo.upload_date).fromNow()} erschienen`)
     }
     const currentTime = moment.duration(vlcState.time, "seconds").format()
     return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${videoInfo.fulltitle || videoInfo.title}" von ${videoInfo.uploader}. ${properties.join(", ")}.`
