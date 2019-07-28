@@ -12,7 +12,7 @@ export default {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
       return
     }
-    const vlcState = await emitPromise(server.client, "getVlcState")
+    const vlcState = await emitPromise.withDefaultTimeout(server.client, "getVlcState")
     if (vlcState === "noVlc") {
       twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
       return
@@ -24,7 +24,7 @@ export default {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
       return
     }
-    const videoInfo = await emitPromise(server.client, "getVlcVideo")
+    const videoInfo = await emitPromise.withDefaultTimeout(server.client, "getVlcVideo")
     if (videoInfo === "noVlc") {
       twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
       return
@@ -63,7 +63,7 @@ export default {
       command,
       ...values,
     }
-    const commandResult = await emitPromise(server.client, "sendVlcCommand", commandAction)
+    const commandResult = await emitPromise.withDefaultTimeout(server.client, "sendVlcCommand", commandAction)
     if (commandResult === "noVlc") {
       twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
       return

@@ -214,7 +214,7 @@ class Video extends Sequelize.Model {
     }
     if (!videoInfo && server.hasClient()) {
       logger.warn("Could not fetch info for %s, trying on Desktop instead", url)
-      videoInfo = await emitPromise(server.client, "fetchVideoInfo", url)
+      videoInfo = await emitPromise.withDefaultTimeout(server.client, "fetchVideoInfo", url)
     }
     if (videoInfo) {
       return Video.queueByInfo(videoInfo, {
