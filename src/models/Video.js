@@ -117,6 +117,7 @@ class Video extends Sequelize.Model {
   }
 
   static async handleGetNextVideo(callback) {
+    logger.debug("handleGetNextVideo")
     try {
       const nextVideo = await Video.findOne({
         where: {
@@ -162,9 +163,11 @@ class Video extends Sequelize.Model {
             },
           })
           if (!video) {
+            logger.info("Current video unset")
             Video.currentVideo = null
             return
           }
+          logger.info(`Current video set to #${video.id}`)
           Video.currentVideo = video
         }
         const video = Video.currentVideo
