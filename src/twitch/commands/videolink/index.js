@@ -1,18 +1,18 @@
-import vlc from "lib/vlc"
+import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
   async handle() {
-    const result = await vlc.getCurrentVideo()
-    if (!result) {
+    const video = await Video.getCurrentVideo()
+    if (!video) {
       return
     }
-    const {videoInfo, vlcState} = result
     let url
-    if (videoInfo.extractor === "youtube") {
-      url = `https://youtu.be/${videoInfo.id}?t=${vlcState.time}`
+    if (video.extractor === "youtube") {
+      const timestampSeconds = Math.floor(video.timestamp / 1000)
+      url = `https://youtu.be/${video.mediaId}?t=${timestampSeconds}`
     } else {
-      url = videoInfo.webpage_url
+      url = video.webUrl
     }
     return `PopCorn ${url}`
   },

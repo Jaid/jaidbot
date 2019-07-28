@@ -1,11 +1,11 @@
-import vlc from "lib/vlc"
+import Video from "src/models/Video"
 
 export default {
   permission: "mod",
   needsDesktopClient: true,
   requiredArguments: 1,
   async handle({positionalArguments}) {
-    const vlcState = await vlc.getState()
+    const vlcState = await Video.getVlcState()
     if (!vlcState) {
       return
     }
@@ -14,7 +14,7 @@ export default {
     if (chosenVolume === currentVolume) {
       return `Die Lautstärke wurde von ${currentVolume}% auf ${currentVolume}... Moment. Am I a joke to you?`
     }
-    await vlc.sendCommand("volume", {val: chosenVolume})
+    await Video.sendVlcCommand("volume", {val: chosenVolume})
     const verb = chosenVolume > currentVolume ? "angehoben" : "gesenkt"
     return `Die Lautstärke wurde von ${currentVolume} auf ${chosenVolume} von maximal 320 ${verb}.`
   },

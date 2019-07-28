@@ -1,17 +1,17 @@
 import moment from "lib/moment"
 import millify from "millify"
 import filesize from "filesize"
-import vlc from "lib/vlc"
 import {isNumber} from "lodash"
+import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
   async handle({sender}) {
-    const result = await vlc.getCurrentVideo()
-    if (!result) {
+    const video = await Video.getCurrentVideo()
+    if (!video) {
       return
     }
-    const {videoInfo, vlcState, videoSize} = result
+    const {videoInfo, vlcState, videoSize} = video
     const properties = []
     if (videoInfo.height && videoInfo.fps) {
       properties.push(`${videoInfo.height}p${videoInfo.fps}`)

@@ -1,7 +1,6 @@
 import Sequelize, {Op} from "sequelize"
 import logger from "lib/logger"
 import config from "lib/config"
-import vlc from "lib/vlc"
 import execa from "execa"
 import {isString} from "lodash"
 import moment from "lib/moment"
@@ -10,6 +9,7 @@ import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
 import emitPromise from "emit-promise"
 import database from "lib/database"
+import twitch from "src/twitch"
 
 /**
  * @typedef {Object} YoutubeDlInfo
@@ -70,12 +70,17 @@ import database from "lib/database"
  * @prop {number} timestampMs
  */
 
-/**
- * @callback VlcStateEvent
- * @param {VlcState} state
- */
-
 class Video extends Sequelize.Model {
+
+  /**
+   * @type {Video}
+   */
+  static currentVideo = null
+
+  /**
+   * @type {number}
+   */
+  static currentVideoHeartbeatTimestamp = null
 
   static associate(models) {
     Video.belongsTo(models.TwitchUser, {
@@ -86,114 +91,140 @@ class Video extends Sequelize.Model {
 
   static start() {
     server.on("gotClient", client => {
-      client.on("videoDownloaded", async ({videoId, bytes, videoFile, infoFile}) => {
-        try {
-          await Video.update({
-            bytes,
-            videoFile,
-            infoFile,
-            downloadedAt: new Date,
-          }, {
-            where: {
-              id: videoId,
-            },
-          })
-        } catch (error) {
-          logger.error("Error at videoDownloaded handler: %s", error)
-        }
+      client.on("videoDownloaded", Video.handleVideoDownloaded)
+      client.on("getNextVideo", Video.handleGetNextVideo)
+      client.on("vlcState", Video.handleVlcState)
+      client.on("setInfoFile", Video.handleSetInfoFile)
+      client.on("getDownloadJobs", Video.handleGetDownloadJobs)
+    })
+  }
+
+  static async handleVideoDownloaded({videoId, bytes, videoFile, infoFile}) {
+    try {
+      await Video.update({
+        bytes,
+        videoFile,
+        infoFile,
+        downloadedAt: new Date,
+      }, {
+        where: {
+          id: videoId,
+        },
       })
-      client.on("getNextVideo", async callback => {
-        try {
-          const nextVideo = await Video.findOne({
+    } catch (error) {
+      logger.error("Error at videoDownloaded handler: %s", error)
+    }
+  }
+
+  static async handleGetNextVideo(callback) {
+    try {
+      const nextVideo = await Video.findOne({
+        where: {
+          watchedAt: {
+            [Op.eq]: null,
+          },
+          videoFile: {
+            [Op.ne]: null,
+          },
+        },
+        order: [
+          ["priority", "desc"],
+          ["createdAt", "asc"],
+        ],
+        attributes: ["infoFile", "videoFile", "timestamp"],
+        raw: true,
+      })
+      if (nextVideo) {
+        callback(nextVideo)
+        return
+      } else {
+        callback(false)
+        return
+      }
+    } catch (error) {
+      logger.error("Error at getNextVideo handler: %s", error)
+      callback(false)
+      return
+    }
+  }
+
+  /**
+   * @param {VlcState} state
+   */
+  static async handleVlcState(state) {
+    try {
+      await database.transaction(async transaction => {
+        if (Video.currentVideo?.videoFile !== state.file) {
+          const video = await Video.findOne({
+            transaction,
             where: {
-              watchedAt: {
-                [Op.eq]: null,
-              },
-              videoFile: {
-                [Op.ne]: null,
-              },
+              videoFile: state.file,
             },
-            order: [
-              ["priority", "desc"],
-              ["createdAt", "asc"],
-            ],
-            attributes: ["infoFile", "videoFile", "timestamp"],
-            raw: true,
           })
-          if (nextVideo) {
-            callback(nextVideo)
-            return
-          } else {
-            callback(false)
+          if (!video) {
+            Video.currentVideo = null
             return
           }
-        } catch (error) {
-          logger.error("Error at getNextVideo handler: %s", error)
-          callback(false)
+          Video.currentVideo = video
+        }
+        const video = Video.currentVideo
+        Video.currentVideoHeartbeatTimestamp = Date.now()
+        if (video.watchedAt !== null) {
           return
         }
-      })
-      client.on("vlcState", /** @type {VlcStateEvent} */ async state => {
-        try {
-          await database.transaction(async transaction => {
-            const video = await Video.findOne({
-              transaction,
-              attributes: ["id", "watchedAt"],
-              where: {
-                videoFile: state.file,
-              },
-            })
-            if (!video) {
-              return
-            }
-            if (video.watchedAt !== null) {
-              return
-            }
-            video.vlcDuration = state.durationMs
-            video.timestamp = state.timestampMs
-            const remainingTime = state.durationMs - state.timestampMs
-            if (remainingTime < ms`10 seconds`) {
-              video.watchedAt = moment().add(remainingTime, "ms").toDate()
-              logger.debug("Video #%s will be marked as watched", video.id)
-            }
-            await video.save({transaction})
-          })
-        } catch (error) {
-          logger.error("Error at vlcState handler: %s", error)
+        const saveFields = ["vlcDuration", "timestamp"]
+        video.vlcDuration = state.durationMs
+        video.timestamp = state.timestampMs
+        const remainingTime = state.durationMs - state.timestampMs
+        if (remainingTime < ms`10 seconds`) {
+          video.watchedAt = moment().add(remainingTime, "ms").toDate()
+          saveFields.push("watchedAt")
+          logger.debug("Video #%s will be marked as watched", video.id)
         }
+        await video.save({
+          transaction,
+          fields: saveFields,
+        })
       })
-      client.on("setInfoFile", async ({videoId, infoFile}) => {
-        try {
-          await Video.update({infoFile}, {
-            where: {
-              id: videoId,
-            },
-          })
-          logger.debug("Got info file path for video #%s", videoId)
-        } catch (error) {
-          logger.error("Error at setInfoFile handler: %s", error)
-        }
+    } catch (error) {
+      logger.error("Error at vlcState handler: %s", error)
+    }
+  }
+
+  static async handleSetInfoFile({videoId, infoFile}) {
+    try {
+      await Video.update({infoFile}, {
+        where: {
+          id: videoId,
+        },
       })
-      client.on("getDownloadJobs", async callback => {
-        try {
-          const videosToDownload = await Video.findAll({
-            where: {
-              videoFile: {
-                [Op.eq]: null,
-              },
-            },
-            raw: true,
-            attributes: ["id", "downloadFormat", "info"],
-          })
-          callback(videosToDownload)
-          return
-        } catch (error) {
-          logger.error("Error at getDownloadJobs handler: %s", error)
-          callback(false)
-          return
-        }
+      logger.debug("Got info file path for video #%s", videoId)
+    } catch (error) {
+      logger.error("Error at setInfoFile handler: %s", error)
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  static async handleGetDownloadJobs(callback) {
+    try {
+      const videosToDownload = await Video.findAll({
+        where: {
+          videoFile: {
+            [Op.eq]: null,
+          },
+        },
+        raw: true,
+        attributes: ["id", "downloadFormat", "info"],
       })
-    })
+      callback(videosToDownload)
+      return
+    } catch (error) {
+      logger.error("Error at getDownloadJobs handler: %s", error)
+      callback(false)
+      return
+    }
   }
 
   /**
@@ -207,7 +238,18 @@ class Video extends Sequelize.Model {
     let execResult
     let videoInfo
     try {
-      execResult = await execa(config.youtubeDlPath, [...vlc.youtubeDlParams, "--dump-single-json", url])
+      execResult = await execa(config.youtubeDlPath, [
+        "--no-color",
+        "--ignore-config",
+        "--abort-on-error",
+        "--netrc",
+        "--format",
+        config.youtubeDlFormat,
+        "--cookies",
+        config.youtubeDlCookieFile,
+        "--dump-single-json",
+        url,
+      ])
       videoInfo = execResult.stdout |> JSON.parse
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command || error?.command, execResult?.all || error?.all)
@@ -265,7 +307,7 @@ class Video extends Sequelize.Model {
       publisher: videoInfo.uploader || videoInfo.uploader_id,
       publisherId: videoInfo.uploader_id,
       info: videoInfo,
-      downloadFormat: vlc.downloadFormat,
+      downloadFormat: config.youtubeDlFormat,
     }
     if (options.priority !== undefined) {
       videoValues.priority = options.priority
@@ -303,12 +345,66 @@ class Video extends Sequelize.Model {
     return video
   }
 
-  static async getCurrentlyPlayed() {
-    const {videoInfo} = await vlc.getCurrentVideo()
-    if (!videoInfo?.videoId) {
+  /**
+   * @param {number} [maxAge=10 seconds] Maximum milliseconds passed since the client reported a video as being watched the last time
+   */
+  static async getCurrentVideo(maxAge = ms`10 seconds`) {
+    if (!Video.currentVideo) {
       return null
     }
-    return Video.findByPk(videoInfo.videoId)
+    if (Date.now() - Video.currentVideoHeartbeatTimestamp > maxAge) {
+      return null
+    }
+    return Video.currentVideo
+  }
+
+  /**
+   * @param {number} [maxAge=10 seconds] Maximum milliseconds passed since the client reported a video as being watched the last time
+   */
+  static async getCurrentYoutubeVideo(maxAge) {
+    const video = await this.getCurrentVideo(maxAge)
+    if (!video) {
+      return null
+    }
+    if (video.extractor !== "youtube") {
+      twitch.say("Beim abgespielten Video scheint es sich nicht um ein YouTube-Video zu handeln.")
+      return
+    }
+    return video
+  }
+
+  static async getVlcState() {
+    if (!server.hasClient()) {
+      twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+      return
+    }
+    const vlcState = await emitPromise.withDefaultTimeout(server.client, "getVlcState")
+    if (vlcState === "noVlc") {
+      twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+      return
+    }
+    return vlcState
+  }
+
+  static async sendVlcCommand(command, values) {
+    if (!server.hasClient()) {
+      twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
+      return
+    }
+    const commandAction = {
+      command,
+      ...values,
+    }
+    const commandResult = await emitPromise.withDefaultTimeout(server.client, "sendVlcCommand", commandAction)
+    if (commandResult === "noVlc") {
+      twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
+      return
+    }
+    if (commandResult === "commandFailed") {
+      twitch.say("Die Anweisung ans Kino hat jetzt nicht so richtig geklappt.")
+      return
+    }
+    return commandResult
   }
 
 }

@@ -1,21 +1,19 @@
 import moment from "lib/moment"
-import server from "src/server"
 import twitch from "src/twitch"
-import vlc from "lib/vlc"
+import Video from "src/models/Video"
 
 export default {
   permission: "mod",
-  needsDesktopClient: true,
   async handle() {
-    const vlcState = await vlc.getState()
+    const vlcState = await Video.getVlcState()
     if (!vlcState) {
       return
     }
-    const durationString = moment.duration(vlcState.time, "seconds").format()
     const command = vlcState.state === "playing" ? "pl_forcepause" : "pl_play"
-    const answer = vlcState.state === "playing" ? `Pausiert bei ${durationString}, Bruder! Jetzt hast du deine Ruhe.` : `Geht heiter weiter an der Stelle ${durationString}!`
-    const result = await vlc.sendCommand(command)
+    const result = await Video.sendVlcCommand(command)
     if (result) {
+      const durationString = moment.duration(vlcState.time, "seconds").format()
+      const answer = vlcState.state === "playing" ? `Pausiert bei ${durationString}, Bruder! Jetzt hast du deine Ruhe.` : `Geht heiter weiter an der Stelle ${durationString}!`
       twitch.say(answer)
     } else {
       twitch.say("Da hat etwas nicht geklappt")

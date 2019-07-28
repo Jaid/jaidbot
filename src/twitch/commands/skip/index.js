@@ -1,4 +1,3 @@
-import vlc from "lib/vlc"
 import Video from "src/models/Video"
 
 export default {
@@ -13,7 +12,7 @@ export default {
       skipped: true,
       watchedAt: new Date,
     })
-    const result = await vlc.sendCommand("pl_stop")
+    const result = await Video.sendVlcCommand("pl_stop")
     if (result) {
       return `Skippie! Weg mit "${video.title}"!`
     }

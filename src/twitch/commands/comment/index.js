@@ -1,14 +1,14 @@
-import vlc from "lib/vlc"
 import youtube from "lib/youtube"
+import Video from "src/models/Video"
+import ms from "ms.macro"
 
 export default {
   permission: "mod",
   minimumArguments: 1,
-  needsDesktopClient: true,
   async handle({combinedArguments}) {
-    const {videoInfo} = await vlc.getCurrentYoutubeVideo()
+    const {videoInfo} = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
     if (!videoInfo) {
-      return
+      return "Das dazugehörige YouTube-Video konnte nicht ermittelt werden."
     }
     await youtube.commentThreads.insert({
       part: "snippet",

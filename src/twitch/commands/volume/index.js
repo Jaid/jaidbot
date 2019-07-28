@@ -1,9 +1,9 @@
-import vlc from "lib/vlc"
+import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
   async handle({sender}) {
-    const vlcState = await vlc.getState()
+    const vlcState = await Video.getVlcState()
     if (!vlcState) {
       return
     }

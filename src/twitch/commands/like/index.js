@@ -1,11 +1,12 @@
-import vlc from "lib/vlc"
 import youtube from "lib/youtube"
+import Video from "src/models/Video"
+import ms from "ms.macro"
 
 export default {
   permission: "mod",
   needsDesktopClient: true,
   async handle() {
-    const {videoInfo} = await vlc.getCurrentYoutubeVideo()
+    const {videoInfo} = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
     if (!videoInfo) {
       return
     }
