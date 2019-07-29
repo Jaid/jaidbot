@@ -15,13 +15,11 @@ export default {
       },
       order: [
         ["priority", "desc"],
-        ["createdAt", "asc"],
+        ["id", "asc"],
       ],
       attributes: [
         "publisher",
-        "timestamp",
         "title",
-        "videoFile",
       ],
     }
     if (Video.getCurrentVideo()) {

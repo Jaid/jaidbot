@@ -15,7 +15,7 @@ export default {
       },
       order: [
         ["priority", "desc"],
-        ["createdAt", "asc"],
+        ["id", "asc"],
       ],
       attributes: [
         "publisher",
