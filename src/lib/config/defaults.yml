@@ -10,7 +10,7 @@ youtubeDlPath: youtube-dl
 youtubeDlCookieFile: /tmp/youtubeDlCookies.txt
 youtubeDlFormat: bestvideo[ext=webm]+bestaudio[ext=webm]/bestvideo+bestaudio/best
 dotaSteamId32: "90387906"
-dotaPollIntervalSeconds: 30
+dotaPollIntervalSeconds: 60
 travisPollIntervalSeconds: 30
 youtubeSubscriptionsPollIntervalSeconds: 300
 observedYoutubeChannels:
