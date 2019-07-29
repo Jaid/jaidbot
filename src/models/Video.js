@@ -438,7 +438,7 @@ class Video extends Sequelize.Model {
       logger.warn("Tried to play video #%s on desktop, but videoFile is not defined", this.id)
       return false
     }
-    return emitPromise.withDefaultTimeout("playVideo", pick(this.get(), "videoFile", "timestamp"))
+    return emitPromise.withDefaultTimeout(server.client, "playVideo", pick(this.get(), "videoFile", "timestamp"))
   }
 
 }
