@@ -14,7 +14,6 @@ import twitchAuth from "src/twitch/auth"
 import database from "lib/database"
 import startDate from "src/startDate"
 
-
 class Core extends EventEmitter {
 
   async init() {
