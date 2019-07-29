@@ -142,6 +142,7 @@ class Video extends Sequelize.Model {
           logger.info(`Current video set to #${video.id}`)
           Video.currentVideo = video
           if (video.hasBeenWatched()) {
+            logger.debug("Not applying any changes on video, because it has already been watched")
             return
           }
         }
