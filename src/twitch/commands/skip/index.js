@@ -4,7 +4,7 @@ export default {
   permission: "mod",
   needsDesktopClient: true,
   async handle() {
-    const video = await Video.getCurrentlyPlayed()
+    const video = await Video.getCurrentVideo()
     if (!video) {
       return "Kein Video gefunden."
     }
