@@ -92,7 +92,6 @@ class Video extends Sequelize.Model {
   static start() {
     server.on("gotClient", client => {
       client.on("videoDownloaded", Video.handleVideoDownloaded)
-      client.on("getNextVideo", callback => Video.handleGetNextVideo(callback))
       client.on("vlcState", Video.handleVlcState)
       client.on("setInfoFile", Video.handleSetInfoFile)
       client.on("getDownloadJobs", callback => Video.handleGetDownloadJobs(callback))
@@ -113,43 +112,6 @@ class Video extends Sequelize.Model {
       })
     } catch (error) {
       logger.error("Error at videoDownloaded handler: %s", error)
-    }
-  }
-
-  static async playNext() {
-
-  }
-
-  static async handleGetNextVideo(callback) {
-    logger.debug("handleGetNextVideo")
-    try {
-      const nextVideo = await Video.findOne({
-        where: {
-          watchedAt: {
-            [Op.eq]: null,
-          },
-          videoFile: {
-            [Op.ne]: null,
-          },
-        },
-        order: [
-          ["priority", "desc"],
-          ["createdAt", "asc"],
-        ],
-        attributes: ["infoFile", "videoFile", "timestamp"],
-        raw: true,
-      })
-      if (nextVideo) {
-        callback(nextVideo)
-        return
-      } else {
-        callback(false)
-        return
-      }
-    } catch (error) {
-      logger.error("Error at getNextVideo handler: %s", error)
-      callback(false)
-      return
     }
   }
 
