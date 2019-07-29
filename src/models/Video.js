@@ -325,7 +325,7 @@ class Video extends Sequelize.Model {
   /**
    * @param {number} [maxAge=10000] Maximum milliseconds passed since the client reported a video as being watched the last time
    */
-  static async getCurrentVideo(maxAge = ms`10 seconds`) {
+  static getCurrentVideo(maxAge = ms`10 seconds`) {
     if (!Video.currentVideo) {
       return null
     }
@@ -338,8 +338,8 @@ class Video extends Sequelize.Model {
   /**
    * @param {number} [maxAge=10 seconds] Maximum milliseconds passed since the client reported a video as being watched the last time
    */
-  static async getCurrentYoutubeVideo(maxAge) {
-    const video = await this.getCurrentVideo(maxAge)
+  static getCurrentYoutubeVideo(maxAge) {
+    const video = this.getCurrentVideo(maxAge)
     if (!video) {
       return null
     }

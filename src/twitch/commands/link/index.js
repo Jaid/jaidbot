@@ -3,7 +3,7 @@ import Video from "src/models/Video"
 export default {
   needsDesktopClient: true,
   async handle({sender}) {
-    const video = await Video.getCurrentVideo()
+    const video = Video.getCurrentVideo()
     if (!video) {
       return `Es gibt gerade kein abgespieltes Video, ${sender.displayName}.`
     }
