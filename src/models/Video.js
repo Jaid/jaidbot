@@ -323,7 +323,7 @@ class Video extends Sequelize.Model {
   }
 
   /**
-   * @param {number} [maxAge=10 seconds] Maximum milliseconds passed since the client reported a video as being watched the last time
+   * @param {number} [maxAge=10000] Maximum milliseconds passed since the client reported a video as being watched the last time
    */
   static async getCurrentVideo(maxAge = ms`10 seconds`) {
     if (!Video.currentVideo) {
