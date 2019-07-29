@@ -23,7 +23,7 @@ export default class ChatBot extends EventEmitter {
     if (parsedCommand === null) {
       return
     }
-    const {commandName} = parsedCommand.groups
+    const commandName = parsedCommand.groups.commandName.toLowerCase()
     let commandArguments
     let positionalArguments
     if (parsedCommand.groups.commandArguments) {
