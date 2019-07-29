@@ -31,6 +31,6 @@ export default {
     if (!upcomingVideo) {
       return "Es wurde kein weiteres Video gefunden."
     }
-    return `Demnächst läuft hier ${upcomingVideo.title} von ${upcomingVideo.publisher}, ${sender.displayName}.`
+    return `Demnächst läuft hier "${upcomingVideo.title}" von ${upcomingVideo.publisher}, ${sender.displayName}.`
   },
 }
