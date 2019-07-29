@@ -5,6 +5,7 @@ import socketIo from "socket.io"
 import config from "lib/config"
 import logger from "lib/logger"
 import twitch from "src/twitch"
+import socketEnhancer from "lib/socketEnhancer"
 
 class Server extends EventEmitter {
 
@@ -33,6 +34,7 @@ class Server extends EventEmitter {
       this.emit("gotClient", client)
       twitch?.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
     })
+    socketEnhancer.enhanceServer(this.io)
     const port = config.serverPort
     this.io.listen(port)
     logger.info("Jaidbot server runs on port %s", port)
