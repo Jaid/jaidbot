@@ -4,6 +4,7 @@ import Video from "src/models/Video"
 
 export default {
   permission: "mod",
+  needsDesktopClient: true,
   async handle() {
     const vlcState = await Video.getVlcState()
     if (!vlcState) {

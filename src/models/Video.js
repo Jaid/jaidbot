@@ -2,7 +2,7 @@ import Sequelize, {Op} from "sequelize"
 import logger from "lib/logger"
 import config from "lib/config"
 import execa from "execa"
-import {isString} from "lodash"
+import {isString, pick} from "lodash"
 import moment from "lib/moment"
 import server from "src/server"
 import TwitchUser from "src/models/TwitchUser"
@@ -114,6 +114,10 @@ class Video extends Sequelize.Model {
     } catch (error) {
       logger.error("Error at videoDownloaded handler: %s", error)
     }
+  }
+
+  static async playNext() {
+
   }
 
   static async handleGetNextVideo(callback) {
@@ -419,6 +423,25 @@ class Video extends Sequelize.Model {
 
   hasBeenWatched() {
     return this.isWatched !== null
+  }
+
+  /**
+   * @async
+   * @return {Promise<boolean>}
+   */
+  async play() {
+    if (!server.hasClient()) {
+      logger.warn("Couldn't play video #%s, not connected to desktop", this.id)
+      return false
+    }
+    if (!this.videoFile) {
+      logger.warn("Tried to play video #%s on desktop, but videoFile is not defined", this.id)
+      return false
+    }
+    const result = await emitPromise.withDefaultTimeout("playVideo", pick(this, "videoFile", "timestamp"))
+    if (!result) {
+      return false
+    }
   }
 
 }
