@@ -154,8 +154,12 @@ class Video extends Sequelize.Model {
    */
   static async handleVlcState(state) {
     try {
+      Video.currentVideoHeartbeatTimestamp = Date.now()
+      const isNewVideo = Video.currentVideo?.videoFile !== state.file
+      if (!isNewVideo && Video.currentVideo.hasBeenWatched()) {
+        return
+      }
       await database.transaction(async transaction => {
-        const isNewVideo = Video.currentVideo?.videoFile !== state.file
         if (isNewVideo) {
           const video = await Video.findOne({
             transaction,
@@ -170,12 +174,11 @@ class Video extends Sequelize.Model {
           }
           logger.info(`Current video set to #${video.id}`)
           Video.currentVideo = video
+          if (video.hasBeenWatched()) {
+            return
+          }
         }
         const video = Video.currentVideo
-        Video.currentVideoHeartbeatTimestamp = Date.now()
-        if (video.watchedAt !== null) {
-          return
-        }
         const saveFields = ["timestamp"]
         if (!video.vlcDuration) {
           video.vlcDuration = state.durationMs
@@ -412,6 +415,10 @@ class Video extends Sequelize.Model {
       return
     }
     return commandResult
+  }
+
+  hasBeenWatched() {
+    return this.isWatched !== null
   }
 
 }
