@@ -12,7 +12,8 @@ import tweetNotifier from "src/twitter/tweetNotifier"
 import gameUpdateWatcher from "src/steam/gameUpdateWatcher"
 import twitchAuth from "src/twitch/auth"
 import database from "lib/database"
-import "src/startDate"
+import startDate from "src/startDate"
+
 
 class Core extends EventEmitter {
 
@@ -72,7 +73,7 @@ class Core extends EventEmitter {
   }
 
   async ready() {
-    logger.info("Initialization done!")
+    logger.info("Initialization donein %ss!", Math.floor((Date.now() - startDate) / 1000))
   }
 
 }

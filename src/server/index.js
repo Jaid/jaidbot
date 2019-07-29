@@ -29,11 +29,10 @@ class Server extends EventEmitter {
       client.on("disconnect", () => {
         delete this.client
         logger.info("Client %s has disconnected", client.handshake.address)
-        twitch?.say("Uff, ich habe die Verbindung zum Computer von Jaidchen verloren.")
+        twitch.say("Uff, ich habe die Verbindung zum Computer von Jaidchen verloren.")
       })
-      logger.info("New connection from %s", client.handshake.address)
       this.emit("gotClient", client)
-      twitch?.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
+      twitch.say("Ich bin jetzt mit dem Computer von Jaidchen verbunden!")
     })
     socketEnhancer.enhanceServer(this.io)
     const port = config.serverPort
