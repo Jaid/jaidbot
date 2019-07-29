@@ -404,6 +404,14 @@ class Video extends Sequelize.Model {
     return emitPromise.withDefaultTimeout(server.client, "playVideo", pick(this.get(), "videoFile", "timestamp"))
   }
 
+  getDurationMs() {
+    return this.vlcDuration || this.duration
+  }
+
+  getDurationSeconds() {
+    return Math.floor(this.getDurationMs() / 1000)
+  }
+
 }
 
 /**

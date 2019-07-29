@@ -11,42 +11,48 @@ export default {
     if (!video) {
       return
     }
-    const {videoInfo, vlcState, videoSize} = video
     const properties = []
-    if (videoInfo.height && videoInfo.fps) {
-      properties.push(`${videoInfo.height}p${videoInfo.fps}`)
+    if (video.height) {
+      if (video.info?.fps) {
+        properties.push(`${video.height}p${video.info.fps}`)
+      } else {
+        properties.push(`${video.height}p`)
+      }
     }
-    if (videoInfo.age_limit > 0) {
-      properties.push(`freigegeben ab ${videoInfo.age_limit} Jahren`)
+    if (video.ageLimit > 0) {
+      properties.push(`freigegeben ab ${video.ageLimit} Jahren`)
     }
-    if (videoInfo.duration) {
-      properties.push(`${moment.duration(videoInfo.duration, "seconds").format()} Laufzeit`)
+    const durationMs = video.getDurationMs()
+    if (durationMs) {
+      properties.push(`${moment.duration(durationMs, "milliseconds").format()} Laufzeit`)
     }
-    if (videoSize > 1000) {
-      properties.push(filesize(videoSize, {round: 0}))
+    if (video.bytes > 1000) {
+      properties.push(filesize(video.bytes, {round: 0}))
     }
-    if (videoInfo.view_count) {
-      properties.push(`${millify(videoInfo.view_count, {precision: 0})} Views`)
+    if (video.views) {
+      properties.push(`${millify(video.views, {precision: 0})} Views`)
     }
-    if (isNumber(videoInfo.like_count) && isNumber(videoInfo.dislike_count)) {
-      if (videoInfo.like_count + videoInfo.dislike_count === 0) {
+    if (isNumber(video.likes) && isNumber(video.dislikes)) {
+      if (video.likes + video.dislikes === 0) {
         properties.push("keine Bewertungen")
       } else {
         let ratio
-        if (videoInfo.dislike_count === 0) {
+        if (video.dislikes === 0) {
           ratio = 100
-        } else if (videoInfo.like_count === 0) {
+        } else if (video.likes === 0) {
           ratio = 0
         } else {
-          ratio = Math.floor(videoInfo.like_count / (videoInfo.like_count + videoInfo.dislike_count) * 100)
+          ratio = Math.floor(video.likes / (video.likes + video.dislikes) * 100)
         }
-        properties.push(`${millify(videoInfo.like_count, {precision: 0})} Likes (${ratio}%)`)
+        properties.push(`${millify(video.likes, {precision: 0})} Likes (${ratio}%)`)
       }
     }
-    if (videoInfo.upload_date) {
-      properties.push(`${moment(videoInfo.upload_date).fromNow()} erschienen`)
+    if (video.publishedAt) {
+      properties.push(`${moment(video.publishedAt).fromNow()} erschienen`)
+    } else {
+      properties.push(`${moment(video.createdAt).fromNow()} hinzugefügt`)
     }
-    const currentTime = moment.duration(vlcState.time, "seconds").format()
-    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${videoInfo.fulltitle || videoInfo.title}" von ${videoInfo.uploader}. ${properties.join(", ")}.`
+    const currentTime = moment.duration(video.timestamp, "milliseconds").format()
+    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${video.title}" von ${video.publisher}. ${properties.join(", ")}.`
   },
 }
