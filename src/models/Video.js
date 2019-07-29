@@ -175,8 +175,11 @@ class Video extends Sequelize.Model {
         if (video.watchedAt !== null) {
           return
         }
-        const saveFields = ["vlcDuration", "timestamp"]
-        video.vlcDuration = state.durationMs
+        const saveFields = ["timestamp"]
+        if (!video.vlcDuration) {
+          video.vlcDuration = state.durationMs
+          saveFields.push("vlcDuration")
+        }
         video.timestamp = state.timestampMs
         const remainingTime = state.durationMs - state.timestampMs
         if (remainingTime < ms`10 seconds`) {
