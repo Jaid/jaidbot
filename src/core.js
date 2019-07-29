@@ -73,7 +73,7 @@ class Core extends EventEmitter {
   }
 
   async ready() {
-    logger.info("Initialization donein %ss!", Math.floor((Date.now() - startDate) / 1000))
+    logger.info("Initialization done in %ss!", Math.floor((Date.now() - startDate) / 1000))
   }
 
 }
