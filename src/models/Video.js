@@ -386,7 +386,7 @@ class Video extends Sequelize.Model {
   }
 
   hasBeenWatched() {
-    return this.isWatched !== null
+    return this.watchedAt !== null
   }
 
   /**
