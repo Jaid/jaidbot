@@ -155,7 +155,8 @@ class Video extends Sequelize.Model {
   static async handleVlcState(state) {
     try {
       await database.transaction(async transaction => {
-        if (Video.currentVideo?.videoFile !== state.file) {
+        const isNewVideo = Video.currentVideo?.videoFile !== state.file
+        if (isNewVideo) {
           const video = await Video.findOne({
             transaction,
             where: {
