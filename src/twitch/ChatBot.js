@@ -19,7 +19,7 @@ const commands = commandsRequire.keys().reduce((state, value) => {
 export default class ChatBot extends EventEmitter {
 
   handleMessage(message) {
-    const parsedCommand = commandRegex.exec(message.text.trim())
+    const parsedCommand = commandRegex.exec(message.text)
     if (parsedCommand === null) {
       return
     }
@@ -70,8 +70,8 @@ export default class ChatBot extends EventEmitter {
         twitch.say(returnValue)
       }
     }).catch(error => {
-      logger.error(error?.stack ? String(error.stack) : error)
-      twitch.say(`Oh, ${message.sender.displayName}, da hat irgendetwas nicht geklappt. (${error?.message || error})`)
+      logger.error("Error at execution of \"%s\": %s", message.text, error)
+      twitch.say(`Oh, ${message.sender.displayName}, da hat irgendetwas nicht geklappt. Muss sich ${twitch.streamerUser.getDisplayName()} drum kümmern.`)
     })
   }
 
