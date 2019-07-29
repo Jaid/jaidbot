@@ -60,7 +60,10 @@ class Core extends EventEmitter {
         gameUpdateWatcher.init(),
       ])
       for (const model of databaseModels) {
-        model.start?.()
+        if (model.start) {
+          await model.start()
+          logger.debug("Started model handler %s", model.name)
+        }
       }
       this.emit("ready")
     } catch (error) {

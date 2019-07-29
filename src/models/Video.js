@@ -91,6 +91,7 @@ class Video extends Sequelize.Model {
 
   static start() {
     server.on("gotClient", client => {
+      logger.debug("Received gotClient in Video model handler")
       client.on("videoDownloaded", Video.handleVideoDownloaded)
       client.on("vlcState", Video.handleVlcState)
       client.on("setInfoFile", Video.handleSetInfoFile)
