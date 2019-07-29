@@ -4,6 +4,7 @@ import {Strategy as TwitchStrategy} from "passport-twitch-new"
 import config from "lib/config"
 import logger from "lib/logger"
 import TwitchUser from "src/models/TwitchUser"
+import core from "src/core"
 
 import scope from "./scope"
 
@@ -47,8 +48,14 @@ class Auth {
       response.send("OK")
     })
 
-    this.app.listen(config.twitchAuthPort)
-    logger.info("Starting Twitch auth server on port %o", config.twitchAuthPort)
+    core.once("ready", () => {
+      try {
+        this.app.listen(config.twitchAuthPort)
+        logger.info("Starting Twitch auth server on port %o", config.twitchAuthPort)
+      } catch (error) {
+        logger.error("Error in core.ready handler in Twitch auth server: %s", error)
+      }
+    })
   }
 
 }

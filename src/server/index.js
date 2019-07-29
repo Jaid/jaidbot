@@ -6,6 +6,7 @@ import config from "lib/config"
 import logger from "lib/logger"
 import twitch from "src/twitch"
 import socketEnhancer from "lib/socketEnhancer"
+import core from "src/core"
 
 class Server extends EventEmitter {
 
@@ -36,7 +37,13 @@ class Server extends EventEmitter {
     })
     socketEnhancer.enhanceServer(this.io)
     const port = config.serverPort
-    this.io.listen(port)
+    core.once("ready", () => {
+      try {
+        this.io.listen(port)
+      } catch (error) {
+        logger.error("Error in core.ready handler in server: %s", error)
+      }
+    })
     logger.info("Jaidbot server runs on port %s", port)
   }
 

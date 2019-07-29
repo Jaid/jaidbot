@@ -5,6 +5,7 @@ import logger from "lib/logger"
 import config from "lib/config"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
+import core from "src/core"
 
 import ChatBot from "./ChatBot"
 
@@ -60,6 +61,13 @@ class TwitchCore extends EventEmitter {
       logger.debug(`${messageInfo.sender.displayName}: ${messageInfo.text}`)
       this.emit("chat", messageInfo)
       this.chatBot.handleMessage(messageInfo)
+    })
+    core.once("ready", () => {
+      try {
+        this.say("TBAngel Da bin ich!")
+      } catch (error) {
+        logger.error("Error in core.ready handler in twitch: %s", error)
+      }
     })
   }
 
