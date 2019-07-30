@@ -1,11 +1,12 @@
 import twitch from "src/twitch"
+import normalizeUsername from "lib/normalizeUsername"
 
 const formatDate = momentDate => momentDate.format("DD.MM.YYYY [um] HH:mm")
 
 export default {
   async handle({sender, positionalArguments}) {
     if (positionalArguments[0]) {
-      const compareUserName = positionalArguments[0]
+      const compareUserName = positionalArguments[0] |> normalizeUsername
       const [compareDisplayName, senderFollowMoment, compareFollowMoment] = await Promise.all([
         twitch.userNameToDisplayName(compareUserName),
         twitch.getFollowMoment(sender.name),
