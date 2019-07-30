@@ -2,6 +2,7 @@ import moment from "lib/moment"
 import {template, sample, isArray} from "lodash"
 import config from "lib/config"
 import twitch from "src/twitch"
+import normalizeUsername from "lib/normalizeUsername"
 
 const getGreeting = () => {
   const hour = moment().hour()
@@ -26,7 +27,7 @@ export default {
     let userName
     let displayName
     if (positionalArguments[0]) {
-      userName = positionalArguments[0].toLowerCase()
+      userName = positionalArguments[0] |> normalizeUsername
       displayName = await twitch.userNameToDisplayName(userName)
     } else {
       if (sender.isBroadcaster) {
@@ -35,7 +36,7 @@ export default {
       userName = sender.name
       displayName = sender.displayName
       if (sender.isVip) {
-        displayName = `höchstgeachteter ${displayName}`
+        displayName = `höchstgeachteter Ehrenhase ${displayName}`
       }
     }
     const hiMessage = config.hiMessages[userName]
