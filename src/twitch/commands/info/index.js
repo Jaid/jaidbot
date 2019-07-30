@@ -9,7 +9,7 @@ export default {
   async handle({sender}) {
     const video = Video.getCurrentVideo()
     if (!video) {
-      return
+      return `Gerade läuft doch gar kein Video, ${sender.displayName}!`
     }
     const properties = []
     if (video.height) {
