@@ -12,6 +12,10 @@ export default {
       return `Gerade läuft doch gar kein Video, ${sender.displayName}!`
     }
     const properties = []
+    const durationMs = video.getDurationMs()
+    if (durationMs) {
+      properties.push(`${moment.duration(durationMs, "milliseconds").format()} Laufzeit`)
+    }
     if (video.height) {
       if (video.info?.fps) {
         properties.push(`${video.height}p${video.info.fps}`)
@@ -21,10 +25,6 @@ export default {
     }
     if (video.ageLimit > 0) {
       properties.push(`freigegeben ab ${video.ageLimit} Jahren`)
-    }
-    const durationMs = video.getDurationMs()
-    if (durationMs) {
-      properties.push(`${moment.duration(durationMs, "milliseconds").format()} Laufzeit`)
     }
     if (video.bytes > 1000) {
       properties.push(filesize(video.bytes, {round: 0}))
