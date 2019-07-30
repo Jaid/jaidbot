@@ -1,6 +1,6 @@
 import Video from "src/models/Video"
 import {Op} from "sequelize"
-import humanizeDuration from "lib/humanizeDuration"
+import {hoursMinutesHumanize} from "lib/humanizeDuration"
 
 export default {
   async handle() {
@@ -23,6 +23,6 @@ export default {
       const actualDuration = duration - timestamp
       return sum + actualDuration
     }, 0)
-    return `Es sind ${data.length} ungesehene Videos in der Liste. Das ist noch eine Laufzeit von ${durationSum |> humanizeDuration}.`
+    return `Es sind ${data.length} ungesehene Videos in der Liste. Es dauert noch ${durationSum |> hoursMinutesHumanize}, diesen Haufen durchzuschauen.`
   },
 }
