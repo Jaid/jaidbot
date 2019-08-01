@@ -4,15 +4,16 @@ import ms from "ms.macro"
 
 export default {
   permission: "mod",
+  needsDesktopClient: true,
   async handle() {
-    const {videoInfo} = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
-    if (!videoInfo) {
+    const video = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
+    if (!video) {
       return
     }
     await youtube.videos.rate({
-      id: videoInfo.id,
+      id: video.mediaId,
       rating: "dislike",
     })
-    return `Dislike für dieses Kackvideo "${videoInfo.fulltitle || videoInfo.title}" ist raus!`
+    return `Dislike für dieses Kackvideo "${video.title}" ist raus!`
   },
 }
