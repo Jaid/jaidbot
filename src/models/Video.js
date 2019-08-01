@@ -99,6 +99,14 @@ class Video extends Sequelize.Model {
     })
   }
 
+  /**
+   * @param {Video} video
+   */
+  static setCurrentVideo(video) {
+    Video.currentVideoHeartbeatTimestamp = Date.now()
+    Video.currentVideo = video
+  }
+
   static async handleVideoDownloaded({videoId, bytes, videoFile, infoFile}) {
     try {
       await Video.update({

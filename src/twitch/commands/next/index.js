@@ -17,16 +17,11 @@ export default {
         ["priority", "desc"],
         ["id", "asc"],
       ],
-      attributes: [
-        "publisher",
-        "timestamp",
-        "title",
-        "videoFile",
-      ],
     })
     if (!nextVideo) {
       return "Anscheinend ist die komplette Playlist leergeguckt. D:"
     }
+    Video.setCurrentVideo(nextVideo)
     const result = await nextVideo.play()
     if (!result) {
       return "Oh, keine Ahnung."
