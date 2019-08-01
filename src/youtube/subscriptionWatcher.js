@@ -40,6 +40,12 @@ class SubscriptionWatcher extends PollingEmitter {
             return
           }
         }
+        if (youtubeVideo.channel?.titleRegexNot) {
+          if (regexParser(youtubeVideo.channel.titleRegexNot).test(youtubeVideo.title)) {
+            logger.info("Skipping new video \"%s\" by %s, because it succeeded RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegexNot)
+            return
+          }
+        }
         const url = `youtu.be/${youtubeVideo.id}`
         if (youtubeVideo.channel.name) {
           twitch.say(`PopCorn Video "${youtubeVideo.title}" von ${youtubeVideo.channel.name}: ${url}`)
