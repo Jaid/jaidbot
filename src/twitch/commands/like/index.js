@@ -6,14 +6,14 @@ export default {
   permission: "mod",
   needsDesktopClient: true,
   async handle() {
-    const {videoInfo} = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
-    if (!videoInfo) {
+    const video = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
+    if (!video) {
       return
     }
     await youtube.videos.rate({
-      id: videoInfo.id,
+      id: video.mediaId,
       rating: "like",
     })
-    return `Like für dieses geile Video "${videoInfo.fulltitle || videoInfo.title}" ist raus!`
+    return `Like für dieses geile Video "${video.title}" ist raus!`
   },
 }
