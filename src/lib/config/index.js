@@ -97,6 +97,7 @@ const configResult = essentialConfig(_PKG_TITLE, {
  * @prop {number} videoSubscriptionPriority
  * @prop {string|string[]} neutralTitles
  * @prop {number} secondsBetweenYoutubeChecks
+ * @prop {number} videoSubscriptionAddDelaySeconds
  */
 
 /**

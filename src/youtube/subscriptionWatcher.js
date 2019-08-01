@@ -9,6 +9,7 @@ import Video from "src/models/Video"
 import regexParser from "regex-parser"
 import pMinDelay from "p-min-delay"
 import pMap from "p-map"
+import delay from "delay"
 
 /**
  * @typedef {Object} YoutubeVideo
@@ -40,10 +41,15 @@ class SubscriptionWatcher extends PollingEmitter {
           }
         }
         const url = `youtu.be/${youtubeVideo.id}`
-        const video = await Video.queueByUrl(url, {
+        if (youtubeVideo.channel.name) {
+          twitch.say(`PopCorn Video "${youtubeVideo.title}" von ${youtubeVideo.channel.name}: ${url}`)
+        } else {
+          twitch.say(`PopCorn Video "${youtubeVideo.title}": ${url}`)
+        }
+        await delay(config.videoSubscriptionAddDelaySeconds * 1000)
+        await Video.queueByUrl(url, {
           priority: youtubeVideo.channel.priority || config.videoSubscriptionPriority,
         })
-        twitch.say(`PopCorn Video "${video.title}" von ${youtubeVideo.channel.name || video.publisher}: ${url}`)
       } catch (error) {
         logger.error("Found new YouTube video %s, but couldn't process it: %s", youtubeVideo.id, error)
       }
