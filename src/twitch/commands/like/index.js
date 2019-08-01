@@ -8,7 +8,7 @@ export default {
   async handle() {
     const video = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
     if (!video) {
-      return
+      return "Das dazugehörige YouTube-Video konnte nicht ermittelt werden."
     }
     await youtube.videos.rate({
       id: video.mediaId,

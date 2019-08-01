@@ -5,16 +5,17 @@ import ms from "ms.macro"
 export default {
   permission: "mod",
   minimumArguments: 1,
+  needsDesktopClient: true,
   async handle({combinedArguments}) {
-    const {videoInfo} = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
-    if (!videoInfo) {
+    const video = await Video.getCurrentYoutubeVideo(ms`15 minutes`)
+    if (!video) {
       return "Das dazugehörige YouTube-Video konnte nicht ermittelt werden."
     }
     await youtube.commentThreads.insert({
       part: "snippet",
       resource: {
         snippet: {
-          videoId: videoInfo.id,
+          videoId: video.mediaId,
           topLevelComment: {
             snippet: {
               textOriginal: combinedArguments,
@@ -23,6 +24,6 @@ export default {
         },
       },
     })
-    return `Comment unter dem Video "${videoInfo.fulltitle || videoInfo.title}" ist raus!`
+    return `Comment unter dem Video "${video.title}" ist raus!`
   },
 }
