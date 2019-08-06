@@ -12,10 +12,7 @@ class Server extends EventEmitter {
 
   async init() {
     this.httpServer = http.createServer()
-    this.io = socketIo(this.httpServer, {
-      serveClient: false,
-      wsEngine: "ws",
-    })
+    this.io = socketIo(this.httpServer)
     this.io.on("connection", client => {
       if (client.handshake.query.password !== config.serverPassword) {
         logger.warn("Received wrong password from client %s, disconnecting", client.handshake.address)
