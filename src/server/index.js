@@ -17,10 +17,12 @@ class Server extends EventEmitter {
       if (client.handshake.query.password !== config.serverPassword) {
         logger.warn("Received wrong password from client %s, disconnecting", client.handshake.address)
         client.disconnect()
+        return
       }
       if (this.hasClient()) {
         logger.warn("Client %s tried to connect, but another client is already here", client.handshake.address)
         client.disconnect()
+        return
       }
       this.client = client
       client.on("disconnect", () => {
