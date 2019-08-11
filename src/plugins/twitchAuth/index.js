@@ -1,10 +1,8 @@
-import express from "express"
-import {Passport} from "passport"
 import {Strategy as TwitchStrategy} from "passport-twitch-new"
-import config from "lib/config"
-import logger from "lib/logger"
+import core, {config, logger} from "src/core"
 import TwitchUser from "src/models/TwitchUser"
-import core from "src/core"
+import passport from "koa-passport"
+import Router from "@koa/router"
 
 import scope from "./scope"
 
@@ -12,13 +10,18 @@ import indexContent from "!raw-loader!./index.html"
 
 class Auth {
 
-  async init() {
-    this.app = express()
-    this.passport = new Passport()
+  constructor() {
+    core.hooks.ready.tapPromise("twitchAuth", async () => {
+      await this.handleReady()
+    })
+  }
 
-    this.app.use(this.passport.initialize())
+  async handleInit() {
 
-    this.passport.use(new TwitchStrategy({
+  }
+
+  async handleReady() {
+    passport.use(new TwitchStrategy({
       scope,
       clientID: config.twitchClientId,
       clientSecret: config.twitchClientSecret,
@@ -39,23 +42,17 @@ class Auth {
       logger.info("Login from Twitch user %s", profile.login)
       done()
     }))
-
-    this.app.get("/", (request, response) => {
-      response.send(indexContent)
+    core.koa.use(passport.initialize())
+    this.router = new Router()
+    this.router.get("/", context => {
+      context.type = "html"
+      context.body = indexContent
     })
-    this.app.get("/auth/twitch", this.passport.authenticate("twitch"))
-    this.app.get("/auth/twitch/callback", this.passport.authenticate("twitch", {failureRedirect: "/"}), (request, response) => {
-      response.send("OK")
+    this.router.get("/auth/twitch", passport.authenticate("twitch"))
+    this.router.get("/auth/twitch/callback", passport.authenticate("twitch", {failureRedirect: "/"}), context => {
+      context.body = "OK"
     })
-
-    core.once("ready", () => {
-      try {
-        this.app.listen(config.twitchAuthPort)
-        logger.info("Starting Twitch auth server on port %o", config.twitchAuthPort)
-      } catch (error) {
-        logger.error("Error in core.ready handler in Twitch auth server: %s", error)
-      }
-    })
+    core.koa.use(this.router.routes())
   }
 
 }

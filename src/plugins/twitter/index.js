@@ -1,7 +1,6 @@
 import Twit from "twit"
-import config from "lib/config"
+import {config, logger} from "src/core"
 import twitch from "src/twitch"
-import logger from "lib/logger"
 import {unpackObject} from "magina"
 
 const isOwnTweet = tweet => {
@@ -18,18 +17,24 @@ const getTweetText = tweet => {
   return tweet.extended_tweet?.full_text || tweet.text
 }
 
-class TweetNotifier {
+export default class TweetWatcher {
 
-  constructor() {
+  constructor(core) {
+    if (!twitch.ready) {
+      return
+    }
     this.twit = new Twit({
       consumer_key: config.twitterConsumerKey,
       consumer_secret: config.twitterConsumerSecret,
       access_token: config.twitterAccessToken,
       access_token_secret: config.twitterAccessSecret,
     })
+    core.hooks.ready.tap("steam", () => {
+      this.handleReady()
+    })
   }
 
-  async init() {
+  handleReady() {
     const tweetEmitter = this.twit.stream("statuses/filter", {
       follow: config.twitterFollowedIds.map(watchEntry => unpackObject(watchEntry, "id")),
       filter_level: "none",
@@ -50,5 +55,3 @@ class TweetNotifier {
   }
 
 }
-
-export default new TweetNotifier

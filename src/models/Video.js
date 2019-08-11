@@ -1,14 +1,12 @@
 import Sequelize, {Op} from "sequelize"
-import logger from "lib/logger"
-import config from "lib/config"
+import {config, logger, database} from "src/core"
+import apiServer from "src/plugins/apiServer"
 import execa from "execa"
 import {isString, pick} from "lodash"
 import moment from "lib/moment"
-import server from "src/server"
 import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
 import emitPromise from "emit-promise"
-import database from "lib/database"
 import twitch from "src/twitch"
 
 /**
@@ -90,7 +88,7 @@ class Video extends Sequelize.Model {
   }
 
   static start() {
-    server.on("gotClient", client => {
+    apiServer.on("gotClient", client => {
       logger.debug("Received gotClient in Video model handler")
       client.on("videoDownloaded", Video.handleVideoDownloaded)
       client.on("vlcState", Video.handleVlcState)
@@ -240,9 +238,9 @@ class Video extends Sequelize.Model {
     } catch (error) {
       logger.error("Could not use youtube-dl to fetch media information of url %s: %s\ncommand: %s\nstd: %s", url, error, execResult?.command || error?.command, execResult?.all || error?.all)
     }
-    if (!videoInfo && server.hasClient()) {
+    if (!videoInfo && apiServer.hasClient()) {
       logger.warn("Could not fetch info for %s, trying on Desktop instead", url)
-      videoInfo = await emitPromise.withDefaultTimeout(server.client, "fetchVideoInfo", url)
+      videoInfo = await emitPromise.withDefaultTimeout(apiServer.client, "fetchVideoInfo", url)
     }
     if (videoInfo) {
       return Video.queueByInfo(videoInfo, {
@@ -320,8 +318,8 @@ class Video extends Sequelize.Model {
       logger.info("Video #%s \"%s\" got requested again, increased priority from %s to %s", video.id, video.title, video.priority - 10, video.priority)
     } else {
       logger.info("Requested video #%s \"%s\" with priority %s", video.id, video.title, video.priority)
-      if (server.hasClient()) {
-        server.client.emit("queueInfo", {
+      if (apiServer.hasClient()) {
+        apiServer.client.emit("queueInfo", {
           videoInfo,
           videoId: video.id,
           downloadFormat: video.downloadFormat,
@@ -360,11 +358,11 @@ class Video extends Sequelize.Model {
   }
 
   static async getVlcState() {
-    if (!server.hasClient()) {
+    if (! apiServer.hasClient()) {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
       return
     }
-    const vlcState = await emitPromise.withDefaultTimeout(server.client, "getVlcState")
+    const vlcState = await emitPromise.withDefaultTimeout(apiServer.client, "getVlcState")
     if (vlcState === "noVlc") {
       twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
       return
@@ -373,7 +371,7 @@ class Video extends Sequelize.Model {
   }
 
   static async sendVlcCommand(command, values) {
-    if (!server.hasClient()) {
+    if (! apiServer.hasClient()) {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
       return
     }
@@ -381,7 +379,7 @@ class Video extends Sequelize.Model {
       command,
       ...values,
     }
-    const commandResult = await emitPromise.withDefaultTimeout(server.client, "sendVlcCommand", commandAction)
+    const commandResult = await emitPromise.withDefaultTimeout(apiServer.client, "sendVlcCommand", commandAction)
     if (commandResult === "noVlc") {
       twitch.say("Kein Lebenszeichen aus dem Kino, sorry!")
       return
@@ -402,7 +400,7 @@ class Video extends Sequelize.Model {
    * @return {Promise<boolean>}
    */
   async play() {
-    if (!server.hasClient()) {
+    if (! apiServer.hasClient()) {
       logger.warn("Couldn't play video #%s, not connected to desktop", this.id)
       return false
     }
@@ -410,7 +408,7 @@ class Video extends Sequelize.Model {
       logger.warn("Tried to play video #%s on desktop, but videoFile is not defined", this.id)
       return false
     }
-    return emitPromise.withDefaultTimeout(server.client, "playVideo", pick(this.get(), "videoFile", "timestamp"))
+    return emitPromise.withDefaultTimeout(apiServer.client, "playVideo", pick(this.get(), "videoFile", "timestamp"))
   }
 
   getDurationMs() {

@@ -4,8 +4,8 @@ import stringArgv from "string-argv"
 import minimist from "minimist"
 import {isString} from "lodash"
 import twitch from "src/twitch"
-import server from "src/server"
-import logger from "lib/logger"
+import server from "src/plugins/apiServer"
+import {logger} from "src/core"
 
 const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 

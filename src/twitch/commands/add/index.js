@@ -1,5 +1,5 @@
 import twitch from "src/twitch"
-import config from "lib/config"
+import {config} from "src/core"
 import Video from "src/models/Video"
 
 export default {

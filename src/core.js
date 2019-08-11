@@ -1,80 +1,96 @@
-import EventEmitter from "events"
+import JaidCore from "jaid-core"
 
-import config from "lib/config"
-import twitch from "src/twitch"
-import logger from "lib/logger"
-import server from "src/server"
-import releaseNotifier from "src/travis/releaseNotifier"
-import starredReleaseNotifier from "src/github/starredReleaseNotifier"
-import opendota from "src/dota/opendota"
-import subscriptionWatcher from "src/youtube/subscriptionWatcher"
-import tweetNotifier from "src/twitter/tweetNotifier"
-import gameUpdateWatcher from "src/steam/gameUpdateWatcher"
-import twitchAuth from "src/twitch/auth"
-import database from "lib/database"
-import startDate from "src/startDate"
+import defaults from "./config.yml"
 
-class Core extends EventEmitter {
+const core = new JaidCore({
+  name: _PKG_TITLE,
+  version: _PKG_VERSION,
+  insecurePort: 17441,
+  database: true,
+  configSetup: {
+    defaults,
+    secretKeys: [
+      "serverPassword",
+      "twitchClientId",
+      "twitchClientSecret",
+      "travisToken",
+      "youtubeClientId",
+      "youtubeClientSecret",
+      "youtubeClientAccessToken",
+      "youtubeClientRefreshToken",
+      "twitterConsumerKey",
+      "twitterConsumerSecret",
+      "twitterAccessToken",
+      "twitterAccessSecret",
+      "githubToken",
+      "databasePassword",
+    ],
+  },
+})
 
-  async init() {
-    try {
-      this.on("ready", () => {
-        this.ready()
-      })
-      database.loadModels()
-      const databaseModels = Object.values(database.models)
-      for (const model of databaseModels) {
-        model.associate?.(database.models)
-      }
-      await database.authenticate()
-      if (config.databaseSchemaSync === "sync") {
-        await database.sync()
-      }
-      if (config.databaseSchemaSync === "force") {
-        await database.sync({
-          force: true,
-        })
-      }
-      if (config.databaseSchemaSync === "alter") {
-        await database.sync({
-          alter: true,
-        })
-      }
-      const twitchResult = await twitch.init()
-      if (twitchResult === false) {
-        await twitchAuth.init()
-        logger.info("Only Twitch auth server has been loaded!")
-        this.emit("ready")
-        return
-      }
-      await server.init()
-      logger.info("Twitch is ready!")
-      await Promise.all([
-        twitchAuth.init(),
-        releaseNotifier.init(),
-        opendota.init(),
-        subscriptionWatcher.init(),
-        tweetNotifier.init(),
-        starredReleaseNotifier.init(),
-        gameUpdateWatcher.init(),
-      ])
-      for (const model of databaseModels) {
-        if (model.start) {
-          await model.start()
-          logger.debug("Started model handler %s", model.name)
-        }
-      }
-      this.emit("ready")
-    } catch (error) {
-      logger.error("Could not initialize: %s", error)
-      process.exit(1)
-    }
-  }
+/**
+ * @typedef {Object} Config
+ * @prop {string} youtubeClientRedirectUrl
+ * @prop {Object<string, HiMessage>} hiMessages
+ * @prop {string} youtubeDlPath
+ * @prop {string} youtubeDlCookieFile
+ * @prop {string} youtubeDlFormat
+ * @prop {string} dotaSteamId32
+ * @prop {number} dotaPollIntervalSeconds
+ * @prop {number} travisPollIntervalSeconds
+ * @prop {number} youtubeSubscriptionsPollIntervalSeconds
+ * @prop {ObservedYoutubeChannel[]} observedYoutubeChannels
+ * @prop {Object<string, string>} categoryShortcuts
+ * @prop {number} starredReleasesPollIntervalSeconds
+ * @prop {string} starredReleasesUser
+ * @prop {WatchedSteamDepotId[]} watchedSteamDepotIds
+ * @prop {number} watchSteamGamesIntervalSeconds
+ * @prop {number} twitchAuthPort
+ * @prop {string} twitchClientCallbackUrl
+ * @prop {string} serverPassword
+ * @prop {string} twitchClientId
+ * @prop {string} twitchClientSecret
+ * @prop {string} travisToken
+ * @prop {string} youtubeClientId
+ * @prop {string} youtubeClientSecret
+ * @prop {string} youtubeClientAccessToken
+ * @prop {string} youtubeClientRefreshToken
+ * @prop {string} twitterConsumerKey
+ * @prop {string} twitterConsumerSecret
+ * @prop {string} twitterAccessToken
+ * @prop {string} twitterAccessSecret
+ * @prop {string} githubToken
+ * @prop {string} twitchStreamerLogin
+ * @prop {string} twitchBotLogin
+ * @prop {number} videoRequestPriorityBase
+ * @prop {number} videoRequestPrioritySubs
+ * @prop {number} videoRequestPriorityVips
+ * @prop {number} videoRequestPriorityMods
+ * @prop {number} videoRequestPriorityBroadcaster
+ * @prop {number} videoSubscriptionPriority
+ * @prop {string|string[]} neutralTitles
+ * @prop {number} secondsBetweenYoutubeChecks
+ * @prop {number} videoSubscriptionAddDelaySeconds
+ */
 
-  async ready() {
-    logger.info("Initialization done in %ss!", Math.floor((Date.now() - startDate) / 1000))
-  }
+/**
+ * @type {import("jaid-core").BaseConfig & Config}
+ */
+export const config = core.config
 
-}
+/**
+ * @type {import("jaid-logger").JaidLogger}
+ */
+export const logger = core.logger
 
-export default new Core
+/**
+ * @type {import("sequelize").Sequelize}
+ */
+export const database = core.database
+
+/**
+ * @type {import("got").GotInstance}
+ */
+export const got = core.got
+
+export default core

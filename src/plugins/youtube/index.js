@@ -1,7 +1,6 @@
 import PollingEmitter from "polling-emitter"
-import config from "lib/config"
+import {config, logger} from "src/core"
 import twitch from "src/twitch"
-import logger from "lib/logger"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
 import ensureObject from "ensure-object"
@@ -24,13 +23,16 @@ import delay from "delay"
  * @param {YoutubeVideo} youtubeVideo
  */
 
-class SubscriptionWatcher extends PollingEmitter {
+export default class SubscriptionWatcher extends PollingEmitter {
 
-  constructor() {
+  constructor(core) {
     super({
       pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
+    if (!twitch.ready) {
+      return
+    }
     this.startDate = Date.now()
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
       try {
@@ -60,9 +62,12 @@ class SubscriptionWatcher extends PollingEmitter {
         logger.error("Found new YouTube video %s, but couldn't process it: %s", youtubeVideo.id, error)
       }
     })
+    core.hooks.ready.tap("steam", () => {
+      this.handleReady()
+    })
   }
 
-  async init() {
+  handleReady() {
     this.start()
     logger.info("Started YouTube subscriptionWatcher for %s subscriptions", config.observedYoutubeChannels.length)
   }
@@ -96,5 +101,3 @@ class SubscriptionWatcher extends PollingEmitter {
   }
 
 }
-
-export default new SubscriptionWatcher

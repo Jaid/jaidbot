@@ -1,23 +1,27 @@
 import PollingEmitter from "polling-emitter"
-import got from "got"
-import config from "lib/config"
+import {config, got, logger} from "src/core"
 import twitch from "src/twitch"
-import logger from "lib/logger"
 
-class Opendota extends PollingEmitter {
+export default class Opendota extends PollingEmitter {
 
-  constructor() {
+  constructor(core) {
     super({
       pollInterval: config.dotaPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
+    if (!twitch.ready) {
+      return
+    }
     this.got = got.extend({
       json: true,
       baseUrl: "https://api.opendota.com/api",
     })
+    core.hooks.ready.tap("dota", () => {
+      this.handleReady()
+    })
   }
 
-  async init() {
+  handleReady() {
     this.on("newEntry", match => {
       const verbString = match.hasWon ? "gewonnen" : "verloren"
       twitch.say(`OSFrog ${match.hero.localized_name} hat mit ${match.kills}/${match.deaths}/${match.assists} ${verbString}: opendota.com/matches/${match.match_id}`)
@@ -40,7 +44,7 @@ class Opendota extends PollingEmitter {
     return entry.match_id
   }
 
-  async processEntry(match, id) {
+  async processEntry(match) {
     match.finish_time = match.start_time + match.duration
     match.hero = this.getHeroById(match.hero_id)
     match.team = match.player_slot >= 128 ? "dire" : "radiant"
@@ -65,5 +69,3 @@ class Opendota extends PollingEmitter {
   }
 
 }
-
-export default new Opendota

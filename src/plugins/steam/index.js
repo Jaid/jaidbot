@@ -1,13 +1,15 @@
 import SteamGameUpdateWatcher from "steam-game-update-watcher"
-import config from "lib/config"
-import logger from "lib/logger"
+import {logger, config} from "src/core"
 import {ensureObject} from "magina"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
 
-class GameUpdateWatcher {
+export default class GameUpdateWatcher {
 
-  constructor() {
+  constructor(core) {
+    if (!twitch.ready) {
+      return
+    }
     this.watchers = []
     for (const watchedDepot of config.watchedSteamDepotIds) {
       const depot = ensureObject(watchedDepot, "id")
@@ -20,9 +22,12 @@ class GameUpdateWatcher {
         ...depot,
       })
     }
+    core.hooks.ready.tap("steam", () => {
+      this.handleReady()
+    })
   }
 
-  async init() {
+  handleReady() {
     if (isEmpty(this.watchers)) {
       return
     }
@@ -36,5 +41,3 @@ class GameUpdateWatcher {
   }
 
 }
-
-export default new GameUpdateWatcher

@@ -1,5 +1,5 @@
 import {google} from "googleapis"
-import config from "lib/config"
+import {config} from "src/core"
 
 const auth = new google.auth.OAuth2(config.youtubeClientId, config.youtubeClientSecret, config.youtubeClientRedirectUrl)
 auth.setCredentials({

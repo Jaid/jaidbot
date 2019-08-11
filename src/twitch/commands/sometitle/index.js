@@ -1,4 +1,4 @@
-import config from "lib/config"
+import {config} from "src/core"
 import {sample} from "lodash"
 import afkManager from "src/twitch/afkManager"
 import ensureArray from "ensure-array"

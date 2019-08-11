@@ -1,6 +1,6 @@
 import {sample} from "lodash"
 import twitch from "src/twitch"
-import config from "lib/config"
+import {config} from "src/core"
 
 const people = require("./people.txt").default.split("\n")
 

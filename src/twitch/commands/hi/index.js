@@ -1,6 +1,6 @@
 import moment from "lib/moment"
 import {template, sample, isArray} from "lodash"
-import config from "lib/config"
+import {config} from "src/core"
 import twitch from "src/twitch"
 import normalizeUsername from "lib/normalizeUsername"
 

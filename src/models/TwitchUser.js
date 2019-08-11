@@ -1,9 +1,8 @@
 import Sequelize from "sequelize"
 import twitch from "twitch"
 import twitchCore from "src/twitch"
-import config from "lib/config"
-import scope from "src/twitch/scope"
-import logger from "lib/logger"
+import {config, logger} from "src/core"
+import scope from "src/plugins/twitchAuth/scope"
 
 class TwitchUser extends Sequelize.Model {
 
