@@ -9,6 +9,7 @@ import regexParser from "regex-parser"
 import pMinDelay from "p-min-delay"
 import pMap from "p-map"
 import delay from "delay"
+import plural from "pluralize-inclusive"
 
 /**
  * @typedef {Object} YoutubeVideo
@@ -25,7 +26,7 @@ import delay from "delay"
 
 export default class SubscriptionWatcher extends PollingEmitter {
 
-  constructor(core) {
+  constructor() {
     super({
       pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
@@ -62,12 +63,13 @@ export default class SubscriptionWatcher extends PollingEmitter {
         logger.error("Found new YouTube video %s, but couldn't process it: %s", youtubeVideo.id, error)
       }
     })
-    core.hooks.ready.tap("steam", () => {
-      this.handleReady()
-    })
   }
 
-  handleReady() {
+  postInit() {
+    return twitch.ready
+  }
+
+  ready() {
     this.start()
     logger.info("Started YouTube subscriptionWatcher for %s subscriptions", config.observedYoutubeChannels.length)
   }
@@ -92,7 +94,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
     }
     const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 1})
     const resultsList = flatten(results)
-    logger.debug("Fetched %s videos from %s YouTube channels", resultsList.length, config.observedYoutubeChannels.length)
+    logger.debug("Fetched %s from %s", plural("video", resultsList.length), plural("channel", config.observedYoutubeChannels.length))
     return resultsList
   }
 

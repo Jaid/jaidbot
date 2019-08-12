@@ -3,13 +3,11 @@ import {logger, config} from "src/core"
 import {ensureObject} from "magina"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
+import plural from "pluralize-inclusive"
 
 export default class GameUpdateWatcher {
 
-  constructor(core) {
-    if (!twitch.ready) {
-      return
-    }
+  constructor() {
     this.watchers = []
     for (const watchedDepot of config.watchedSteamDepotIds) {
       const depot = ensureObject(watchedDepot, "id")
@@ -22,22 +20,23 @@ export default class GameUpdateWatcher {
         ...depot,
       })
     }
-    core.hooks.ready.tap("steam", () => {
-      this.handleReady()
-    })
   }
 
-  handleReady() {
+  postInit() {
     if (isEmpty(this.watchers)) {
-      return
+      return false
     }
+    return twitch.ready
+  }
+
+  ready() {
     for (const {instance, id, name} of this.watchers) {
       instance.on("contentChanged", () => {
         twitch.say(`HSCheers Neues Update bei ${name || "einem Game auf Steam"}: steamdb.info/depot/${id}/history`)
       })
       instance.start()
     }
-    logger.info(`Started Steam game update watcher with ${config.watchedSteamDepotIds.length} entries `)
+    logger.info("Started Steam game update watcher with %s", plural("entry", config.watchedSteamDepotIds.length))
   }
 
 }

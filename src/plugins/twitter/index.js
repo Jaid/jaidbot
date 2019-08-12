@@ -2,6 +2,8 @@ import Twit from "twit"
 import {config, logger} from "src/core"
 import twitch from "src/twitch"
 import {unpackObject} from "magina"
+import {isEmpty} from "lodash"
+import plural from "pluralize-inclusive"
 
 const isOwnTweet = tweet => {
   if (tweet.retweeted_status) {
@@ -19,22 +21,23 @@ const getTweetText = tweet => {
 
 export default class TweetWatcher {
 
-  constructor(core) {
-    if (!twitch.ready) {
-      return
-    }
+  init() {
     this.twit = new Twit({
       consumer_key: config.twitterConsumerKey,
       consumer_secret: config.twitterConsumerSecret,
       access_token: config.twitterAccessToken,
       access_token_secret: config.twitterAccessSecret,
     })
-    core.hooks.ready.tap("steam", () => {
-      this.handleReady()
-    })
   }
 
-  handleReady() {
+  postInit() {
+    if (isEmpty(config.twitterFollowedIds)) {
+      return false
+    }
+    return twitch.ready
+  }
+
+  ready() {
     const tweetEmitter = this.twit.stream("statuses/filter", {
       follow: config.twitterFollowedIds.map(watchEntry => unpackObject(watchEntry, "id")),
       filter_level: "none",
@@ -51,7 +54,7 @@ export default class TweetWatcher {
       }
       twitch.say(`CurseLit ${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
     })
-    logger.info("Started Tweet notifier")
+    logger.info("Started tweet notifier for %s", plural("profile", config.twitterFollowedIds.length))
   }
 
 }

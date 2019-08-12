@@ -4,16 +4,13 @@ import {logger, got, config} from "src/core"
 import {timeout} from "promise-timeout"
 import ms from "ms.macro"
 
-export default class ReleaseNotifier extends PollingEmitter {
+export default class OwnReleaseNotifier extends PollingEmitter {
 
-  constructor(core) {
+  constructor() {
     super({
       pollInterval: config.travisPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
-    if (!twitch.ready) {
-      return
-    }
     this.got = got.extend({
       json: true,
       baseUrl: "https://api.travis-ci.com",
@@ -22,9 +19,10 @@ export default class ReleaseNotifier extends PollingEmitter {
         Authorization: `token ${config.travisToken}`,
       },
     })
-    core.hooks.ready.tap("steam", () => {
-      this.handleReady()
-    })
+  }
+
+  postInit() {
+    return twitch.ready
   }
 
   async checkBuild(buildId) {
@@ -52,7 +50,7 @@ export default class ReleaseNotifier extends PollingEmitter {
     return true
   }
 
-  handleReady() {
+  ready() {
     this.on("newEntry", build => {
       const checkBuildInterval = async () => {
         const interval = setInterval(async () => {
@@ -65,7 +63,6 @@ export default class ReleaseNotifier extends PollingEmitter {
       timeout(checkBuildInterval(), ms`1 hour`)
     })
     this.start()
-    logger.info("Started Travis releaseNotifier")
   }
 
   async fetchEntries() {

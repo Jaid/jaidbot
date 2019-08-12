@@ -1,20 +1,29 @@
-import {logger} from "src/core"
 import twitch from "src/twitch"
+import {logger} from "src/core"
 
 export default class Main {
 
-  constructor(core) {
-    core.hooks.init.tapPromise("main", async () => {
-      await twitch.init()
-    })
+  async init() {
+    await twitch.init()
+    if (!twitch.ready) {
+      logger.warn("Twitch has not been loaded")
+    }
   }
 
-  addModels(addModel) {
+  ready() {
+    if (twitch.ready) {
+      twitch.say("TBAngel Da bin ich!")
+    }
+  }
+
+  collectModels() {
+    const models = {}
     const modelsRequire = require.context("../../models/", true, /.js$/)
     for (const value of modelsRequire.keys()) {
       const modelName = value.match(/\.\/(?<key>[\da-z]+)\./i).groups.key
-      addModel(modelName, modelsRequire(value))
+      models[modelName] = modelsRequire(value)
     }
+    return models
   }
 
 }

@@ -4,30 +4,30 @@ import twitch from "src/twitch"
 
 export default class Opendota extends PollingEmitter {
 
-  constructor(core) {
+  constructor() {
     super({
       pollInterval: config.dotaPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
-    if (!twitch.ready) {
-      return
-    }
+  }
+
+  init() {
     this.got = got.extend({
       json: true,
       baseUrl: "https://api.opendota.com/api",
     })
-    core.hooks.ready.tap("dota", () => {
-      this.handleReady()
-    })
   }
 
-  handleReady() {
+  postInit() {
+    return twitch.ready
+  }
+
+  ready() {
     this.on("newEntry", match => {
       const verbString = match.hasWon ? "gewonnen" : "verloren"
       twitch.say(`OSFrog ${match.hero.localized_name} hat mit ${match.kills}/${match.deaths}/${match.assists} ${verbString}: opendota.com/matches/${match.match_id}`)
     })
     this.start()
-    logger.info("Started OpenDota notifier")
   }
 
   async fetchEntries() {

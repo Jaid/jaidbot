@@ -2,6 +2,7 @@ import {config, logger} from "src/core"
 import Octokit from "@octokit/rest"
 import pMap from "p-map"
 import twitch from "src/twitch"
+import plural from "pluralize-inclusive"
 
 export default class StarredReleaseNotifier {
 
@@ -10,10 +11,7 @@ export default class StarredReleaseNotifier {
      */
     github = null
 
-    constructor(core) {
-      if (!twitch.ready) {
-        return
-      }
+    init() {
       try {
         this.github = new Octokit({
           log: logger,
@@ -25,12 +23,13 @@ export default class StarredReleaseNotifier {
         logger.warn("Could not create a GitHub API client with auth options")
         logger.error("GitHub API client creation failed: %s", error)
       }
-      core.hooks.ready.tapPromise("github", async () => {
-        await this.handleReady()
-      })
     }
 
-    async handleReady() {
+    postInit() {
+      return twitch.ready
+    }
+
+    async ready() {
       const starredRepos = await this.github.paginate(`/users/${config.starredReleasesUser}/starred`)
       const filteredRepos = starredRepos.filter(({archived, has_downloads, disabled}) => !archived && !disabled && has_downloads)
       const checkedRepos = await pMap(filteredRepos, async repo => {
@@ -53,7 +52,7 @@ export default class StarredReleaseNotifier {
         this.check()
       }, config.starredReleasesPollIntervalSeconds * 1000)
       await this.check()
-      logger.info("Started StarredReleaseNotifier")
+      logger.info("Started StarredReleaseNotifier for %s", plural("repo", this.repos.length))
     }
 
     async check() {

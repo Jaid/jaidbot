@@ -7,6 +7,7 @@ const core = new JaidCore({
   version: _PKG_VERSION,
   insecurePort: 17441,
   database: true,
+  useGot: true,
   configSetup: {
     defaults,
     secretKeys: [
@@ -92,5 +93,10 @@ export const database = core.database
  * @type {import("got").GotInstance}
  */
 export const got = core.got
+
+/**
+ * @type {import("http").Server}
+ */
+export const server = core.insecureServer
 
 export default core

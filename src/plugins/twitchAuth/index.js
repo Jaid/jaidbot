@@ -10,17 +10,7 @@ import indexContent from "!raw-loader!./index.html"
 
 class Auth {
 
-  constructor() {
-    core.hooks.ready.tapPromise("twitchAuth", async () => {
-      await this.handleReady()
-    })
-  }
-
-  async handleInit() {
-
-  }
-
-  async handleReady() {
+  async ready() {
     passport.use(new TwitchStrategy({
       scope,
       clientID: config.twitchClientId,
