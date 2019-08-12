@@ -31,9 +31,6 @@ export default class SubscriptionWatcher extends PollingEmitter {
       pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
-    if (!twitch.ready) {
-      return
-    }
     this.startDate = Date.now()
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
       try {
