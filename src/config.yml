@@ -1,4 +1,3 @@
-serverPort: 9411
 youtubeClientRedirectUrl: http://localhost
 hiMessages:
   neydora: Seid gegrüßt, gnädige Quallenkönigin!
@@ -32,7 +31,6 @@ watchedSteamDepotIds:
   - name: Dead by Daylight
     id: "381211"
 watchSteamGamesIntervalSeconds: 300
-twitchAuthPort: 17441
 twitchClientCallbackUrl: http://localhost:17441/auth/twitch/callback
 twitchStreamerLogin: jaidchen
 twitchBotLogin: jaidbot

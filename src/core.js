@@ -46,7 +46,6 @@ const core = new JaidCore({
  * @prop {string} starredReleasesUser
  * @prop {WatchedSteamDepotId[]} watchedSteamDepotIds
  * @prop {number} watchSteamGamesIntervalSeconds
- * @prop {number} twitchAuthPort
  * @prop {string} twitchClientCallbackUrl
  * @prop {string} serverPassword
  * @prop {string} twitchClientId
