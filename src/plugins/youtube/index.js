@@ -32,19 +32,18 @@ export default class SubscriptionWatcher extends PollingEmitter {
       invalidateInitialEntries: true,
     })
     this.startDate = Date.now()
+    this.on("initialEntry", /** @type {newEntryHandler} */ youtubeVideo => {
+      logger.debug("Found video \"%s\", but it is not new.", youtubeVideo.title)
+    })
     this.on("newEntry", /** @type {newEntryHandler} */ async youtubeVideo => {
       try {
-        if (youtubeVideo.channel?.titleRegex) {
-          if (!regexParser(youtubeVideo.channel.titleRegex).test(youtubeVideo.title)) {
-            logger.info("Skipping new video \"%s\" by %s, because it failed RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegex)
-            return
-          }
+        if (youtubeVideo.channel?.titleRegex && !regexParser(youtubeVideo.channel.titleRegex).test(youtubeVideo.title)) {
+          logger.info("Skipping new video \"%s\" by %s, because it failed RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegex)
+          return
         }
-        if (youtubeVideo.channel?.titleRegexNot) {
-          if (regexParser(youtubeVideo.channel.titleRegexNot).test(youtubeVideo.title)) {
-            logger.info("Skipping new video \"%s\" by %s, because it succeeded RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegexNot)
-            return
-          }
+        if (youtubeVideo.channel?.titleRegexNot && regexParser(youtubeVideo.channel.titleRegexNot).test(youtubeVideo.title)) {
+          logger.info("Skipping new video \"%s\" by %s, because it succeeded RegExp test %s", youtubeVideo.title, youtubeVideo.channel.name, youtubeVideo.channel.titleRegexNot)
+          return
         }
         const url = `youtu.be/${youtubeVideo.id}`
         if (youtubeVideo.channel.name) {
