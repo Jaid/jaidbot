@@ -83,7 +83,10 @@ export default class OwnReleaseNotifier extends PollingEmitter {
   }
 
   async processEntry(build) {
-    build.isTag = build.tag?.["@type"] === "tag"
+    if (build.finished_at) {
+      return false
+    }
+    build.isTag = build.tag?.name?.startsWith("v")
     if (!build.isTag) {
       return false
     }
