@@ -2,7 +2,7 @@ import Twit from "twit"
 import {config, logger} from "src/core"
 import twitch from "src/twitch"
 import {unpackObject} from "magina"
-import plural from "pluralize-inclusive"
+import zahl from "zahl"
 import {isEmpty} from "has-content"
 
 const isOwnTweet = tweet => {
@@ -57,7 +57,7 @@ export default class TweetWatcher {
       }
       twitch.say(`CurseLit ${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
     })
-    logger.info("Started tweet notifier for %s", plural("profile", config.twitterFollowedIds.length))
+    logger.info("Started tweet notifier for %s", zahl(config.twitterFollowedIds, "profile"))
   }
 
 }

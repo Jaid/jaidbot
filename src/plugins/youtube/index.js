@@ -9,7 +9,7 @@ import regexParser from "regex-parser"
 import pMinDelay from "p-min-delay"
 import pMap from "p-map"
 import delay from "delay"
-import plural from "pluralize-inclusive"
+import zahl from "zahl"
 import {isEmpty} from "has-content"
 
 /**
@@ -97,7 +97,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
     }
     const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 1})
     const resultsList = flatten(results)
-    logger.debug("Fetched %s from %s", plural("video", resultsList.length), plural("channel", config.observedYoutubeChannels.length))
+    logger.debug("Fetched %s from %s", zahl(resultsList, "video"), zahl(config.observedYoutubeChannels, "channel"))
     return resultsList
   }
 

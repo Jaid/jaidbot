@@ -3,7 +3,7 @@ import {logger, config} from "src/core"
 import {ensureObject} from "magina"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
-import plural from "pluralize-inclusive"
+import zahl from "zahl"
 
 export default class GameUpdateWatcher {
 
@@ -42,7 +42,7 @@ export default class GameUpdateWatcher {
       })
       instance.start()
     }
-    logger.info("Started Steam game update watcher with %s", plural("entry", config.watchedSteamDepotIds.length))
+    logger.info("Started Steam game update watcher with %s", zahl(config.watchedSteamDepotIds, "entry"))
   }
 
 }

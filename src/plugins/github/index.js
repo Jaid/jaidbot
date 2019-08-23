@@ -2,7 +2,7 @@ import {config, logger} from "src/core"
 import Octokit from "@octokit/rest"
 import pMap from "p-map"
 import twitch from "src/twitch"
-import plural from "pluralize-inclusive"
+import zahl from "zahl"
 import {isEmpty} from "has-content"
 
 export default class StarredReleaseNotifier {
@@ -59,7 +59,7 @@ export default class StarredReleaseNotifier {
         this.check()
       }, config.starredReleasesPollIntervalSeconds * 1000)
       await this.check()
-      logger.info("Started StarredReleaseNotifier for %s", plural("repo", this.repos.length))
+      logger.info("Started StarredReleaseNotifier for %s", zahl(this.repos, "repo"))
     }
 
     async check() {
