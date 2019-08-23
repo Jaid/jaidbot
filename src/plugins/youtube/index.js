@@ -10,6 +10,7 @@ import pMinDelay from "p-min-delay"
 import pMap from "p-map"
 import delay from "delay"
 import plural from "pluralize-inclusive"
+import {isEmpty} from "has-content"
 
 /**
  * @typedef {Object} YoutubeVideo
@@ -59,6 +60,12 @@ export default class SubscriptionWatcher extends PollingEmitter {
         logger.error("Found new YouTube video %s, but couldn't process it: %s", youtubeVideo.id, error)
       }
     })
+  }
+
+  preInit() {
+    if (isEmpty(config.observedYoutubeChannels)) {
+      return false
+    }
   }
 
   postInit() {

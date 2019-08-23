@@ -22,10 +22,16 @@ export default class GameUpdateWatcher {
     }
   }
 
-  postInit() {
+  preInit() {
+    if (isEmpty(config.travisToken)) {
+      return false
+    }
     if (isEmpty(this.watchers)) {
       return false
     }
+  }
+
+  postInit() {
     return twitch.ready
   }
 

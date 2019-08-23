@@ -2,8 +2,8 @@ import Twit from "twit"
 import {config, logger} from "src/core"
 import twitch from "src/twitch"
 import {unpackObject} from "magina"
-import {isEmpty} from "lodash"
 import plural from "pluralize-inclusive"
+import {isEmpty} from "has-content"
 
 const isOwnTweet = tweet => {
   if (tweet.retweeted_status) {
@@ -30,10 +30,13 @@ export default class TweetWatcher {
     })
   }
 
-  postInit() {
+  preInit() {
     if (isEmpty(config.twitterFollowedIds)) {
       return false
     }
+  }
+
+  postInit() {
     return twitch.ready
   }
 

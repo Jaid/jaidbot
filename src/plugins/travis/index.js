@@ -3,6 +3,7 @@ import twitch from "src/twitch"
 import {logger, got, config} from "src/core"
 import {timeout} from "promise-timeout"
 import ms from "ms.macro"
+import {isEmpty} from "has-content"
 
 export default class OwnReleaseNotifier extends PollingEmitter {
 
@@ -19,6 +20,12 @@ export default class OwnReleaseNotifier extends PollingEmitter {
         Authorization: `token ${config.travisToken}`,
       },
     })
+  }
+
+  preInit() {
+    if (isEmpty(config.travisToken)) {
+      return false
+    }
   }
 
   postInit() {

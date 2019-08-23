@@ -3,6 +3,7 @@ import Octokit from "@octokit/rest"
 import pMap from "p-map"
 import twitch from "src/twitch"
 import plural from "pluralize-inclusive"
+import {isEmpty} from "has-content"
 
 export default class StarredReleaseNotifier {
 
@@ -22,6 +23,12 @@ export default class StarredReleaseNotifier {
         this.github = new Octokit
         logger.warn("Could not create a GitHub API client with auth options")
         logger.error("GitHub API client creation failed: %s", error)
+      }
+    }
+
+    preInit() {
+      if (isEmpty(config.starredReleasesUser)) {
+        return false
       }
     }
 

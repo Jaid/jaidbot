@@ -1,6 +1,7 @@
 import PollingEmitter from "polling-emitter"
 import {config, got, logger} from "src/core"
 import twitch from "src/twitch"
+import {isEmpty} from "has-content"
 
 export default class Opendota extends PollingEmitter {
 
@@ -9,6 +10,12 @@ export default class Opendota extends PollingEmitter {
       pollInterval: config.dotaPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
+  }
+
+  preInit() {
+    if (isEmpty(config.dotaSteamId32)) {
+      return false
+    }
   }
 
   init() {
