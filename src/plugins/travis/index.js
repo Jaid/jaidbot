@@ -73,7 +73,11 @@ export default class OwnReleaseNotifier extends PollingEmitter {
   }
 
   async fetchEntries() {
-    const response = await this.got("builds")
+    const response = await this.got("builds", {
+      query: {
+        sort_by: "id:desc",
+      },
+    })
     const {builds} = response.body
     if (!builds) {
       logger.warn("No build returned from Travis")
