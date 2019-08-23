@@ -71,7 +71,7 @@
     "browserslist-config-jaid-node": "^2.2.2",
     "caniuse-lite": "^1.0.30000989",
     "eslint": "^6.2.1",
-    "eslint-config-jaid": "^1.28.1",
+    "eslint-config-jaid": "^1.28.2",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "webpack-config-jaid": "^5.27.2"
