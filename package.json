@@ -49,7 +49,7 @@
     "prevent-start": "^1.0.4",
     "promise-timeout": "^1.3.0",
     "regex-parser": "^2.2.10",
-    "sequelize": "^5.18.2",
+    "sequelize": "^5.18.4",
     "socket-enhance": "^1.1.0",
     "socket.io": "^2.2.0",
     "sort-keys": "^4.0.0",
