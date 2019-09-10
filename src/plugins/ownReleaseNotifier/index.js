@@ -40,6 +40,9 @@ probotApp = app => {
       logger.debug("Got check_suite.completed event from GitHub, but check suite app is not Travis CI (App ID is %s)", checkAppId)
       return
     }
+    if (event.payload.repository.private) {
+      return
+    }
     // const repo = event.payload.repository.name
     // const owner = event.payload.repository.owner.login
     const travisResponse = await this.travisGot.get(`build/${event.payload.check_run.external_id}`)
