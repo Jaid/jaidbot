@@ -12,6 +12,9 @@ const isOwnTweet = tweet => {
   if (tweet.in_reply_to_user_id && tweet.in_reply_to_user_id !== tweet.user.id) {
     return false
   }
+  if (!tweet?.user?.id_str) {
+    return false
+  }
   return config.twitterFollowedIds.includes(tweet.user.id_str)
 }
 
