@@ -25,6 +25,8 @@ const core = new JaidCore({
       "twitterAccessSecret",
       "githubToken",
       "databasePassword",
+      "githubAppPemFilePath",
+      "githubAppWebhookSecret",
     ],
   },
 })
@@ -71,6 +73,10 @@ const core = new JaidCore({
  * @prop {string|string[]} neutralTitles
  * @prop {number} secondsBetweenYoutubeChecks
  * @prop {number} videoSubscriptionAddDelaySeconds
+ * @prop {string} githubAppPemFilePath
+ * @prop {number} githubAppId
+ * @prop {string} githubAppSecret
+ * @prop {number} githubWebhookPort
  */
 
 /**

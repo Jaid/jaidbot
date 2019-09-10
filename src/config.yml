@@ -45,3 +45,5 @@ secondsBetweenYoutubeChecks: 5
 neutralTitles:
   - Moin, servus, moin!
   - Hi
+githubAppId: 31980
+githubWebhookPort: 31980
