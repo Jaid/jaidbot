@@ -1,7 +1,32 @@
 import twitch from "src/twitch"
 import {logger} from "src/core"
 
-export default class Main {
+class Main {
+
+  constructor() {
+    /**
+     * @type {string}
+     */
+    this.currentProject = null
+    /**
+     * @type {string}
+     */
+    this.currentProjectRepo = null
+    /**
+     * @type {number}
+     */
+    this.projectSetDate = null
+  }
+
+  /**
+   * @param {string} projectName
+   * @param {string} [projectRepo=null]
+   */
+  setProject(projectName, projectRepo = null) {
+    this.currentProject = projectName
+    this.currentProjectRepo = projectRepo
+    this.projectSetDate = Date.now()
+  }
 
   async init() {
     await twitch.init()
@@ -27,3 +52,5 @@ export default class Main {
   }
 
 }
+
+export default new Main

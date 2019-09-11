@@ -2,4 +2,4 @@ param: repository
 description: Generiert einen Streamtitel, der die Arbeit an einer bestimmten GitHub Repository beschreibt.
 example:
   - "Ich beseitige jetzt einen Bug, der in Jaid/epoch-seconds vorkommt."
-  - "!setproject epoch-seconds"
+  - "!setrepo epoch-seconds"

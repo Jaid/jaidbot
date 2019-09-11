@@ -8,7 +8,6 @@ export const hoursMinutesHumanize = humanizeDuration.humanizer({
   units: ["h", "m"],
 })
 
-
 export default humanizeDuration.humanizer({
   language: "de",
   conjunction: " und dann noch mal ",

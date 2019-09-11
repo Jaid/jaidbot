@@ -4,6 +4,7 @@ import repoPackageJson from "repo-package-json"
 import hasContent, {isEmpty} from "has-content"
 import nestext from "nestext"
 import {shuffle} from "lodash"
+import main from "src/plugins/main"
 
 import titleNestext from "./title.nestext.yml"
 
@@ -48,6 +49,7 @@ export default {
       pkg,
       technologyList: technologies.join(", "),
     })
+    main.setProject(projectTitle, `${config.githubUser}/${repo}`)
     await afkManager.setTitle(title)
     return `Neuer Titel: ${projectTitle}`
   },
