@@ -40,7 +40,7 @@ export default {
       technologies.length = config.maxTechnologiesInTitle
     }
     if (technologies.length < config.maxTechnologiesInTitle) {
-      technologies = ["Node", ...technologies]
+      technologies.unshift("Node")
     }
     const projectTitle = pkg.domain || pkg.title || pkg.name || repo
     const title = nestext(titleNestext, {
