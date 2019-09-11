@@ -1,5 +1,6 @@
 import EventEmitter from "events"
 
+import {logger} from "src/core"
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
 import twitch from "src/twitch"
@@ -60,7 +61,9 @@ class AfkManager extends EventEmitter {
       const {channel} = await twitch.getMyStream()
       this.title = extractTitleRegex.exec(channel.status).groups.title
     }
-    await twitch.setTitle(`${this.getTitlePrefix()}💜 ${this.title}`)
+    const finalTitle = `${this.getTitlePrefix()}💜 ${this.title}`
+    logger.info("New title: %s", finalTitle)
+    await twitch.setTitle(finalTitle)
   }
 
   async activate(durationSeconds, message) {

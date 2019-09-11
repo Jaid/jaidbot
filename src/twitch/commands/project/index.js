@@ -2,6 +2,10 @@ import {config} from "src/core"
 import afkManager from "src/twitch/afkManager"
 import repoPackageJson from "repo-package-json"
 import hasContent, {isEmpty} from "has-content"
+import nestext from "nestext"
+import {shuffle} from "lodash"
+
+import titleNestext from "./title.nestext.yml"
 
 function getDependenciesFromPkg(pkg) {
   const dependencies = new Set
@@ -21,18 +25,27 @@ export default {
   permission: "mod",
   async handle({positionalArguments}) {
     const repo = positionalArguments[0]
-    const technologies = ["Node"]
+    let technologies = new Set
     const pkg = await repoPackageJson(`${config.githubUser}/${repo}`)
     const dependencies = getDependenciesFromPkg(pkg)
     if (hasContent(config.projectDependencyNames)) {
       for (const [possibleDependency, possibleTechnology] of Object.entries(config.projectDependencyNames)) {
         if (dependencies.has(possibleDependency)) {
-          technologies.push(possibleTechnology)
+          technologies.add(possibleTechnology)
         }
       }
     }
-    const title = pkg.title || pkg.name || repo
-    await afkManager.setTitle(`${title} weiterentwickeln! (${technologies.join(", ")})`)
-    return `Der Titel sagt jetzt aus, dass an ${title} weitergearbeitet wird.`
+    technologies = shuffle([...technologies])
+    if (technologies.length > config.maxTechnologiesInTitle) {
+      technologies.length = config.maxTechnologiesInTitle
+    }
+    const projectTitle = pkg.domain || pkg.title || pkg.name || repo
+    const title = nestext(titleNestext, {
+      projectTitle,
+      pkg,
+      technologyList: technologies.join(", "),
+    })
+    await afkManager.setTitle(title)
+    return `Der Titel sagt jetzt aus, dass an ${projectTitle} weitergearbeitet wird.`
   },
 }

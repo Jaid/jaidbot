@@ -1,0 +1,8 @@
+text: "{{activity}} ({{technologyList}})"
+activity:
+  - "{{projectTitle}} weitermachen"
+  - "{{projectTitle}} weiterbauen"
+  - "{{projectTitle}} weiterentwickeln"
+  - "An {{projectTitle}} weiterarbeiten"
+  - "Weiter geht's mit {{projectTitle}}"
+  - "Projekt: {{projectTitle}}"

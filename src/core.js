@@ -79,6 +79,7 @@ const core = new JaidCore({
  * @prop {number} githubWebhookPort
  * @prop {string} githubUser
  * @prop {Object<string, string>} projectDependencyNames
+ * @prop {number} maxTechnologiesInTitle
  */
 
 /**

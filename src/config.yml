@@ -51,4 +51,5 @@ githubUser: Jaid
 projectDependencyNames:
   express: Express
   koa: Koa
-  webpack-config-jaid: "Webpack"
+  webpack-config-jaid: Webpack
+maxTechnologiesInTitle: 5
