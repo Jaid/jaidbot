@@ -28,6 +28,10 @@ class Main {
     this.projectSetDate = Date.now()
   }
 
+  clearProject() {
+    this.currentProject = null
+  }
+
   async init() {
     await twitch.init()
     if (!twitch.ready) {
