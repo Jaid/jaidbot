@@ -19,6 +19,7 @@
     "execa": "^2.0.4",
     "express": "^4.17.1",
     "fast-decode-uri-component": "^1.0.1",
+    "fast-koa-router": "^1.0.0",
     "fetch-youtube-uploads": "^0.3.1",
     "filesize": "^4.1.2",
     "googleapis": "^43.0.0",

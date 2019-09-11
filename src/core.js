@@ -107,4 +107,9 @@ export const got = core.got
  */
 export const server = core.insecureServer
 
+/**
+ * @type {import("koa")}
+ */
+export const koa = core.koa
+
 export default core

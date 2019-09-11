@@ -2,21 +2,50 @@ import EventEmitter from "events"
 
 import stringArgv from "string-argv"
 import minimist from "minimist"
-import {isString} from "lodash"
+import {isString, pick} from "lodash"
 import twitch from "src/twitch"
 import server from "src/plugins/apiServer"
 import {logger} from "src/core"
+import ensureArray from "ensure-array"
+import {isEmpty} from "has-content"
 
 const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 
 const commandsRequire = require.context("./commands/", true, /index\.js$/)
-const commands = commandsRequire.keys().reduce((state, value) => {
-  const commandName = value.match(/\.\/(?<key>[\da-z]+)\//i).groups.key
-  state[commandName] = commandsRequire(value).default
-  return state
-}, {})
 
 export default class ChatBot extends EventEmitter {
+
+  constructor() {
+    super()
+    this.commands = commandsRequire.keys().reduce((state, value) => {
+      const commandName = value.match(/\.\/(?<key>[\da-z]+)\//i).groups.key
+      state[commandName] = commandsRequire(value).default
+      return state
+    }, {})
+    this.commandUsages = []
+    for (const [commandName, command] of Object.entries(this.commands)) {
+      const help = require(`./commands/${commandName}/help.yml`)
+      if (isEmpty(help)) {
+        continue
+      }
+      const helpEntries = ensureArray(help)
+      for (const helpEntry of helpEntries) {
+        const normalizedHelpEntry = {
+          command: commandName,
+          description: helpEntry.description,
+        }
+        if (helpEntry.param) {
+          const params = ensureArray(helpEntry.param)
+          normalizedHelpEntry.params = params
+          normalizedHelpEntry.usage = `!${commandName} ${params.join(" ")}`
+        } else {
+          normalizedHelpEntry.usage = `!${commandName}`
+        }
+        Object.assign(normalizedHelpEntry, pick(command, "permission", "needsDesktopClient", "requiredArguments"))
+        this.commandUsages.push(normalizedHelpEntry)
+      }
+    }
+  }
 
   handleMessage(message) {
     const parsedCommand = commandRegex.exec(message.text)
