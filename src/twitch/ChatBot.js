@@ -59,7 +59,7 @@ export default class ChatBot extends EventEmitter {
       commandArguments = parsedCommand.groups.commandArguments |> stringArgv |> minimist
       positionalArguments = commandArguments._
     }
-    const command = commands[commandName]
+    const command = this.commands[commandName]
     if (!command) {
       twitch.say(`Verstehe ich jetzt nicht, ${message.sender.displayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
       return
