@@ -51,6 +51,6 @@ export default {
     })
     main.setProject(projectTitle, `${config.githubUser}/${repo}`)
     await afkManager.setTitle(title)
-    return `Neuer Titel: ${projectTitle}`
+    return `Neuer Titel: ${title}`
   },
 }
