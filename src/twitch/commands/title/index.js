@@ -1,5 +1,5 @@
 import afkManager from "src/twitch/afkManager"
-import main from "src/models/main"
+import main from "src/plugin/main"
 
 export default {
   permission: "mod",
