@@ -3,7 +3,7 @@ import {config} from "src/core"
 import Video from "src/models/Video"
 
 export default {
-  permission: "sub-or-vip",
+  permission: "subOrVip",
   requiredArguments: 1,
   async handle({commandArguments, sender}) {
     const url = commandArguments._[0]

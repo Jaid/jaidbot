@@ -68,7 +68,7 @@ export default class ChatBot extends EventEmitter {
       return
     }
     if (!message.sender.isBroadcaster) {
-      if (command.permission === "sub-or-vip" && !message.sender.isVip && !message.sender.isSub && !message.sender.isMod) {
+      if (command.permission === "subOrVip" && !message.sender.isVip && !message.sender.isSub && !message.sender.isMod) {
         twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
         return
       }

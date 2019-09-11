@@ -2,7 +2,6 @@ import Video from "src/models/Video"
 import {Op} from "sequelize"
 
 export default {
-  permission: "sub-or-vip",
   needsDesktopClient: true,
   async handle({sender}) {
     const query = {
