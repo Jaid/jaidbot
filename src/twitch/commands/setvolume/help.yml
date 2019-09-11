@@ -1,2 +1,5 @@
-description: ""
-example: "!"
+param: value
+description: Setzt die Lautstärke für das laufende Video auf einen neuen Wert zwischen 0 und 320.
+example:
+  - Uff, die beiden Protagonisten in diesem Kurzfilm geben ganz schön laute Geräusche von sich! Da mache ich lieber mal ein bisschen leiser, damit meine Eltern mich nicht hören.
+  - "!setvolume 69"

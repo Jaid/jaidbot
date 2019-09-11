@@ -1,2 +1,4 @@
-description: ""
-example: "!"
+- description: Fordert den Bot dazu auf, dich freundlich zu begrüßen. Jaidchen ist sich da nämlich zu fein für, der feine Feinling.
+- param: user
+  description: Begrüßt einen anderen Zuschauer. Falls du dir die Hände nicht an einer selbst geschriebenen Begrüßung schmutzig machen möchtest.
+  example: "!hi Neydora"

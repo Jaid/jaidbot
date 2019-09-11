@@ -1,2 +1,7 @@
-description: ""
-example: "!"
+param: name
+description: Ändert die Stream-Kategorie, die bestenfalls exakt der Schreibweise einer auf Twitch vorhandenen Kategorie entspricht. Für einige Kategorien sind dem Bot jedoch Shortcuts bekannt.
+example:
+  - "Eine Runde Dead by Daylight:"
+  - "!game dbd"
+  - "Und zur Abwechslung was Brutales:"
+  - "!game Pokemon: Let's Go, Pikachu!/Eevee!"

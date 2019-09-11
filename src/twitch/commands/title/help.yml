@@ -1,2 +1,3 @@
-description: ""
-example: "!"
+param: text
+description: Ändert den Streamtitel.
+example: "!title Geiles Follower-Giveaway: 1000 € und eine Xbox!"

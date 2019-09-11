@@ -1,2 +1,6 @@
-description: ""
-example: "!"
+- description: Teilt dir mit, seit wann du hier Follower bist. Wenn du diesen Befehl verwendest, ohne überhaupt Follower zu sein, schickt der Bot automatisch Drohnen zu dir los, die Lego-Steine vor deinen Hauseingang verstreuen.
+- param: user
+  description: Teilt dir mit, seit wann der angegebene User hier Follower ist. Falls ihr beide Follower seid, nimmt dir der Jaidbot sogar das letzte bisschen Denkarbeit ab und sagt, wer von euch der ältere Follower und somit automatisch ein wertvollerer Mensch ist.
+  example:
+    - Seit wann folgt Flo mir eigentlich schon?
+    - "!follow Flomey_"

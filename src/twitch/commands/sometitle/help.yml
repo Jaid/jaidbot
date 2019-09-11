@@ -1,2 +1,1 @@
-description: ""
-example: "!"
+description: Setzt den Titel des Streams auf irgendetwas Unspezifisches. Brauchbar, wenn der aktuelle spezifische Titel weg muss, aber sich niemand die Mühe machen möchte, einen neuen Titel auszudenken.

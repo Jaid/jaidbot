@@ -1,2 +1,9 @@
-description: ""
-example: "!"
+param:
+  - duration
+  - comment
+description: Aktiviert den AFK-Modus, der eine Anmerkung über Jaidchens Abwesenheit und einen Countdown zum Overlay und Streamtitel hinzufügt.
+example:
+  - "Für 5 Minuten weg:"
+  - "!afk 5m"
+  - "Länger weg mit AFK-Notiz:"
+  - "!afk 2h Mal ganz kurz die Wombats füttern"

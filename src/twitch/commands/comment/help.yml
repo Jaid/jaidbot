@@ -1,2 +1,3 @@
-description: ""
-example: "!"
+param: text
+description: Postet einen Kommentar mit dem YouTube-Account von Jaidchen unter dem laufenden Video.
+example: "!comment Hey, gutes Video! Schau doch auch mal bei mir vorbei. Like, wer dafür ist!"

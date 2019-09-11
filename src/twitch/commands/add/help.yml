@@ -1,2 +1,5 @@
-description: ""
-example: "!"
+param: link
+description: Fügt einen Link von zum Beispiel YouTube, Twitter, Vimeo, Soundcloud zur Playlist hinzu.{br:10}Es gibt keine Einschränkungen beim Requesten, aber hab bitte Verständnis dafür, dass Jaidchen alles skipt, worauf er gerade keine Lust hat.
+example:
+  - "!add https://youtu.be/dQw4w9WgXcQ"
+  - "!add clips.twitch.tv/ShyLongPelicanDBstyle"
