@@ -82,7 +82,7 @@ class AfkManager extends EventEmitter {
       } else if (remainingTime > afkToleranceMinutes * -ms`1 minute`) {
         return "Da ist er ja wieder! TPFufun"
       } else {
-        return `"${this.afkMessage}", ja ja. Du wolltest doch eigentlich schon seit ${remainingTime |> Math.abs |> humanizeDuration} wieder da sein. Jaidchen, wo bist du gewesen? HotPokket`
+        return `"${this.afkMessage}", ja ja. Du wolltest doch eigentlich schon seit ${remainingTime |> Math.abs |> humanizeDuration} wieder da sein. Jaidchen, wo bist du gewesen? PunOko`
       }
     }
     const comment = getComment()
