@@ -46,6 +46,6 @@ export default {
       technologyList: technologies.join(", "),
     })
     await afkManager.setTitle(title)
-    return `Der Titel sagt jetzt aus, dass an ${projectTitle} weitergearbeitet wird.`
+    return `Neuer Titel: ${projectTitle}`
   },
 }
