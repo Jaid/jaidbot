@@ -77,6 +77,8 @@ const core = new JaidCore({
  * @prop {number} githubAppId
  * @prop {string} githubAppSecret
  * @prop {number} githubWebhookPort
+ * @prop {string} githubUser
+ * @prop {Object<string, string>} projectDependencyNames
  */
 
 /**

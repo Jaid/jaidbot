@@ -47,3 +47,8 @@ neutralTitles:
   - Hi
 githubAppId: 31980
 githubWebhookPort: 31980
+githubUser: Jaid
+projectDependencyNames:
+  express: Express
+  koa: Koa
+  webpack-config-jaid: "Webpack"
