@@ -41,6 +41,9 @@ export default class ChatBot extends EventEmitter {
         } else {
           normalizedHelpEntry.usage = `!${commandName}`
         }
+        if (helpEntry.example) {
+          normalizedHelpEntry.example = ensureArray(helpEntry.example)
+        }
         Object.assign(normalizedHelpEntry, pick(command, "permission", "needsDesktopClient", "requiredArguments"))
         this.commandUsages.push(normalizedHelpEntry)
       }
