@@ -1,5 +1,5 @@
 import PollingEmitter from "polling-emitter"
-import {config, got, logger} from "src/core"
+import core, {config, logger} from "src/core"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
 
@@ -19,7 +19,7 @@ export default class Opendota extends PollingEmitter {
   }
 
   init() {
-    this.got = got.extend({
+    this.got = core.got.extend({
       json: true,
       baseUrl: "https://api.opendota.com/api",
     })

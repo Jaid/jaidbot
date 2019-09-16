@@ -1,5 +1,5 @@
 import Sequelize, {Op} from "sequelize"
-import {config, logger, database} from "src/core"
+import core, {config, logger} from "src/core"
 import apiServer from "src/plugins/apiServer"
 import execa from "execa"
 import {isString, pick} from "lodash"
@@ -132,7 +132,7 @@ class Video extends Sequelize.Model {
       if (!isNewVideo && Video.currentVideo.hasBeenWatched()) {
         return
       }
-      await database.transaction(async transaction => {
+      await core.database.transaction(async transaction => {
         if (isNewVideo) {
           const video = await Video.findOne({
             transaction,

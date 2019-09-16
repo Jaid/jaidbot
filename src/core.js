@@ -92,24 +92,4 @@ export const config = core.config
  */
 export const logger = core.logger
 
-/**
- * @type {import("sequelize").Sequelize}
- */
-export const database = core.database
-
-/**
- * @type {import("got").GotInstance}
- */
-export const got = core.got
-
-/**
- * @type {import("http").Server}
- */
-export const server = core.insecureServer
-
-/**
- * @type {import("koa")}
- */
-export const koa = core.koa
-
 export default core

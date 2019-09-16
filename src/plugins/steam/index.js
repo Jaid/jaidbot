@@ -9,6 +9,18 @@ export default class GameUpdateWatcher {
 
   constructor() {
     this.watchers = []
+  }
+
+  preInit() {
+    if (isEmpty(config.travisToken)) {
+      return false
+    }
+    if (isEmpty(this.watchers)) {
+      return false
+    }
+  }
+
+  init() {
     for (const watchedDepot of config.watchedSteamDepotIds) {
       const depot = ensureObject(watchedDepot, "id")
       const watcher = new SteamGameUpdateWatcher({
@@ -19,15 +31,6 @@ export default class GameUpdateWatcher {
         instance: watcher,
         ...depot,
       })
-    }
-  }
-
-  preInit() {
-    if (isEmpty(config.travisToken)) {
-      return false
-    }
-    if (isEmpty(this.watchers)) {
-      return false
     }
   }
 

@@ -1,21 +1,10 @@
 import twitch from "src/twitch"
-import {logger, got, config} from "src/core"
+import core, {logger, config} from "src/core"
 import {isEmpty} from "has-content"
 import {createProbot} from "probot"
 import fsp from "@absolunet/fsp"
 
 export default class OwnReleaseNotifier {
-
-  constructor() {
-    this.travisGot = got.extend({
-      json: true,
-      baseUrl: "https://api.travis-ci.com",
-      headers: {
-        "Travis-API-Version": 3,
-        Authorization: `token ${config.travisToken}`,
-      },
-    })
-  }
 
   preInit() {
     if (isEmpty(config.travisToken)) {
@@ -61,6 +50,14 @@ export default class OwnReleaseNotifier {
   }
 
   async init() {
+    this.travisGot = core.got.extend({
+      json: true,
+      baseUrl: "https://api.travis-ci.com",
+      headers: {
+        "Travis-API-Version": 3,
+        Authorization: `token ${config.travisToken}`,
+      },
+    })
     const cert = await fsp.readFile(config.githubAppPemFilePath, "utf8")
     this.probot = createProbot({
       cert,
