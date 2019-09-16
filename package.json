@@ -26,7 +26,7 @@
     "got": "^9.6.0",
     "has-content": "^1.1.0",
     "humanize-duration": "^3.20.1",
-    "jaid-core": "^5.0.0",
+    "jaid-core": "^5.1.0",
     "jaid-logger": "^1.5.3",
     "koa": "^2.8.1",
     "koa-passport": "^4.1.3",
