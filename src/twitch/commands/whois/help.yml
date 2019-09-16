@@ -1,0 +1,3 @@
+param: user
+description: Antwortet mit Informationen, die Jaidbot über den angegebenen Twitch-Benutzer herausfinden konnte.
+example: "!whois Alinity"
