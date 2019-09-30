@@ -1,5 +1,5 @@
 import PollingEmitter from "polling-emitter"
-import core, {config, logger} from "src/core"
+import core, {logger} from "src/core"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
 
@@ -7,18 +7,19 @@ export default class Opendota extends PollingEmitter {
 
   constructor() {
     super({
-      pollInterval: config.dotaPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
   }
 
-  preInit() {
-    if (isEmpty(config.dotaSteamId32)) {
-      return false
-    }
+  handleConfig(config) {
+    this.steamId = config.dotaSteamId32
+    this.options.pollInterval = config.dotaPollIntervalSeconds * 1000
   }
 
   init() {
+    if (isEmpty(this.steamId) || isEmpty(this.pollInterval)) {
+      return false
+    }
     this.got = core.got.extend({
       json: true,
       baseUrl: "https://api.opendota.com/api",
@@ -43,7 +44,7 @@ export default class Opendota extends PollingEmitter {
       this.heroes = heroesResponse.body
       logger.info("Loaded %s heroes from OpenDota", this.heroes.length)
     }
-    const response = await this.got(`players/${config.dotaSteamId32}/recentMatches`)
+    const response = await this.got(`players/${this.steamId}/recentMatches`)
     return response.body
   }
 

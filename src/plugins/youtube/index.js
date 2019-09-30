@@ -1,5 +1,5 @@
 import PollingEmitter from "polling-emitter"
-import {config, logger} from "src/core"
+import {logger} from "src/core"
 import twitch from "src/twitch"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
@@ -29,10 +29,22 @@ export default class SubscriptionWatcher extends PollingEmitter {
 
   constructor() {
     super({
-      pollInterval: config.youtubeSubscriptionsPollIntervalSeconds * 1000,
       invalidateInitialEntries: true,
     })
-    this.startDate = Date.now()
+  }
+
+  handleConfig(config) {
+    this.observedChannels = config.observedYoutubeChannels
+    this.options.pollInterval = config.youtubeSubscriptionsPollIntervalSeconds * 1000
+    this.videoAddDelay = config.videoSubscriptionAddDelaySeconds * 1000
+    this.defaultPriority = config.videoSubscriptionPriority
+    this.forcedTimeBetweenChecks = config.secondsBetweenYoutubeChecks * 1000
+  }
+
+  init() {
+    if (isEmpty(this.observedChannels)) {
+      return false
+    }
     this.on("initialEntry", /** @type {newEntryHandler} */ youtubeVideo => {
       logger.debug("Found video \"%s\", but it is not new.", youtubeVideo.title)
     })
@@ -52,20 +64,14 @@ export default class SubscriptionWatcher extends PollingEmitter {
         } else {
           twitch.say(`PopCorn Video "${youtubeVideo.title}": ${url}`)
         }
-        await delay(config.videoSubscriptionAddDelaySeconds * 1000)
+        await delay(this.videoAddDelay)
         await Video.queueByUrl(url, {
-          priority: youtubeVideo.channel.priority || config.videoSubscriptionPriority,
+          priority: youtubeVideo.channel.priority || this.defaultPriority,
         })
       } catch (error) {
         logger.error("Found new YouTube video %s, but couldn't process it: %s", youtubeVideo.id, error)
       }
     })
-  }
-
-  preInit() {
-    if (isEmpty(config.observedYoutubeChannels)) {
-      return false
-    }
   }
 
   postInit() {
@@ -74,7 +80,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
 
   ready() {
     this.start()
-    logger.info("Started YouTube subscriptionWatcher for %s subscriptions", config.observedYoutubeChannels.length)
+    logger.info("Started YouTube subscriptionWatcher for %s", zahl(this.observedChannels, "subscription"))
   }
 
   async fetchEntries() {
@@ -87,7 +93,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
        * @type {YoutubeVideo}
        */
       logger.debug("Fetching YouTube videos from %s", channel.name)
-      const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), config.secondsBetweenYoutubeChecks * 1000, {
+      const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), this.forcedTimeBetweenChecks, {
         delayRejection: false,
       })
       return youtubeVideos.map(video => ({
@@ -95,9 +101,9 @@ export default class SubscriptionWatcher extends PollingEmitter {
         channel,
       }))
     }
-    const results = await pMap(config.observedYoutubeChannels, mapper, {concurrency: 1})
+    const results = await pMap(this.observedChannels, mapper, {concurrency: 1})
     const resultsList = flatten(results)
-    logger.debug("Fetched %s from %s", zahl(resultsList, "video"), zahl(config.observedYoutubeChannels, "channel"))
+    logger.debug("Fetched %s from %s", zahl(resultsList, "video"), zahl(this.observedChannels, "channel"))
     return resultsList
   }
 

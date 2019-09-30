@@ -1,5 +1,5 @@
 import SteamGameUpdateWatcher from "steam-game-update-watcher"
-import {logger, config} from "src/core"
+import {logger} from "src/core"
 import {ensureObject} from "magina"
 import twitch from "src/twitch"
 import {isEmpty} from "has-content"
@@ -11,21 +11,20 @@ export default class GameUpdateWatcher {
     this.watchers = []
   }
 
-  preInit() {
-    if (isEmpty(config.travisToken)) {
-      return false
-    }
-    if (isEmpty(this.watchers)) {
-      return false
-    }
+  handleConfig(config) {
+    this.depotIds = config.watchedSteamDepotIds
+    this.pollInterval = config.watchSteamGamesIntervalSeconds * 1000
   }
 
   init() {
-    for (const watchedDepot of config.watchedSteamDepotIds) {
+    if (isEmpty(this.depotIds) || isEmpty(this.pollInterval)) {
+      return false
+    }
+    for (const watchedDepot of this.depotIds) {
       const depot = ensureObject(watchedDepot, "id")
       const watcher = new SteamGameUpdateWatcher({
         depotId: depot.id,
-        pollInterval: config.watchSteamGamesIntervalSeconds * 1000,
+        pollInterval: this.pollInterval,
       })
       this.watchers.push({
         instance: watcher,
@@ -45,7 +44,7 @@ export default class GameUpdateWatcher {
       })
       instance.start()
     }
-    logger.info("Started Steam game update watcher with %s", zahl(config.watchedSteamDepotIds, "entry"))
+    logger.info("Started Steam game update watcher with %s", zahl(this.depotIds, "entry"))
   }
 
 }

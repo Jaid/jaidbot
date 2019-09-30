@@ -1,4 +1,4 @@
-import {config, logger} from "src/core"
+import {logger} from "src/core"
 import Octokit from "@octokit/rest"
 import pMap from "p-map"
 import twitch from "src/twitch"
@@ -13,11 +13,14 @@ export default class StarredReleaseNotifier {
     github = null
 
     init() {
+      if (isEmpty(this.user) || isEmpty(this.token) || isEmpty(this.pollInterval)) {
+        return false
+      }
       try {
         this.github = new Octokit({
           log: logger,
           userAgent: `${_PKG_TITLE} v${_PKG_VERSION}`,
-          auth: config.githubToken,
+          auth: this.token,
         })
       } catch (error) {
         this.github = new Octokit
@@ -26,10 +29,10 @@ export default class StarredReleaseNotifier {
       }
     }
 
-    preInit() {
-      if (isEmpty(config.starredReleasesUser)) {
-        return false
-      }
+    handleConfig(config) {
+      this.user = config.starredReleasesUser
+      this.token = config.githubToken
+      this.pollInterval = config.starredReleasesPollIntervalSeconds * 1000
     }
 
     postInit() {
@@ -37,7 +40,7 @@ export default class StarredReleaseNotifier {
     }
 
     async ready() {
-      const starredRepos = await this.github.paginate(`/users/${config.starredReleasesUser}/starred`)
+      const starredRepos = await this.github.paginate(`/users/${this.user}/starred`)
       const filteredRepos = starredRepos.filter(({archived, has_downloads, disabled}) => !archived && !disabled && has_downloads)
       const checkedRepos = await pMap(filteredRepos, async repo => {
         try {
@@ -57,7 +60,7 @@ export default class StarredReleaseNotifier {
       this.repos = checkedRepos.filter(repo => repo)
       setInterval(() => {
         this.check()
-      }, config.starredReleasesPollIntervalSeconds * 1000)
+      }, this.pollInterval)
       await this.check()
       logger.info("Started StarredReleaseNotifier for %s", zahl(this.repos, "repo"))
     }

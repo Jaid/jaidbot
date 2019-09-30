@@ -1,5 +1,5 @@
 import Twit from "twit"
-import {config, logger} from "src/core"
+import {logger} from "src/core"
 import twitch from "src/twitch"
 import {unpackObject} from "magina"
 import zahl from "zahl"
@@ -15,7 +15,7 @@ const isOwnTweet = tweet => {
   if (!tweet?.user?.id_str) {
     return false
   }
-  return config.twitterFollowedIds.includes(tweet.user.id_str)
+  return this.followedIds.includes(tweet.user.id_str)
 }
 
 const getTweetText = tweet => {
@@ -24,7 +24,8 @@ const getTweetText = tweet => {
 
 export default class TweetWatcher {
 
-  init() {
+  handleConfig(config) {
+    this.followedIds = config.twitterFollowedIds
     this.twit = new Twit({
       consumer_key: config.twitterConsumerKey,
       consumer_secret: config.twitterConsumerSecret,
@@ -33,8 +34,8 @@ export default class TweetWatcher {
     })
   }
 
-  preInit() {
-    if (isEmpty(config.twitterFollowedIds)) {
+  init() {
+    if (isEmpty(this.followedIds)) {
       return false
     }
   }
@@ -45,7 +46,7 @@ export default class TweetWatcher {
 
   ready() {
     const tweetEmitter = this.twit.stream("statuses/filter", {
-      follow: config.twitterFollowedIds.map(watchEntry => unpackObject(watchEntry, "id")),
+      follow: this.followedIds.map(watchEntry => unpackObject(watchEntry, "id")),
       filter_level: "none",
     })
     tweetEmitter.on("tweet", tweet => {
@@ -60,7 +61,7 @@ export default class TweetWatcher {
       }
       twitch.say(`CurseLit ${tweet.user.name} hat einen Tweet gelöscht: ${tweet.text}`)
     })
-    logger.info("Started tweet notifier for %s", zahl(config.twitterFollowedIds, "profile"))
+    logger.info("Started tweet notifier for %s", zahl(this.followedIds, "profile"))
   }
 
 }

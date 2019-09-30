@@ -1,15 +1,17 @@
 import twitch from "src/twitch"
-import core, {logger, config} from "src/core"
+import core, {logger} from "src/core"
 import {isEmpty} from "has-content"
 import {createProbot} from "probot"
 import fsp from "@absolunet/fsp"
 
 export default class OwnReleaseNotifier {
 
-  preInit() {
-    if (isEmpty(config.travisToken)) {
-      return false
-    }
+  handleConfig(config) {
+    this.token = config.travisToken
+    this.pemFile = config.githubAppPemFilePath
+    this.appId = config.githubAppId
+    this.webhookSecret = config.githubAppWebhookSecret
+    this.webhookPort = config.githubWebhookPort
   }
 
   /**
@@ -50,22 +52,25 @@ export default class OwnReleaseNotifier {
   }
 
   async init() {
+    if (isEmpty(this.pemFile) || isEmpty(this.token)) {
+      return false
+    }
     this.travisGot = core.got.extend({
       json: true,
       baseUrl: "https://api.travis-ci.com",
       headers: {
         "Travis-API-Version": 3,
-        Authorization: `token ${config.travisToken}`,
+        Authorization: `token ${this.token}`,
       },
     })
-    const cert = await fsp.readFile(config.githubAppPemFilePath, "utf8")
+    const cert = await fsp.readFile(this.pemFile, "utf8")
     this.probot = createProbot({
       cert,
-      secret: config.githubAppWebhookSecret,
-      id: config.githubAppId,
-      port: config.githubWebhookPort,
+      secret: this.webhookSecret,
+      id: this.appId,
+      port: this.webhookPort,
     })
-    logger.info("GitHub app %s is listening to webhook port %s", config.githubAppId, config.githubWebhookPort)
+    logger.info("GitHub app %s is listening to webhook port %s", this.appId, this.webhookPort)
     this.probot.load(this.probotApp)
     this.probot.start()
   }
