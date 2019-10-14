@@ -27,6 +27,7 @@
     "has-content": "^1.1.0",
     "humanize-duration": "^3.21.0",
     "jaid-core": "^5.5.0",
+    "jaid-core-dashboard": "^1.0.0",
     "jaid-logger": "^1.5.3",
     "koa": "^2.10.0",
     "koa-passport": "^4.1.3",

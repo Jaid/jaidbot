@@ -1,3 +1,5 @@
+import JaidCoreDashboard from "jaid-core-dashboard"
+
 import core from "./core"
 
 const job = async () => {
@@ -7,6 +9,7 @@ const job = async () => {
     const {pluginName} = value.match(/[/\\](?<pluginName>.+?)[/\\]index\.js$/).groups
     plugins[pluginName] = pluginsRequire(value).default
   }
+  plugins.dashboard = new JaidCoreDashboard()
   await core.init(plugins)
 }
 
