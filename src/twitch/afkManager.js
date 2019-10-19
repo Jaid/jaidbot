@@ -6,9 +6,11 @@ import humanizeDuration from "lib/humanizeDuration"
 import twitch from "src/twitch"
 import ms from "ms.macro"
 
-const extractTitleRegex = /(?<nontitle>(?<prefix>.*?)?\s*(?<emoji>💜)\s*)?(?<title>.*)/
-
 const afkToleranceMinutes = 2
+
+function removePrefix(title) {
+  return title.replace(/^\s*\[.*]\s*/, "")
+}
 
 class AfkManager extends EventEmitter {
 
@@ -27,8 +29,7 @@ class AfkManager extends EventEmitter {
         this.setTitle()
       }
     }, ms`30 seconds`)
-    this.setTitle()
-  }
+   }
 
   isAfk() {
     return this.afkMessage !== null
@@ -58,10 +59,12 @@ class AfkManager extends EventEmitter {
       this.title = title
     }
     if (!this.title) {
-      const {channel} = await twitch.getMyStream()
-      this.title = extractTitleRegex.exec(channel.status).groups.title
+      const stream = await twitch.getMyStream()
+      if (stream?.channel?.status) {
+        this.title = removePrefix(stream.channel.status)
+      }
     }
-    const finalTitle = `${this.getTitlePrefix()}💜 ${this.title}`
+    const finalTitle = `${this.getTitlePrefix()}${this.title}`
     logger.info("New title: %s", finalTitle)
     await twitch.setTitle(finalTitle)
   }
