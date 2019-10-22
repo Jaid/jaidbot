@@ -39,6 +39,7 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "nestext": "^1.0.1",
+    "node-cache": "^4.2.1",
     "openurl2": "^1.0.1",
     "p-map": "^3.0.0",
     "p-min-delay": "^3.1.0",

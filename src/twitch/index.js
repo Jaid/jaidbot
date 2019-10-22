@@ -1,13 +1,23 @@
 import EventEmitter from "events"
 
 import ChatClient from "twitch-chat-client"
-import {config, logger} from "src/core"
+import {logger} from "src/core"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
+import isOnlyDigits from "lib/isOnlyDigits"
+import Cache from "node-cache"
+import ms from "ms.macro"
 
 import ChatBot from "./ChatBot"
 
 class TwitchCore extends EventEmitter {
+
+  handleConfig(config) {
+    this.nicknames = config.nicknames || {}
+    this.nicknameCache = new Cache({stdTTL: ms`1 day` / 1000})
+    this.streamerLogin = config.twitchStreamerLogin
+    this.botLogin = config.twitchBotLogin
+  }
 
   /**
    * @type {boolean}
@@ -16,17 +26,17 @@ class TwitchCore extends EventEmitter {
 
   async init() {
     const [streamerUser, botUser] = await Promise.all([
-      TwitchUser.getByTwitchLogin(config.twitchStreamerLogin),
-      TwitchUser.getByTwitchLogin(config.twitchBotLogin),
+      TwitchUser.getByTwitchLogin(this.streamerLogin),
+      TwitchUser.getByTwitchLogin(this.botLogin),
     ])
     this.streamerUser = streamerUser
     this.botUser = botUser
     if (!streamerUser?.accessToken) {
-      logger.warn("No user auth found for requested streamer user %s", config.twitchStreamerLogin)
+      logger.warn("No user auth found for requested streamer user %s", this.streamerLogin)
       return false
     }
     if (!botUser?.accessToken) {
-      logger.warn("No user auth found for requested bot user %s", config.twitchBotLogin)
+      logger.warn("No user auth found for requested bot user %s", this.botLogin)
       return false
     }
     const [streamerClient, botClient] = await Promise.all([
@@ -42,7 +52,7 @@ class TwitchCore extends EventEmitter {
     await chatClient.join(this.streamerUser.getDisplayName())
     logger.info("Connected bot")
     this.chatBot = new ChatBot()
-    chatClient.onPrivmsg((channel, user, message, msg) => {
+    chatClient.onPrivmsg(async (channel, user, message, msg) => {
       const messageInfo = {
         text: message.trim(),
         bits: msg.totalBits || 0,
@@ -63,7 +73,7 @@ class TwitchCore extends EventEmitter {
       }
       logger.debug(`${messageInfo.sender.displayName}: ${messageInfo.text}`)
       this.emit("chat", messageInfo)
-      this.chatBot.handleMessage(messageInfo)
+      await this.chatBot.handleMessage(messageInfo)
     })
     this.ready = true
   }
@@ -71,6 +81,28 @@ class TwitchCore extends EventEmitter {
   async userNameToDisplayName(userName) {
     const profile = await this.streamerClient.helix.users.getUserByName(userName)
     return profile?.displayName || profile?.name || userName
+  }
+
+  async getNickname(usernameOrTwitchId) {
+    const normalizedUsername = String(usernameOrTwitchId).trim().toLowerCase()
+    const customNickname = this.nicknames[normalizedUsername]
+    if (customNickname) {
+      return customNickname
+    }
+    if (this.nicknameCache.has(normalizedUsername)) {
+      return this.nicknameCache.get(normalizedUsername)
+    }
+    const isTwitchId = isOnlyDigits(usernameOrTwitchId)
+    let profile
+    if (isTwitchId) {
+      profile = await this.streamerClient.helix.users.getUserById(normalizedUsername)
+    }
+    if (!profile) {
+      profile = await this.streamerClient.helix.users.getUserByName(normalizedUsername)
+    }
+    const name = profile?.displayName || profile?.name || usernameOrTwitchId
+    this.nicknameCache.set(normalizedUsername, name)
+    return name
   }
 
   async getFollowMoment(userName) {

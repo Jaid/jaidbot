@@ -80,6 +80,7 @@ const core = new JaidCore({
  * @prop {string} githubUser
  * @prop {Object<string, string>} projectDependencyNames
  * @prop {number} maxTechnologiesInTitle
+ * @prop {Object<string, string>} nicknames
  */
 
 /**

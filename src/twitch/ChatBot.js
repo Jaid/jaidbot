@@ -50,7 +50,7 @@ export default class ChatBot extends EventEmitter {
     }
   }
 
-  handleMessage(message) {
+  async handleMessage(message) {
     const parsedCommand = commandRegex.exec(message.text)
     if (parsedCommand === null) {
       return
@@ -62,6 +62,7 @@ export default class ChatBot extends EventEmitter {
       commandArguments = parsedCommand.groups.commandArguments |> stringArgv |> minimist
       positionalArguments = commandArguments._
     }
+    const senderDisplayName = await twitch.getNickname(message.sender)
     const command = this.commands[commandName]
     if (!command) {
       twitch.say(`Verstehe ich jetzt nicht, ${message.sender.displayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)

@@ -53,3 +53,5 @@ projectDependencyNames:
   koa: Koa
   webpack-config-jaid: Webpack
 maxTechnologiesInTitle: 5
+nicknames:
+  flomey_: Flomey

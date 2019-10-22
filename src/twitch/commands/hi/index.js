@@ -31,7 +31,7 @@ export default {
       displayName = await twitch.userNameToDisplayName(userName)
     } else {
       if (sender.isBroadcaster) {
-        return "Testest du mich schon wieder? cmonBruh"
+        return `Testest du mich schon wieder, ${sender.displayName}? cmonBruh`
       }
       userName = sender.name
       displayName = sender.displayName
