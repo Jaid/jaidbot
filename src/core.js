@@ -27,6 +27,7 @@ const core = new JaidCore({
       "databasePassword",
       "githubAppPemFilePath",
       "githubAppWebhookSecret",
+      "adminPassword",
     ],
   },
 })
@@ -81,6 +82,7 @@ const core = new JaidCore({
  * @prop {Object<string, string>} projectDependencyNames
  * @prop {number} maxTechnologiesInTitle
  * @prop {Object<string, string>} nicknames
+ * @prop {string} adminPassword
  */
 
 /**

@@ -1,11 +1,15 @@
 import twitch from "src/twitch"
+import {isEmpty} from "has-content"
 
 /**
  * @type {import("koa").Middleware}
  */
 const middleware = async context => {
-  twitch.say("")
-  context.body = ""
+  const message = context.request.fields?.message
+  if (isEmpty(message)) {
+    context.throw(400, "No chat message given")
+  }
+  twitch.streamerChatClient.say(twitch.streamerLogin, message)
 }
 
 export default middleware

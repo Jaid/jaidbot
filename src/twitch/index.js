@@ -1,6 +1,5 @@
 import EventEmitter from "events"
 
-import ChatClient from "twitch-chat-client"
 import {logger} from "src/core"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
@@ -41,20 +40,18 @@ class TwitchCore extends EventEmitter {
       logger.warn("No user auth found for requested bot user %s", this.botLogin)
       return false
     }
-    const [streamerClient, botClient] = await Promise.all([
-      streamerUser.toTwitchClient(),
-      botUser.toTwitchClient(),
+    const [streamer, bot] = await Promise.all([
+      streamerUser.toTwitchClientWithChat(),
+      botUser.toTwitchClientWithChat(),
     ])
-    this.streamerClient = streamerClient
-    this.botClient = botClient
-    const chatClient = await ChatClient.forTwitchClient(botClient)
-    this.chatClient = chatClient
-    await chatClient.connect()
-    await chatClient.waitForRegistration()
-    await chatClient.join(this.streamerUser.getDisplayName())
+    this.streamerClient = streamer.apiClient
+    this.streamerChatClient = streamer.chatClient
+    this.botClient = bot.apiClient
+    this.chatClient = bot.chatClient
+    await this.chatClient.join(this.streamerLogin)
     logger.info("Connected bot")
     this.chatBot = new ChatBot()
-    chatClient.onPrivmsg(async (channel, user, message, msg) => {
+    this.chatClient.onPrivmsg(async (channel, user, message, msg) => {
       const messageInfo = {
         text: message.trim(),
         bits: msg.totalBits || 0,

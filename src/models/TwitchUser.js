@@ -3,6 +3,7 @@ import twitch from "twitch"
 import twitchCore from "src/twitch"
 import {config, logger} from "src/core"
 import scope from "src/plugins/twitchAuth/scope"
+import ChatClient from "twitch-chat-client"
 
 class TwitchUser extends Sequelize.Model {
 
@@ -89,6 +90,18 @@ class TwitchUser extends Sequelize.Model {
     logger.info("Created client for user %s", this.loginName)
     return client
   }
+
+  async toTwitchClientWithChat() {
+    const apiClient = await this.toTwitchClient()
+    const chatClient = await ChatClient.forTwitchClient(apiClient)
+    await chatClient.connect()
+    await chatClient.waitForRegistration()
+    return {
+      apiClient,
+      chatClient,
+    }
+  }
+
 
   /**
    * @async
