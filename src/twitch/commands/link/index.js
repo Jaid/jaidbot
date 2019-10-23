@@ -2,10 +2,10 @@ import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
-  async handle({sender}) {
+  async handle({senderName}) {
     const video = Video.getCurrentVideo()
     if (!video) {
-      return `Es gibt gerade kein abgespieltes Video, ${sender.displayName}.`
+      return `Es gibt gerade kein abgespieltes Video, ${senderName}.`
     }
     let url
     if (video.extractor === "youtube") {

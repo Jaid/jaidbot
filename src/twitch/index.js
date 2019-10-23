@@ -14,7 +14,9 @@ class TwitchCore extends EventEmitter {
 
   handleConfig(config) {
     this.nicknames = config.nicknames || {}
-    this.nicknameCache = new Cache({stdTTL: ms`1 day` / 1000})
+    this.nicknameCache = new Cache({
+      stdTTL: ms`1 day` / 1000,
+    })
     this.streamerLogin = config.twitchStreamerLogin
     this.botLogin = config.twitchBotLogin
   }
@@ -84,25 +86,42 @@ class TwitchCore extends EventEmitter {
   }
 
   async getNickname(usernameOrTwitchId) {
-    const normalizedUsername = String(usernameOrTwitchId).trim().toLowerCase()
-    const customNickname = this.nicknames[normalizedUsername]
-    if (customNickname) {
-      return customNickname
+    try {
+      const normalizedUsername = String(usernameOrTwitchId).trim().toLowerCase()
+      const cachedName = this.nicknameCache.get(normalizedUsername)
+      if (cachedName) {
+        return cachedName
+      }
+      const customNickname = this.nicknames[normalizedUsername]
+      if (customNickname) {
+        this.nicknameCache.set(normalizedUsername, customNickname)
+        return customNickname
+      }
+      const isTwitchId = isOnlyDigits(usernameOrTwitchId)
+      let username
+      let profile
+      if (isTwitchId) {
+        profile = await this.streamerClient.helix.users.getUserById(normalizedUsername)
+        if (profile) {
+          username = profile.name
+          const customNicknameById = this.nicknames[username]
+          if (customNicknameById) {
+            this.nicknameCache.set(username, customNicknameById)
+            return customNicknameById
+          }
+        }
+      }
+      if (!profile) {
+        username = normalizedUsername
+        profile = await this.streamerClient.helix.users.getUserByName(username)
+      }
+      const name = profile?.displayName || profile?.name || normalizedUsername
+      this.nicknameCache.set(username, name)
+      return name
+    } catch (error) {
+      logger.error(`Could not fetch nickname for "${usernameOrTwitchId}"\n%s`, error)
+      return "(?)"
     }
-    if (this.nicknameCache.has(normalizedUsername)) {
-      return this.nicknameCache.get(normalizedUsername)
-    }
-    const isTwitchId = isOnlyDigits(usernameOrTwitchId)
-    let profile
-    if (isTwitchId) {
-      profile = await this.streamerClient.helix.users.getUserById(normalizedUsername)
-    }
-    if (!profile) {
-      profile = await this.streamerClient.helix.users.getUserByName(normalizedUsername)
-    }
-    const name = profile?.displayName || profile?.name || usernameOrTwitchId
-    this.nicknameCache.set(normalizedUsername, name)
-    return name
   }
 
   async getFollowMoment(userName) {

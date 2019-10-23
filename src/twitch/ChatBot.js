@@ -62,19 +62,19 @@ export default class ChatBot extends EventEmitter {
       commandArguments = parsedCommand.groups.commandArguments |> stringArgv |> minimist
       positionalArguments = commandArguments._
     }
-    const senderDisplayName = await twitch.getNickname(message.sender)
+    const senderName = await twitch.getNickname(message.sender.id)
     const command = this.commands[commandName]
     if (!command) {
-      twitch.say(`Verstehe ich jetzt nicht, ${message.sender.displayName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
+      twitch.say(`Verstehe ich jetzt nicht, ${senderName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
       return
     }
     if (!message.sender.isBroadcaster) {
       if (command.permission === "subOrVip" && !message.sender.isVip && !message.sender.isSub && !message.sender.isMod) {
-        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
+        twitch.say(`${senderName}, für diesen Befehl musst du Moderator, Subscriber oder VIP sein!`)
         return
       }
       if (command.permission === "mod" && !message.sender.hasElevatedPermission) {
-        twitch.say(`${message.sender.displayName}, für diesen Befehl musst du Moderator sein!`)
+        twitch.say(`${senderName}, für diesen Befehl musst du Moderator sein!`)
         return
       }
     }
@@ -84,18 +84,19 @@ export default class ChatBot extends EventEmitter {
     }
     if (command.requiredArguments) {
       if (!commandArguments) {
-        twitch.say(`${message.sender.displayName}, dieser Befehl kann nicht ohne Arguments verwendet werden!`)
+        twitch.say(`${senderName}, dieser Befehl kann nicht ohne Arguments verwendet werden!`)
         return
       }
       const givenArgumentsLength = positionalArguments.length
       if (command.requiredArguments > givenArgumentsLength) {
-        twitch.say(`${message.sender.displayName}, dieser Befehl benötigt ${command.requiredArguments} Arguments!`)
+        twitch.say(`${senderName}, dieser Befehl benötigt ${command.requiredArguments} Arguments!`)
         return
       }
     }
     command.handle({
       ...message,
       commandArguments,
+      senderName,
       positionalArguments: positionalArguments || [],
       combinedArguments: parsedCommand?.groups?.commandArguments,
     }).then(returnValue => {
@@ -104,7 +105,7 @@ export default class ChatBot extends EventEmitter {
       }
     }).catch(error => {
       logger.error("Error at execution of \"%s\": %s", message.text, error)
-      twitch.say(`Oh, ${message.sender.displayName}, da hat irgendetwas nicht geklappt. Muss sich ${twitch.streamerUser.getDisplayName()} drum kümmern.`)
+      twitch.say(`Oh, ${senderName}, da hat irgendetwas nicht geklappt. Muss sich ${twitch.streamerUser.getDisplayName()} drum kümmern.`)
     })
   }
 

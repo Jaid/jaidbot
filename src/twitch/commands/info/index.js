@@ -6,10 +6,10 @@ import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
-  async handle({sender}) {
+  async handle({sender, senderName}) {
     const video = Video.getCurrentVideo()
     if (!video) {
-      return `Gerade läuft doch gar kein Video, ${sender.displayName}!`
+      return `Gerade läuft doch gar kein Video, ${senderName}!`
     }
     const properties = []
     const durationMs = video.getDurationMs()
@@ -53,6 +53,6 @@ export default {
       properties.push(`${moment(video.createdAt).fromNow()} hinzugefügt`)
     }
     const currentTime = moment.duration(video.timestamp, "milliseconds").format()
-    return `PopCorn ${sender.displayName}, gerade läuft Stelle ${currentTime} des Videos "${video.title}" von ${video.publisher}. ${properties.join(", ")}.`
+    return `PopCorn ${senderName}, gerade läuft Stelle ${currentTime} des Videos "${video.title}" von ${video.publisher}. ${properties.join(", ")}.`
   },
 }

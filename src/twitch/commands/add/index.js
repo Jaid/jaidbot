@@ -5,7 +5,7 @@ import Video from "src/models/Video"
 export default {
   permission: "subOrVip",
   requiredArguments: 1,
-  async handle({commandArguments, sender}) {
+  async handle({commandArguments, sender, senderName}) {
     const url = commandArguments._[0]
     let priority = config.videoRequestPriorityBase
     if (sender.isSub) {
@@ -24,6 +24,6 @@ export default {
       priority,
       requesterTwitchId: sender.id,
     })
-    twitch.say(`PopCorn ${sender.displayName} hat "${video.title}" hinzugefügt! (Priorität: ${priority})`)
+    twitch.say(`PopCorn ${senderName} hat "${video.title}" hinzugefügt! (${priority} Priorität)`)
   },
 }

@@ -22,7 +22,7 @@ const getGreeting = () => {
 }
 
 export default {
-  async handle({sender, positionalArguments}) {
+  async handle({sender, senderName, positionalArguments}) {
     const greeting = getGreeting()
     let userName
     let displayName
@@ -31,10 +31,10 @@ export default {
       displayName = await twitch.userNameToDisplayName(userName)
     } else {
       if (sender.isBroadcaster) {
-        return `Testest du mich schon wieder, ${sender.displayName}? cmonBruh`
+        return `Testest du mich schon wieder, ${senderName}? cmonBruh`
       }
       userName = sender.name
-      displayName = sender.displayName
+      displayName = senderName
       if (sender.isVip) {
         displayName = `höchstgeachteter Ehrenhase ${displayName}`
       }

@@ -28,6 +28,10 @@ class Main {
     this.projectSetDate = Date.now()
   }
 
+  handleConfig(config) {
+    twitch.handleConfig(config)
+  }
+
   clearProject() {
     this.currentProject = null
   }

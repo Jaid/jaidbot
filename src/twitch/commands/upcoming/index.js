@@ -3,7 +3,7 @@ import {Op} from "sequelize"
 
 export default {
   needsDesktopClient: true,
-  async handle({sender}) {
+  async handle({senderName}) {
     const query = {
       where: {
         watchedAt: {
@@ -29,6 +29,6 @@ export default {
     if (!upcomingVideo) {
       return "Es wurde kein weiteres Video gefunden."
     }
-    return `PopCorn ${sender.displayName}, demnächst läuft hier "${upcomingVideo.title}" von ${upcomingVideo.publisher}.`
+    return `PopCorn ${senderName}, demnächst läuft hier "${upcomingVideo.title}" von ${upcomingVideo.publisher}.`
   },
 }
