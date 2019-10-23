@@ -102,7 +102,6 @@ class TwitchUser extends Sequelize.Model {
     }
   }
 
-
   /**
    * @async
    * @function
