@@ -9,6 +9,9 @@ export default class Main {
       get: {
         "/commands": require("./handlers/commands").default,
       },
+      post: {
+        "/chat": require("./handlers/chat").default,
+      },
     }
     core.koa.use(router(routes))
   }
