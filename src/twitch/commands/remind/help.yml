@@ -1,0 +1,6 @@
+param:
+  - duration
+  - comment
+description: Erinnert im Chat an ein Ereignis, nachdem die angegebene Zeit vergangen ist.
+example:
+  - "!remind 90m Waschmaschine fertig"
