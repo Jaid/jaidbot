@@ -29,7 +29,7 @@ class AfkManager extends EventEmitter {
         this.setTitle()
       }
     }, ms`30 seconds`)
-   }
+  }
 
   isAfk() {
     return this.afkMessage !== null
@@ -74,6 +74,7 @@ class AfkManager extends EventEmitter {
     this.afkEnd = this.afkStart + durationSeconds * 1000
     this.afkMessage = message
     await this.setTitle()
+    twitch.startAdLoop()
     twitch.say(`Jaidchen geht jetzt mal weg für etwa ${(durationSeconds * 1000) |> humanizeDuration}. Als Nachricht hat er lediglich ein "${message}" hinterlassen.`)
   }
 
@@ -93,6 +94,7 @@ class AfkManager extends EventEmitter {
     this.afkEnd = null
     this.afkMessage = null
     await this.setTitle()
+    twitch.stopAdLoop()
     twitch.say(comment)
   }
 

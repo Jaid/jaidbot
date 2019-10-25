@@ -1,6 +1,5 @@
 import afkManager from "src/twitch/afkManager"
 import parseDuration from "parse-duration"
-import {isInteger} from "lodash"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 
@@ -9,7 +8,7 @@ export default {
   requiredArguments: 1,
   async handle({positionalArguments, combinedArguments}) {
     let durationSeconds
-    if (positionalArguments[0] |> isInteger) {
+    if (Number.isInteger(positionalArguments[0])) {
       durationSeconds = Math.floor(parseDuration(`${positionalArguments[0]}m`) / 1000)
     } else {
       durationSeconds = Math.floor(parseDuration(positionalArguments[0]) / 1000)

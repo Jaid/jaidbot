@@ -6,10 +6,15 @@ import TwitchUser from "src/models/TwitchUser"
 import isOnlyDigits from "lib/isOnlyDigits"
 import Cache from "node-cache"
 import ms from "ms.macro"
+import pRetry from "p-retry"
+import readableMs from "readable-ms"
+import delay from "delay"
 
 import ChatBot from "./ChatBot"
 
 class TwitchCore extends EventEmitter {
+
+  isInAdLoop = false
 
   handleConfig(config) {
     this.nicknames = config.nicknames || {}
@@ -75,6 +80,7 @@ class TwitchCore extends EventEmitter {
       await this.chatBot.handleMessage(messageInfo)
     })
     this.ready = true
+    await this.startAdLoop()
   }
 
   async userNameToDisplayName(userName) {
@@ -119,6 +125,33 @@ class TwitchCore extends EventEmitter {
       logger.error(`Could not fetch nickname for "${usernameOrTwitchId}"\n%s`, error)
       return "(?)"
     }
+  }
+
+  async playAd(adDurationSeconds = 30) {
+    const job = async () => {
+      await this.streamerClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
+    }
+    try {
+      await pRetry(job, {
+        maxTimeout: ms`5 seconds`,
+        minTimeout: 100,
+      })
+      logger.debug("Started %s ad", readableMs(adDurationSeconds * 1000))
+    } catch (error) {
+      logger.error("Could not play %ss ad\n%s", adDurationSeconds, error)
+    }
+  }
+
+  async startAdLoop() {
+    this.isInAdLoop = true
+    while (this.isInAdLoop) {
+      await this.playAd(180)
+      await delay(ms`8 minutes`)
+    }
+  }
+
+  async stopAdLoop() {
+    this.isInAdLoop = false
   }
 
   async getFollowMoment(userName) {

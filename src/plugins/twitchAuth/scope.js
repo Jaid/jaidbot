@@ -7,4 +7,5 @@ export default [
   "channel_read",
   "chat:read",
   "chat:edit",
+  "channel_commercial",
 ]
