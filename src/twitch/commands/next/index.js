@@ -12,6 +12,9 @@ export default {
         videoFile: {
           [Op.ne]: null,
         },
+        frozenUntil: {
+          [Op.lt]: Date.now(),
+        },
       },
       order: [
         ["priority", "desc"],
