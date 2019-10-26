@@ -43,6 +43,14 @@ export default {
       limit: 1,
     })
     const details = []
+    if (followers.total > 0) {
+      let detail = `hat ${millify(followers.total)} Follower`
+      if (followers.total <= 5) {
+        const followerNames = followers.data.map(follower => follower.userDisplayName || follower.userId)
+        detail += ` (${followerNames.join(", ")})`
+      }
+      details.push(detail)
+    }
     if (stream?.type === "live") {
       const game = await stream.getGame()
       details.push(`streamt ${game.name} seit ${hoursMinutesHumanize(Date.now() - Number(stream.startDate))} auf ${prettifyLanguage(stream?.language)} für ${millify(stream.viewers)} Zuschauer`)
@@ -61,6 +69,6 @@ export default {
       details.push(`folgt ${zahl(followees.total, "Channel")}`)
     }
     const detailsString = hasContent(details) ? `, ${details.join(", ")}` : ""
-    return `${profile.displayName} hat ${millify(followers.total)} Follower auf dem ${moment(oldApiProfile.creationDate).fromNow()} erstellten Channel${detailsString}.`
+    return `${profile.displayName} hat sich ${moment(oldApiProfile.creationDate).fromNow()} erstellt${detailsString}.`
   },
 }
