@@ -82,7 +82,6 @@ class TwitchCore extends EventEmitter {
       await this.chatBot.handleMessage(messageInfo)
     })
     this.ready = true
-    await this.startAdLoop()
   }
 
   async userNameToDisplayName(userName) {
