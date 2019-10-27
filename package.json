@@ -40,6 +40,7 @@
     "moment-duration-format": "^2.3.2",
     "nestext": "^1.0.1",
     "node-cache": "^5.0.0",
+    "node-schedule": "^1.3.2",
     "openurl2": "^1.0.1",
     "p-map": "^3.0.0",
     "p-min-delay": "^3.1.0",

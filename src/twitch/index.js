@@ -3,12 +3,14 @@ import EventEmitter from "events"
 import {logger} from "src/core"
 import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
+import Heartbeat from "src/models/Heartbeat"
 import isOnlyDigits from "lib/isOnlyDigits"
 import Cache from "node-cache"
 import ms from "ms.macro"
 import pRetry from "p-retry"
 import readableMs from "readable-ms"
 import delay from "delay"
+import {isEmpty} from "has-content"
 
 import ChatBot from "./ChatBot"
 
@@ -194,6 +196,22 @@ class TwitchCore extends EventEmitter {
       return
     }
     this.chatClient.say(this.streamerUser.loginName, message)
+  }
+
+  isPlayingGame(game) {
+    if (!Heartbeat.currentStatus) {
+      return false
+    }
+    if (isEmpty(Heartbeat.currentStatus.game)) {
+      return false
+    }
+    return Heartbeat.currentStatus.game.toLowerCase() === game.toLowerCase()
+  }
+
+  notifyIfGame(game, message) {
+    if (this.isPlayingGame(game)) {
+      this.say(`HumbleLife ${message}`)
+    }
   }
 
 }
