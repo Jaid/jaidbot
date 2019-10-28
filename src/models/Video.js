@@ -468,7 +468,11 @@ export const schema = {
     defaultValue: false,
   },
   liked: Sequelize.BOOLEAN,
-  frozenUntil: Sequelize.DATE,
+  frozenUntil: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: 0,
+  },
   requestUrl: Sequelize.TEXT,
   // Desktop info
   infoFile: Sequelize.STRING,
