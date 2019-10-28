@@ -1,7 +1,7 @@
 import twitch from "src/twitch"
 import nodeSchedule from "node-schedule"
 
-import scheduledMessages from "./schuledMessages.yml"
+import scheduledMessages from "./scheduledMessages.yml"
 
 export default class BlackDesert {
 
