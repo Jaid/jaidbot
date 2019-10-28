@@ -1,4 +1,4 @@
-- cron: "* * * 7 0"
+- cron: "0 7 * * *"
   message: Black Spirit's Adventure ist jetzt wieder verfügbar.
-- cron: "* * * 2 0"
+- cron: "0 2 * * *"
   message: Die Daily Quests sind wieder da.
