@@ -1,0 +1,9 @@
+bosses:
+  kutum:
+    title: Kutum
+    locationHint: nordöstlich von Altinova
+dates:
+  - day: monday
+    hour: 0
+    minute: 15
+    bosses: [kutum, karanda]
