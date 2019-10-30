@@ -27,7 +27,7 @@ export default {
     }
     const durationMs = video.getDurationMs()
     const currentTime = video.timestamp
-    if (currentTime / durationMs > 0.5) {
+    if (currentTime / durationMs < 0.5) {
       return `Skippie! Weg mit "${video.title}"!`
     }
     const skippedMs = Math.max(ms`2 seconds`, durationMs - currentTime)
