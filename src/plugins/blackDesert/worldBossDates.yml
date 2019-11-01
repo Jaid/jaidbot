@@ -1,0 +1,165 @@
+- spawnDate: monday 00:15
+  notificationDate: sunday 23:55
+  boss: [kutum, karanda]
+- spawnDate: monday 02:00
+  notificationDate: monday 01:40
+  boss: karanda
+- spawnDate: monday 05:00
+  notificationDate: monday 04:40
+  boss: kzarka
+- spawnDate: monday 09:00
+  notificationDate: monday 08:40
+  boss: kzarka
+- spawnDate: monday 12:00
+  notificationDate: monday 11:40
+  boss: offin
+- spawnDate: monday 16:00
+  notificationDate: monday 15:40
+  boss: kutum
+- spawnDate: monday 19:00
+  notificationDate: monday 18:40
+  boss: nouver
+- spawnDate: monday 22:15
+  notificationDate: monday 21:55
+  boss: kzarka
+- spawnDate: tuesday 00:15
+  notificationDate: monday 23:55
+  boss: karanda
+- spawnDate: tuesday 02:00
+  notificationDate: tuesday 01:40
+  boss: kutum
+- spawnDate: tuesday 05:00
+  notificationDate: tuesday 04:40
+  boss: kzarka
+- spawnDate: tuesday 09:00
+  notificationDate: tuesday 08:40
+  boss: nouver
+- spawnDate: tuesday 12:00
+  notificationDate: tuesday 11:40
+  boss: kutum
+- spawnDate: tuesday 16:00
+  notificationDate: tuesday 15:40
+  boss: nouver
+- spawnDate: tuesday 19:00
+  notificationDate: tuesday 18:40
+  boss: karanda
+- spawnDate: tuesday 22:15
+  notificationDate: tuesday 21:55
+  boss: garmoth
+- spawnDate: wednesday 00:15
+  notificationDate: tuesday 23:55
+  boss: [kutum, kzarka]
+- spawnDate: wednesday 02:00
+  notificationDate: wednesday 01:40
+  boss: karanda
+- spawnDate: wednesday 05:00
+  notificationDate: wednesday 04:40
+  boss: kzarka
+- spawnDate: wednesday 09:00
+  notificationDate: wednesday 08:40
+  boss: karanda
+- spawnDate: wednesday 16:00
+  notificationDate: wednesday 15:40
+  boss: kutum
+- spawnDate: wednesday 19:00
+  notificationDate: wednesday 18:40
+  boss: offin
+- spawnDate: wednesday 22:15
+  notificationDate: wednesday 21:55
+  boss: [karanda, kzarka]
+- spawnDate: wednesday 23:15
+  notificationDate: wednesday 22:55
+  boss: [quint, muraka]
+- spawnDate: thursday 00:15
+  notificationDate: wednesday 23:55
+  boss: nouver
+- spawnDate: thursday 02:00
+  notificationDate: thursday 01:40
+  boss: kutum
+- spawnDate: thursday 05:00
+  notificationDate: thursday 04:40
+  boss: nouver
+- spawnDate: thursday 09:00
+  notificationDate: thursday 08:40
+  boss: kutum
+- spawnDate: thursday 12:00
+  notificationDate: thursday 11:40
+  boss: nouver
+- spawnDate: thursday 16:00
+  notificationDate: thursday 15:40
+  boss: kzarka
+- spawnDate: thursday 19:00
+  notificationDate: thursday 18:40
+  boss: kutum
+- spawnDate: thursday 22:15
+  notificationDate: thursday 21:55
+  boss: garmoth
+- spawnDate: friday 00:15
+  notificationDate: thursday 23:55
+  boss: [kzarka, karanda]
+- spawnDate: friday 02:00
+  notificationDate: friday 01:40
+  boss: nouver
+- spawnDate: friday 05:00
+  notificationDate: friday 04:40
+  boss: karanda
+- spawnDate: friday 09:00
+  notificationDate: friday 08:40
+  boss: kutum
+- spawnDate: friday 12:00
+  notificationDate: friday 11:40
+  boss: karanda
+- spawnDate: friday 16:00
+  notificationDate: friday 15:40
+  boss: nouver
+- spawnDate: friday 19:00
+  notificationDate: friday 18:40
+  boss: kzarka
+- spawnDate: friday 22:15
+  notificationDate: friday 21:55
+  boss: [kutum, kzarka]
+- spawnDate: saturday 00:15
+  notificationDate: friday 23:55
+  boss: karanda
+- spawnDate: saturday 02:00
+  notificationDate: saturday 01:40
+  boss: offin
+- spawnDate: saturday 05:00
+  notificationDate: saturday 04:40
+  boss: nouver
+- spawnDate: saturday 09:00
+  notificationDate: saturday 08:40
+  boss: kutum
+- spawnDate: saturday 12:00
+  notificationDate: saturday 11:40
+  boss: nouver
+- spawnDate: saturday 16:00
+  notificationDate: saturday 15:40
+  boss: [quint, muraka]
+- spawnDate: saturday 19:00
+  notificationDate: saturday 18:40
+  boss: [karanda, kzarka]
+- spawnDate: sunday 00:15
+  notificationDate: saturday 23:55
+  boss: [nouver, kutum]
+- spawnDate: sunday 02:00
+  notificationDate: sunday 01:40
+  boss: kzarka
+- spawnDate: sunday 05:00
+  notificationDate: sunday 04:40
+  boss: kutum
+- spawnDate: sunday 09:00
+  notificationDate: sunday 08:40
+  boss: nouver
+- spawnDate: sunday 12:00
+  notificationDate: sunday 11:40
+  boss: kzarka
+- spawnDate: sunday 16:00
+  notificationDate: sunday 15:40
+  boss: vell
+- spawnDate: sunday 19:00
+  notificationDate: sunday 18:40
+  boss: garmoth
+- spawnDate: sunday 22:15
+  notificationDate: sunday 21:55
+  boss: [kzarka, nouver]

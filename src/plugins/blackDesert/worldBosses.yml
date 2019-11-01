@@ -1,9 +1,27 @@
-bosses:
-  kutum:
-    title: Kutum
-    locationHint: nordöstlich von Altinova
-dates:
-  - day: monday
-    hour: 0
-    minute: 15
-    bosses: [kutum, karanda]
+kutum:
+  title: Kutum
+  locationHint: nordöstlich von Altinova
+karanda:
+  title: Karanda
+  locationHint: südlich von Olvia, östlich von Florin
+kzarka:
+  title: Kzarka
+  locationHint: südöstlich von Glish
+offin:
+  title: Offin
+  locationHint: nordöstlich von Grána
+nouver:
+  title: Nouver
+  locationHint: südöstlich von Sand Grain Bazaar
+garmoth:
+  title: Garmoth
+  locationHint: nördlich von Duvencrune
+quint:
+  title: Quint
+  locationHint: direkt bei Port Epheria
+muraka:
+  title: Muraka
+  locationHint: westlich von Calpheon
+vell:
+  title: Vell
+  locationHint: sehr weit nördlich von Velia
