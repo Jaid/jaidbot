@@ -9,7 +9,7 @@ const job = async () => {
     const {pluginName} = value.match(/[/\\](?<pluginName>.+?)[/\\]index\.js$/).groups
     plugins[pluginName] = pluginsRequire(value).default
   }
-  plugins.dashboard = new JaidCoreDashboard()
+  plugins.dashboard = new JaidCoreDashboard
   await core.init(plugins)
 }
 
