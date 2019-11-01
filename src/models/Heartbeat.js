@@ -9,6 +9,8 @@ class Heartbeat extends Sequelize.Model {
 
   static currentStatus
 
+  static lastTwitchStatus
+
   static start() {
     if (!twitch.ready) {
       return
@@ -24,17 +26,20 @@ class Heartbeat extends Sequelize.Model {
     const usedByes = totalBytes - freeBytes
     const twitchStatus = await twitch.getMyStream()
     if (twitchStatus) {
-      values.averageFps = twitchStatus.averageFPS
-      values.delay = twitchStatus.delay
-      values.viewers = twitchStatus.viewers
-      values.game = twitchStatus.game
-      values.videoHeight = twitchStatus.videoHeight
-      values.streamType = twitchStatus.type
-      values.streamStartedAt = twitchStatus.startDate
-      values.language = twitchStatus.channel.broadcasterLanguage
-      values.isMature = twitchStatus.channel.isMature
-      values.followers = twitchStatus.channel.followers
-      values.streamTitle = twitchStatus.channel.status
+      Heartbeat.lastTwitchStatus = {
+        averageFps: twitchStatus.averageFPS,
+        delay: twitchStatus.delay,
+        viewers: twitchStatus.viewers,
+        game: twitchStatus.game,
+        videoHeight: twitchStatus.videoHeight,
+        streamType: twitchStatus.type,
+        streamStartedAt: twitchStatus.startDate,
+        language: twitchStatus.channel.broadcasterLanguage,
+        isMature: twitchStatus.channel.isMature,
+        followers: twitchStatus.channel.followers,
+        streamTitle: twitchStatus.channel.status,
+      }
+      Object.assign(values, Heartbeat.lastTwitchStatus)
     }
     values.ramUsage = Math.floor(usedByes / totalBytes * 100)
     values.executionTime = getTime().milliseconds

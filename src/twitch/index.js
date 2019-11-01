@@ -207,11 +207,28 @@ class TwitchCore extends EventEmitter {
     return Heartbeat.currentStatus.game.toLowerCase() === game.toLowerCase()
   }
 
+  isLastGame(game) {
+    if (!Heartbeat.lastTwitchStatus) {
+      return false
+    }
+    if (isEmpty(Heartbeat.lastTwitchStatus.game)) {
+      return false
+    }
+    return Heartbeat.lastTwitchStatus.game.toLowerCase() === game.toLowerCase()
+  }
+
   notifyIfGame(game, message) {
+    if (this.isLastGame(game)) {
+      this.say(`HumbleLife ${message}`)
+    }
+  }
+
+  notifyIfGameLive(game, message) {
     if (this.isPlayingGame(game)) {
       this.say(`HumbleLife ${message}`)
     }
   }
+
 
 }
 
