@@ -38,10 +38,10 @@ export default class BlackDesert {
       if (Array.isArray(boss)) {
         const boss1 = worldBosses[boss[0]]
         const boss2 = worldBosses[boss[1]]
-        message = `Jetzt kommen ${boss1.title} (${boss1.locationHint}) und ${boss2.title} (${boss2.locationHint}).`
+        message = `In 20 Minuten kommen ${boss1.title} (${boss1.locationHint}) und ${boss2.title} (${boss2.locationHint}).`
       } else {
         const {title, locationHint} = worldBosses[boss]
-        message = `Jetzt kommt ${title} (${locationHint}).`
+        message = `In 20 Minuten kommt ${title} (${locationHint}).`
       }
       nodeSchedule.scheduleJob(cron, () => {
         twitch.notifyIfGame("black desert online", message)
