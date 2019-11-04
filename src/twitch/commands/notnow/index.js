@@ -2,7 +2,7 @@ import Video from "src/models/Video"
 import ms from "ms.macro"
 
 export default {
-  permission: "mod",
+  permission: "subOrVip",
   needsDesktopClient: true,
   async handle() {
     const video = Video.getCurrentVideo()
