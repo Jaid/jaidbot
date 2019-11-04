@@ -1,6 +1,8 @@
+- cron: 0 1 * * *
+  message: Lohn isch da! Kann jetzt im Gildenmenü eingesammelt werden.
+- cron: 0 2 * * *
+  message: Die Daily Quests und Daily Blood Frenzy Scrolls sind wieder da.
 - cron: 0 7 * * *
   message: Black Spirit's Adventure ist jetzt wieder verfügbar.
-- cron: 0 2 * * *
-  message: Die Daily Quests sind wieder da.
 - cron: 0 9 * * 3
   message: In einer Stunde beginnen die Wartungsarbeiten.
