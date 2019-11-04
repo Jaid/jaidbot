@@ -1,6 +1,5 @@
 import parseDuration from "parse-duration"
 import twitch from "src/twitch"
-import {isInteger} from "lodash"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 
@@ -8,7 +7,7 @@ export default {
   requiredArguments: 1,
   async handle({senderName, positionalArguments, combinedArguments}) {
     let durationMs
-    if (positionalArguments[0] |> isInteger) {
+    if (Number.isInteger(positionalArguments[0])) {
       durationMs = Math.floor(parseDuration(`${positionalArguments[0]}m`))
     } else {
       durationMs = Math.floor(parseDuration(positionalArguments[0]))
