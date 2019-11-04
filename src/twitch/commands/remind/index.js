@@ -1,5 +1,5 @@
 import parseDuration from "parse-duration"
-import twitch from "src/twitch"
+import ScheduledMessage from "src/models/ScheduledMessage"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 
@@ -12,17 +12,18 @@ export default {
     } else {
       durationMs = Math.floor(parseDuration(positionalArguments[0]))
     }
-    let message
+    let customMessage
     const slurpedArguments = removeFirstArgumentRegex.exec(combinedArguments)
     if (slurpedArguments.groups.rest.length) {
-      message = slurpedArguments.groups.rest
+      customMessage = slurpedArguments.groups.rest
     }
-    setTimeout(() => {
-      if (message) {
-        twitch.say(`${senderName}, Erinnerung: ${message}`)
-      } else {
-        twitch.say(`${senderName}, Erinnerung für dich!`)
-      }
-    }, durationMs)
+    let message
+    if (customMessage) {
+      message = `${senderName}, Erinnerung: ${customMessage}`
+    } else {
+      message = `${senderName}, Erinnerung für dich!`
+    }
+    await ScheduledMessage.addForDelay(durationMs, message)
+    return `Erinnerung gespeichert, ${senderName}!`
   },
 }
