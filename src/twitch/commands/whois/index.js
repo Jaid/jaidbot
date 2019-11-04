@@ -56,7 +56,7 @@ export default {
       details.push(`streamt ${game.name} seit ${hoursMinutesHumanize(Date.now() - Number(stream.startDate))} auf ${prettifyLanguage(stream?.language)} für ${millify(stream.viewers)} Zuschauer`)
     } else if (videos?.data?.[0]) {
       const video = videos.data[0]
-      details.push(`hat ${moment(video.publishDate).fromNow()} auf ${prettifyLanguage(video?.language)} gestreamt, und zwar ${hoursMinutesHumanize(video.durationInSeconds * 1000)} lang`)
+      details.push(`hat ${moment(video.publishDate).fromNow()} auf ${prettifyLanguage(video?.language)} gestreamt (und zwar ${hoursMinutesHumanize(video.durationInSeconds * 1000)} lang)`)
     }
     if (streamerFollow) {
       const streamerFollowMoment = moment(streamerFollow.followDate)
