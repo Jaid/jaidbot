@@ -19,7 +19,7 @@ export default {
     }
     setTimeout(() => {
       if (message) {
-        twitch.say(`${senderName}, Erinnerung an "${message}"!`)
+        twitch.say(`${senderName}, Erinnerung: ${message}`)
       } else {
         twitch.say(`${senderName}, Erinnerung für dich!`)
       }
