@@ -1,4 +1,4 @@
-- cron: 0 1 * * *
+- cron: 30 0 1 * * *
   message: Lohn isch da! Kann jetzt im Gildenmenü eingesammelt werden.
 - cron: 0 2 * * *
   message: Die Daily Quests und Daily Blood Frenzy Scrolls sind wieder da.
