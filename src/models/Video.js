@@ -371,7 +371,7 @@ class Video extends Sequelize.Model {
   }
 
   static async sendVlcCommand(command, values) {
-    if (! apiServer.hasClient()) {
+    if (!apiServer.hasClient()) {
       twitch.say("Ich habe keine Verbindung zum Computer von Jaidchen und kann somit auch das Kino nicht kontaktieren!")
       return
     }
