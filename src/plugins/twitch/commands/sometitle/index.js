@@ -1,6 +1,6 @@
 import {config} from "src/core"
 import {sample} from "lodash"
-import afkManager from "src/twitch/afkManager"
+import afkManager from "src/plugins/twitch/afkManager"
 import ensureArray from "ensure-array"
 
 export default {

@@ -1,6 +1,6 @@
 import Twit from "twit"
 import {logger} from "src/core"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import {unpackObject} from "magina"
 import zahl from "zahl"
 import {isEmpty} from "has-content"

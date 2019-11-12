@@ -1,7 +1,7 @@
 import {logger} from "src/core"
 import Octokit from "@octokit/rest"
 import pMap from "p-map"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import zahl from "zahl"
 import {isEmpty} from "has-content"
 

@@ -1,5 +1,5 @@
 import {config} from "src/core"
-import afkManager from "src/twitch/afkManager"
+import afkManager from "src/plugins/twitch/afkManager"
 import repoPackageJson from "repo-package-json"
 import hasContent, {isEmpty} from "has-content"
 import nestext from "nestext"

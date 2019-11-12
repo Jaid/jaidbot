@@ -1,6 +1,6 @@
 import core, {logger} from "src/core"
 import {router} from "fast-koa-router"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import {isEmpty} from "has-content"
 
 export default class Main {

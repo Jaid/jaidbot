@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import normalizeUsername from "lib/normalizeUsername"
 
 const formatDate = momentDate => momentDate.format("DD.MM.YYYY [um] HH:mm")

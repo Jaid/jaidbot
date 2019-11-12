@@ -1,6 +1,6 @@
 import PollingEmitter from "polling-emitter"
 import {logger} from "src/core"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {flatten} from "lodash"
 import ensureObject from "ensure-object"

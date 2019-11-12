@@ -1,7 +1,7 @@
 import EventEmitter from "events"
 
 import core, {logger, config} from "src/core"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import socketEnhancer from "lib/socketEnhancer"
 import socketIo from "socket.io"
 

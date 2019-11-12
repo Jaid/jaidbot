@@ -1,6 +1,3 @@
-import twitch from "src/twitch"
-import {logger} from "src/core"
-
 class Main {
 
   constructor() {
@@ -28,25 +25,8 @@ class Main {
     this.projectSetDate = Date.now()
   }
 
-  handleConfig(config) {
-    twitch.handleConfig(config)
-  }
-
   clearProject() {
     this.currentProject = null
-  }
-
-  async init() {
-    await twitch.init()
-    if (!twitch.ready) {
-      logger.warn("Twitch has not been loaded")
-    }
-  }
-
-  ready() {
-    if (twitch.ready) {
-      twitch.say("TBAngel Da bin ich!")
-    }
   }
 
   collectModels() {

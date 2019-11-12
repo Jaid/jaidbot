@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import normalizeUsername from "lib/normalizeUsername"
 import {hoursMinutesHumanize} from "lib/humanizeDuration"
 import moment from "lib/moment"

@@ -3,7 +3,7 @@ import EventEmitter from "events"
 import {logger} from "src/core"
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import ms from "ms.macro"
 
 const afkToleranceMinutes = 2

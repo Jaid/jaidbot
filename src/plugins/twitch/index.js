@@ -14,7 +14,7 @@ import {isEmpty} from "has-content"
 
 import ChatBot from "./ChatBot"
 
-class TwitchCore extends EventEmitter {
+class Twitch extends EventEmitter {
 
   isInAdLoop = false
 
@@ -82,6 +82,7 @@ class TwitchCore extends EventEmitter {
       await this.chatBot.handleMessage(messageInfo)
     })
     this.ready = true
+    this.say("TBAngel Da bin ich!")
   }
 
   async userNameToDisplayName(userName) {
@@ -232,4 +233,4 @@ class TwitchCore extends EventEmitter {
 
 }
 
-export default new TwitchCore
+export default new Twitch

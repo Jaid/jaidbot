@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 
 /**
  * @type {import("koa").Middleware}

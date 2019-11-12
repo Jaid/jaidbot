@@ -7,7 +7,7 @@ import moment from "lib/moment"
 import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
 import emitPromise from "emit-promise"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 
 /**
  * @typedef {Object} YoutubeDlInfo

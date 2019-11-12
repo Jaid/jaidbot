@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import nodeSchedule from "node-schedule"
 
 import scheduledMessages from "./scheduledMessages.yml"

@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import core, {logger} from "src/core"
 import {isEmpty} from "has-content"
 import {createProbot} from "probot"

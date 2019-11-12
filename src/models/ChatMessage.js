@@ -1,7 +1,7 @@
 import Sequelize from "sequelize"
 // import ChatMessageBadge from "src/models/ChatMessageBadge"
 // import EmoteUsage from "src/models/EmoteUsage"
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import TwitchUser from "src/models/TwitchUser"
 
 class ChatMessage extends Sequelize.Model {

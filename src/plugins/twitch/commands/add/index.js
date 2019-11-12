@@ -1,4 +1,4 @@
-import twitch from "src/twitch"
+import twitch from "src/plugins/twitch"
 import {config} from "src/core"
 import Video from "src/models/Video"
 

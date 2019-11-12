@@ -1,4 +1,4 @@
-import afkManager from "src/twitch/afkManager"
+import afkManager from "src/plugins/twitch/afkManager"
 import main from "src/plugins/main"
 
 export default {

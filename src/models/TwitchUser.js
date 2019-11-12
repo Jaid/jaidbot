@@ -1,6 +1,6 @@
 import Sequelize from "sequelize"
 import twitch from "twitch"
-import twitchCore from "src/twitch"
+import twitchCore from "src/plugins/twitch"
 import {config, logger} from "src/core"
 import scope from "src/plugins/twitchAuth/scope"
 import ChatClient from "twitch-chat-client"
