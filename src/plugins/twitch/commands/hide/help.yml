@@ -1,0 +1,5 @@
+param: sourceName
+description: Schaltet ein Element aus dem Stream-Overlay auf unsichtbar.
+example:
+  - Popel detected.
+  - "!hide Facecam"

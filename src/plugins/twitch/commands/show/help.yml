@@ -1,0 +1,5 @@
+param: sourceName
+description: Schaltet ein Element aus dem Stream-Overlay auf unsichtbar.
+example:
+  - Guckt alle hin! Ich mache das Video jetzt wieder sichtbar!
+  - "!show VLC"
