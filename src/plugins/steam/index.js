@@ -34,7 +34,7 @@ export default class GameUpdateWatcher {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
   ready() {

@@ -30,7 +30,7 @@ class Twitch extends EventEmitter {
   /**
    * @type {boolean}
    */
-  ready = false
+  isReady = false
 
   async init() {
     const [streamerUser, botUser] = await Promise.all([
@@ -81,7 +81,7 @@ class Twitch extends EventEmitter {
       this.emit("chat", messageInfo)
       await this.chatBot.handleMessage(messageInfo)
     })
-    this.ready = true
+    this.isReady = true
     this.say("TBAngel Da bin ich!")
   }
 
@@ -230,6 +230,20 @@ class Twitch extends EventEmitter {
     }
   }
 
+  ready() {
+    debugger
+    this.tickInterval = setInterval(this.tick.bind(this), ms`5 second`)
+  }
+
+  async tick() {
+    try {
+      logger.info("TICK")
+      const viewers = await this.botClient.unsupported.getChatters(this.streamerLogin)
+      debugger
+    } catch (error) {
+      logger.error("Twitch tick failed: %s", error)
+    }
+  }
 
 }
 

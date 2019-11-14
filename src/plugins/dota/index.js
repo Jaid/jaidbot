@@ -27,7 +27,7 @@ export default class Opendota extends PollingEmitter {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
   ready() {

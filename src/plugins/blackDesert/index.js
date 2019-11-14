@@ -18,7 +18,7 @@ const days = {
 export default class BlackDesert {
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
   ready() {

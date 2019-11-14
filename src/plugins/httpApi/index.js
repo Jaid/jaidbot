@@ -46,7 +46,7 @@ export default class Main {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
 }

@@ -12,7 +12,7 @@ class Heartbeat extends Sequelize.Model {
   static lastTwitchStatus
 
   static start() {
-    if (!twitch.ready) {
+    if (!twitch.isReady) {
       return
     }
     setInterval(Heartbeat.tick, ms`1 minute`)

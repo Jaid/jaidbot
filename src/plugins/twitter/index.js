@@ -28,7 +28,7 @@ export default class TweetWatcher {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
   ready() {

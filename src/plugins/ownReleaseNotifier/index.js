@@ -76,7 +76,7 @@ export default class OwnReleaseNotifier {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
 }

@@ -36,7 +36,7 @@ export default class StarredReleaseNotifier {
     }
 
     postInit() {
-      return twitch.ready
+      return twitch.isReady
     }
 
     async ready() {

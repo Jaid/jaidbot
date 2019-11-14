@@ -75,7 +75,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
   }
 
   postInit() {
-    return twitch.ready
+    return twitch.isReady
   }
 
   ready() {
