@@ -82,11 +82,11 @@ class TwitchUser extends Sequelize.Model {
     const keyMeta = {
       twitchLogin: {
         searchColumn: "loginName",
-        fetchUser: twitchCore.getUserInfoByTwitchLogin,
+        fetchUser: twitchLogin => twitchCore.getUserInfoByTwitchLogin(twitchLogin),
       },
       twitchId: {
         searchColumn: "twitchId",
-        fetchUser: twitchCore.getUserInfoByTwitchId,
+        fetchUser: twitchId => twitchCore.getUserInfoByTwitchId(twitchId),
       },
     }
     const twitchUser = await TwitchUser.findOne({
