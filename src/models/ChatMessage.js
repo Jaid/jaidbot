@@ -8,7 +8,7 @@ class ChatMessage extends Sequelize.Model {
 
   static start() {
     twitch.on("chat", async message => {
-      const twitchUser = await TwitchUser.prepareByTwitchId(message.sender.id, {
+      const twitchUser = await TwitchUser.findOrRegisterById(message.sender.id, {
         defaults: {
           nameColor: message.sender.color,
         },

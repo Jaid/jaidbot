@@ -252,7 +252,7 @@ class Twitch extends EventEmitter {
       const chatters = await this.botClient.unsupported.getChatters(this.streamerLogin)
       logger.debug("Fetched %s chatters in %s", chatters.allChatters.length, readableMs(Date.now() - fetchChattersStart))
       for (const [chatter, role] of chatters.allChattersWithStatus.entries()) {
-        const twitchUser = await TwitchUser.prepareByTwitchLogin(chatter, {
+        const twitchUser = await TwitchUser.findOrRegisterByLogin(chatter, {
           defaults: {
             chatterRole: role,
           },

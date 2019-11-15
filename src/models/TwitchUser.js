@@ -46,7 +46,7 @@ class TwitchUser extends Sequelize.Model {
    * @param {string} twitchId
    * @param {Object} [options]
    */
-  static async prepareByTwitchId(twitchId, options) {
+  static async findOrRegisterById(twitchId, options) {
     return TwitchUser.findOrRegister({
       ...options,
       key: "twitchId",
@@ -60,7 +60,7 @@ class TwitchUser extends Sequelize.Model {
    * @param {string} twitchLogin
    * @param {Object} [options]
    */
-  static async prepareByTwitchLogin(twitchLogin, options) {
+  static async findOrRegisterByLogin(twitchLogin, options) {
     return TwitchUser.findOrRegister({
       ...options,
       key: "twitchLogin",
