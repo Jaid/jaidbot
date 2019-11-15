@@ -8,6 +8,7 @@
     "@babel/runtime": "^7.7.2",
     "@koa/router": "^8.0.2",
     "@octokit/rest": "^16.35.0",
+    "capitalize": "^2.0.0",
     "debug": "^4.1.1",
     "delay": "^4.3.0",
     "emit-promise": "^3.1.0",

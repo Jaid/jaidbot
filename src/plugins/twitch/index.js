@@ -11,6 +11,8 @@ import pRetry from "p-retry"
 import readableMs from "readable-ms"
 import delay from "delay"
 import {isEmpty} from "has-content"
+import capitalize from "capitalize"
+import twitch from "twitch"
 
 import ChatBot from "./ChatBot"
 
@@ -18,13 +20,23 @@ class Twitch extends EventEmitter {
 
   isInAdLoop = false
 
+  /**
+   * @param {import("src/core").Config} config
+   */
   handleConfig(config) {
     this.nicknames = config.nicknames || {}
+    this.streamerLogin = config.twitchStreamerLogin
+    this.botLogin = config.twitchBotLogin
+    this.predefinedStreamerAccessToken = config.twitchStreamerAccessToken
+    this.predefinedStreamerRefreshToken = config.twitchStreamerRefreshToken
+    this.predefinedBotAccessToken = config.twitchBotAccessToken
+    this.predefinedBotRefreshToken = config.twitchBotRefreshToken
+    this.clientId = config.twitchClientId
+    this.clientSecret = config.twitchClientSecret
+
     this.nicknameCache = new Cache({
       stdTTL: ms`1 day` / 1000,
     })
-    this.streamerLogin = config.twitchStreamerLogin
-    this.botLogin = config.twitchBotLogin
   }
 
   /**
@@ -33,28 +45,32 @@ class Twitch extends EventEmitter {
   isReady = false
 
   async init() {
-    const [streamerUser, botUser] = await Promise.all([
-      TwitchUser.getByTwitchLogin(this.streamerLogin),
-      TwitchUser.getByTwitchLogin(this.botLogin),
-    ])
-    this.streamerUser = streamerUser
-    this.botUser = botUser
-    if (!streamerUser?.accessToken) {
-      logger.warn("No user auth found for requested streamer user %s", this.streamerLogin)
-      return false
+    this.apiClient = await twitch.withClientCredentials(this.clientId, this.clientSecret)
+    const twitchUserPrefixes = ["streamer", "bot"]
+    for (const prefix of twitchUserPrefixes) {
+      const prefixCapitalized = capitalize(prefix)
+      const login = this[`${prefix}Login`]
+      logger.info("Preparing %s Twitch account (%s)", prefix, login)
+      const user = await TwitchUser.findOrRegisterByLogin(login)
+      if (!user.accessToken && this[`predefined${prefixCapitalized}AccessToken`]) {
+        user.accessToken = this[`predefined${prefixCapitalized}AccessToken`]
+        logger.info("Set Twitch %s accessToken from config", prefix)
+      }
+      if (!user.refreshToken && this[`predefined${prefixCapitalized}RefreshToken`]) {
+        user.refreshToken = this[`predefined${prefixCapitalized}RefreshToken`]
+        logger.info("Set Twitch %s refreshToken from config", prefix)
+      }
+      await user.save()
+      if (!user?.accessToken) {
+        logger.warn("No user auth found for requested streamer user %s", this.streamerLogin)
+        return false
+      }
+      this[`${prefix}User`] = user
+      this[prefix] = await user.toTwitchClientWithChat()
+      this[`${prefix}Client`] = this[prefix].apiClient
     }
-    if (!botUser?.accessToken) {
-      logger.warn("No user auth found for requested bot user %s", this.botLogin)
-      return false
-    }
-    const [streamer, bot] = await Promise.all([
-      streamerUser.toTwitchClientWithChat(),
-      botUser.toTwitchClientWithChat(),
-    ])
-    this.streamerClient = streamer.apiClient
-    this.streamerChatClient = streamer.chatClient
-    this.botClient = bot.apiClient
-    this.chatClient = bot.chatClient
+    this.streamerChatClient = this.streamer.chatClient
+    this.chatClient = this.bot.chatClient
     await this.chatClient.join(this.streamerLogin)
     logger.info("Connected bot")
     this.chatBot = new ChatBot()
@@ -86,7 +102,7 @@ class Twitch extends EventEmitter {
   }
 
   async userNameToDisplayName(userName) {
-    const profile = await this.streamerClient.helix.users.getUserByName(userName)
+    const profile = await this.apiClient.helix.users.getUserByName(userName)
     return profile?.displayName || profile?.name || userName
   }
 
@@ -106,7 +122,7 @@ class Twitch extends EventEmitter {
       let username
       let profile
       if (isTwitchId) {
-        profile = await this.streamerClient.helix.users.getUserById(normalizedUsername)
+        profile = await this.apiClient.helix.users.getUserById(normalizedUsername)
         if (profile) {
           username = profile.name
           const customNicknameById = this.nicknames[username]
@@ -118,7 +134,7 @@ class Twitch extends EventEmitter {
       }
       if (!profile) {
         username = normalizedUsername
-        profile = await this.streamerClient.helix.users.getUserByName(username)
+        profile = await this.apiClient.helix.users.getUserByName(username)
       }
       const name = profile?.displayName || profile?.name || normalizedUsername
       this.nicknameCache.set(username, name)
@@ -131,7 +147,7 @@ class Twitch extends EventEmitter {
 
   async playAd(adDurationSeconds = 30) {
     const job = async () => {
-      await this.streamerClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
+      await this.apiClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
     }
     try {
       await pRetry(job, {
@@ -157,7 +173,7 @@ class Twitch extends EventEmitter {
   }
 
   async getFollowMoment(userName) {
-    const user = await this.streamerClient.helix.users.getUserByName(userName)
+    const user = await this.apiClient.helix.users.getUserByName(userName)
     const followResult = await user.getFollowTo(this.streamerUser.twitchId)
     if (followResult === null) {
       return false
@@ -166,11 +182,11 @@ class Twitch extends EventEmitter {
   }
 
   async getMyStream() {
-    return this.streamerClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
+    return this.apiClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
   }
 
   async setCategory(game) {
-    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
+    await this.apiClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
   }
 
   /**
@@ -180,7 +196,7 @@ class Twitch extends EventEmitter {
    * @return {Promise<import("twitch").HelixUser>}
    */
   async getUserInfoByTwitchId(twitchId) {
-    const helixUser = await this.streamerClient.helix.users.getUserById(twitchId)
+    const helixUser = await this.apiClient.helix.users.getUserById(twitchId)
     return helixUser
   }
 
@@ -191,12 +207,12 @@ class Twitch extends EventEmitter {
    * @return {Promise<import("twitch").HelixUser>}
    */
   async getUserInfoByTwitchLogin(twitchLogin) {
-    const helixUser = await this.streamerClient.helix.users.getUserByName(twitchLogin)
+    const helixUser = await this.apiClient.helix.users.getUserByName(twitchLogin)
     return helixUser
   }
 
   async setTitle(title) {
-    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
+    await this.apiClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
       status: title.trim(),
     })
   }
