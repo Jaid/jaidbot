@@ -87,6 +87,10 @@ const core = new JaidCore({
  * @prop {number} maxTechnologiesInTitle
  * @prop {Object<string, string>} nicknames
  * @prop {string} adminPassword
+ * @prop {string} twitchStreamerAccessToken
+ * @prop {string} twitchStreamerRefreshToken
+ * @prop {string} twitchBotAccessToken
+ * @prop {string} twitchBotRefreshToken
  */
 
 /**
