@@ -1,7 +1,7 @@
 import os from "os"
 
 import Sequelize from "sequelize"
-import measureTime from "measure-time"
+import {measureTime} from "measure-time"
 import twitch from "src/plugins/twitch"
 import ms from "ms.macro"
 
