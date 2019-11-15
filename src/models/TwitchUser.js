@@ -45,25 +45,65 @@ class TwitchUser extends Sequelize.Model {
    * @function
    * @param {string} twitchId
    * @param {Object} [options]
+   */
+  static async prepareByTwitchId(twitchId, options) {
+    return TwitchUser.findOrRegister({
+      ...options,
+      key: "twitchId",
+      value: twitchId,
+    })
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {string} twitchLogin
+   * @param {Object} [options]
+   */
+  static async prepareByTwitchLogin(twitchLogin, options) {
+    return TwitchUser.findOrRegister({
+      ...options,
+      key: "twitchLogin",
+      value: twitchLogin,
+    })
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {string} twitchLogin
+   * @param {Object} [options]
    * @param {string[]} options.attributes
    * @param {Object<string, *>} options.defaults
+   * @param {"twitchLogin"|"twitchId"} [options.key="twitchLogin"]
+   * @param {string} options.value
    */
-  static async prepareByTwitchId(twitchId, {attributes, defaults}) {
+  static async findOrRegister({key = "twitchLogin", value, attributes, defaults}) {
+    const keyMeta = {
+      twitchLogin: {
+        searchColumn: "loginName",
+        fetchUser: twitchCore.getUserInfoByTwitchLogin,
+      },
+      twitchId: {
+        searchColumn: "twitchId",
+        fetchUser: twitchCore.getUserInfoByTwitchId,
+      },
+    }
     const twitchUser = await TwitchUser.findOne({
-      where: {twitchId},
+      where: {[keyMeta[key].searchColumn]: value},
       attributes,
     })
     if (twitchUser) {
       return twitchUser
     }
-    const helixUser = await twitchCore.getChannelInfo(twitchId)
+    const helixUser = await keyMeta[key].fetchUser(value)
     const displayName = helixUser.displayName || helixUser.name
     logger.info("New Twitch user %s", displayName)
     const newTwitchUser = await TwitchUser.create({
-      twitchId,
       displayName,
+      twitchId: helixUser.id,
       description: helixUser.description,
-      loginName: helixUser.name,
+      loginName: helixUser.name.toLowerCase(),
       offlineImageUrl: helixUser.offlinePlaceholderUrl,
       avatarUrl: helixUser.profilePictureUrl,
       viewCount: helixUser.views,
@@ -147,6 +187,11 @@ export const schema = {
   refreshToken: Sequelize.STRING,
   followDate: Sequelize.DATE,
   tokenExpiryDate: Sequelize.DATE,
+  chatterRole: {
+    allowNull: false,
+    type: Sequelize.STRING,
+    defaultValue: "viewers",
+  },
   offlineTimeMinutes: {
     type: Sequelize.INTEGER,
     defaultValue: 0,

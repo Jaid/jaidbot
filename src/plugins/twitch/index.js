@@ -179,8 +179,19 @@ class Twitch extends EventEmitter {
    * @param {string} twitchId
    * @return {Promise<import("twitch").HelixUser>}
    */
-  async getChannelInfo(twitchId) {
+  async getUserInfoByTwitchId(twitchId) {
     const helixUser = await this.streamerClient.helix.users.getUserById(twitchId)
+    return helixUser
+  }
+
+  /**
+   * @async
+   * @function
+   * @param {string} twitchLogin
+   * @return {Promise<import("twitch").HelixUser>}
+   */
+  async getUserInfoByTwitchLogin(twitchLogin) {
+    const helixUser = await this.streamerClient.helix.users.getUserByName(twitchLogin)
     return helixUser
   }
 
@@ -231,15 +242,23 @@ class Twitch extends EventEmitter {
   }
 
   ready() {
-    debugger
-    this.tickInterval = setInterval(this.tick.bind(this), ms`5 second`)
+    this.tickInterval = setInterval(this.tick.bind(this), ms`10 second`)
   }
 
   async tick() {
+    const tickStart = Date.now()
     try {
-      logger.info("TICK")
-      const viewers = await this.botClient.unsupported.getChatters(this.streamerLogin)
-      debugger
+      const fetchChattersStart = Date.now()
+      const chatters = await this.botClient.unsupported.getChatters(this.streamerLogin)
+      logger.debug("Fetched %s chatters in %s", chatters.allChatters.length, readableMs(Date.now() - fetchChattersStart))
+      for (const [chatter, role] of chatters.allChattersWithStatus.entries()) {
+        const twitchUser = await TwitchUser.prepareByTwitchLogin(chatter, {
+          defaults: {
+            chatterRole: role,
+          },
+        })
+      }
+      logger.debug("Twitch tick done in %s", readableMs(Date.now() - tickStart))
     } catch (error) {
       logger.error("Twitch tick failed: %s", error)
     }
