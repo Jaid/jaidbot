@@ -261,7 +261,7 @@ class Twitch extends EventEmitter {
     if (this.tickMs) {
       this.tickInterval = setInterval(this.tick.bind(this), this.tickMs)
     } else {
-      logger.warn("Not starting Twitch ticking, because config entry twitchTickSeconds is not given")
+      logger.warn("Not starting Twitch ticking, because config.twitchTickSeconds is not given")
     }
   }
 

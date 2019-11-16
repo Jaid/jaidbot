@@ -6,6 +6,7 @@ import scope from "src/plugins/twitchAuth/scope"
 import ChatClient from "twitch-chat-client"
 import shortid from "shortid"
 import User from "src/models/User"
+import ChatMessage from "src/models/ChatMessage"
 
 class TwitchUser extends Sequelize.Model {
 
@@ -128,6 +129,22 @@ class TwitchUser extends Sequelize.Model {
       ...defaults,
     }, {include: "User"})
     return newTwitchUser
+  }
+
+  static start() {
+    ChatMessage.afterCreate(async chatMessage => {
+      const twitchUser = await TwitchUser.findByPk(chatMessage.TwitchUserId, {
+        attributes: ["id", "nameColor"],
+      })
+      if (!twitchUser.nameColor && chatMessage.nameColor) {
+        logger.info("Received name color of %s for the first time", chatMessage.senderDisplayName)
+        twitchUser.nameColor = chatMessage.nameColor
+      } else if (twitchUser.nameColor !== chatMessage.nameColor) {
+        logger.info("%s seems to have changed the name color from %s to %s", chatMessage.senderDisplayName, twitchUser.nameColor, chatMessage.nameColor)
+        twitchUser.nameColor = chatMessage.nameColor
+      }
+      await twitchUser.save()
+    })
   }
 
   async toTwitchClient() {
