@@ -33,7 +33,7 @@ class Twitch extends EventEmitter {
     this.predefinedBotRefreshToken = config.twitchBotRefreshToken
     this.clientId = config.twitchClientId
     this.clientSecret = config.twitchClientSecret
-
+    this.tickMs = config.twitchTickSeconds * ms`1 second`
     this.nicknameCache = new Cache({
       stdTTL: ms`1 day` / 1000,
     })
@@ -258,7 +258,11 @@ class Twitch extends EventEmitter {
   }
 
   ready() {
-    this.tickInterval = setInterval(this.tick.bind(this), ms`10 second`)
+    if (this.tickMs) {
+      this.tickInterval = setInterval(this.tick.bind(this), this.tickMs)
+    } else {
+      logger.warn("Not starting Twitch ticking, because config entry twitchTickSeconds is not given")
+    }
   }
 
   async tick() {

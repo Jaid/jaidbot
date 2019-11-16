@@ -91,6 +91,7 @@ const core = new JaidCore({
  * @prop {string} twitchStreamerRefreshToken
  * @prop {string} twitchBotAccessToken
  * @prop {string} twitchBotRefreshToken
+ * @prop {number} twitchTickSeconds
  */
 
 /**
