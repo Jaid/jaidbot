@@ -3,14 +3,10 @@ import EventEmitter from "events"
 import {logger} from "src/core"
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
-import twitch from "src/plugins/twitch"
+import twitch, {removeTitlePrefix} from "src/plugins/twitch"
 import ms from "ms.macro"
 
 const afkToleranceMinutes = 2
-
-function removePrefix(title) {
-  return title.replace(/^\s*\[.*]\s*/, "")
-}
 
 class AfkManager extends EventEmitter {
 
@@ -26,7 +22,7 @@ class AfkManager extends EventEmitter {
     super()
     setInterval(() => {
       if (this.isAfk()) {
-        this.setTitle()
+        this.updateTitle()
       }
     }, ms`30 seconds`)
   }
@@ -44,36 +40,27 @@ class AfkManager extends EventEmitter {
       return ""
     }
     const remainingTimeMs = this.getRemainingTime()
-    if (remainingTimeMs <= ms`1 minute`) {
-      return "[Im Verspätungsmodus] "
+    if (remainingTimeMs < -ms`1 minute`) {
+      const passedTimeString = moment.duration(-remainingTimeMs, "ms").format("h[h] m[m]")
+      return `[Schon ${passedTimeString} länger weg als angesagt] `
     }
-    const remainingTimeString = moment.duration(remainingTimeMs, "ms").format("h[h] m[m]")
-    return `[Noch ${remainingTimeString} weg] `
+    if (remainingTimeMs > ms`1 minute`) {
+      const remainingTimeString = moment.duration(remainingTimeMs, "ms").format("h[h] m[m]")
+      return `[In ${remainingTimeString} wieder da] `
+    }
+    return "[Demnächst zurück] "
   }
 
-  async setTitle(title) {
-    if (!twitch) {
-      return
-    }
-    if (title) {
-      this.title = title
-    }
-    if (!this.title) {
-      const stream = await twitch.getMyStream()
-      if (stream?.channel?.status) {
-        this.title = removePrefix(stream.channel.status)
-      }
-    }
-    const finalTitle = `${this.getTitlePrefix()}${this.title}`
-    logger.info("New title: %s", finalTitle)
-    await twitch.setTitle(finalTitle)
+  async updateTitle() {
+    const currentTitle = removeTitlePrefix(twitch.currentTitle)
+    await twitch.setTitle(`${this.getTitlePrefix()}${currentTitle}`)
   }
 
   async activate(durationSeconds, message) {
     this.afkStart = Date.now()
     this.afkEnd = this.afkStart + durationSeconds * 1000
     this.afkMessage = message
-    await this.setTitle()
+    await this.updateTitle()
     twitch.startAdLoop()
     twitch.say(`Jaidchen geht jetzt mal weg für etwa ${(durationSeconds * 1000) |> humanizeDuration}. Als Nachricht hat er lediglich ein "${message}" hinterlassen.`)
   }
@@ -93,7 +80,7 @@ class AfkManager extends EventEmitter {
     this.afkStart = null
     this.afkEnd = null
     this.afkMessage = null
-    await this.setTitle()
+    await this.updateTitle()
     twitch.stopAdLoop()
     twitch.say(comment)
   }

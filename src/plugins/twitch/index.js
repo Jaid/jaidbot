@@ -16,9 +16,15 @@ import twitch from "twitch"
 
 import ChatBot from "./ChatBot"
 
+function removeTitlePrefix(title) {
+  return title.replace(/^\s*\[.*]\s*/, "")
+}
+
 class Twitch extends EventEmitter {
 
   isInAdLoop = false
+
+  currentTitle = null
 
   /**
    * @param {import("src/core").Config} config
@@ -44,7 +50,10 @@ class Twitch extends EventEmitter {
    */
   isReady = false
 
+  currentTitle = null
+
   async init() {
+    await delay(10000)
     this.apiClient = await twitch.withClientCredentials(this.clientId, this.clientSecret)
     const twitchUserPrefixes = ["streamer", "bot"]
     for (const prefix of twitchUserPrefixes) {
@@ -69,6 +78,15 @@ class Twitch extends EventEmitter {
       this[prefix] = await user.toTwitchClientWithChat()
       this[`${prefix}Client`] = this[prefix].apiClient
     }
+    const myKrakenChannel = await this.streamerClient.kraken.channels.getMyChannel()
+    this.streamerTwitchId = myKrakenChannel.id
+    this.currentTitle = myKrakenChannel.status
+    const normalizedTitle = removeTitlePrefix(this.currentTitle)
+    if (this.currentTitle !== normalizedTitle) {
+      logger.debug("The initial stream title had a prefix, removing it because it is most likely outdated")
+      this.setTitle(normalizedTitle)
+    }
+    logger.debug("Initial stream title: %s", this.currentTitle)
     this.streamerChatClient = this.streamer.chatClient
     this.chatClient = this.bot.chatClient
     await this.chatClient.join(this.streamerLogin)
@@ -212,8 +230,15 @@ class Twitch extends EventEmitter {
   }
 
   async setTitle(title) {
+    const newTitle = String(title).trim()
+    if (newTitle === this.currentTitle) {
+      logger.debug("Not overwriting stream title, it has not changed")
+      return
+    }
+    this.currentTitle = newTitle
+    logger.info("New stream title: %s", newTitle)
     await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
-      status: title.trim(),
+      status: newTitle,
     })
   }
 
@@ -265,6 +290,10 @@ class Twitch extends EventEmitter {
     }
   }
 
+  getTitleWithoutPrefix() {
+    return removeTitlePrefix(this.currentTitle)
+  }
+
   async tick() {
     const tickStart = Date.now()
     try {
@@ -292,3 +321,5 @@ class Twitch extends EventEmitter {
 }
 
 export default new Twitch
+
+export {removeTitlePrefix}

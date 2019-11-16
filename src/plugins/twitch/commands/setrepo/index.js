@@ -50,7 +50,7 @@ export default {
       technologyList: technologies.join(", "),
     })
     main.setProject(projectTitle, `${config.githubUser}/${repo}`)
-    await afkManager.setTitle(title)
+    await afkManager.updateTitle(title)
     return `Neuer Titel: ${title}`
   },
 }
