@@ -141,8 +141,10 @@ class Video extends Sequelize.Model {
             },
           })
           if (!video) {
-            logger.info("Current video unset")
-            Video.currentVideo = null
+            if (Video.currentVideo) {
+              logger.info("Video.currentVideo will be set to null, because current video is not found in database")
+              Video.currentVideo = null
+            }
             return
           }
           logger.info(`Current video set to #${video.id}`)
