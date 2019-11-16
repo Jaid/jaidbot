@@ -277,6 +277,11 @@ class Twitch extends EventEmitter {
             chatterRole: role,
           },
         })
+        if (twitchUser.chatterRole !== role) {
+          logger.info("Changed chatter role of %s from %s to %s", twitchUser.getDisplayName(), twitchUser.chatterRole, role)
+          twitchUser.chatterRole = role
+        }
+        await twitchUser.save()
       }
       logger.debug("Twitch tick done in %s", readableMs(Date.now() - tickStart))
     } catch (error) {
