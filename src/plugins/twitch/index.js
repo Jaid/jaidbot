@@ -147,7 +147,7 @@ class Twitch extends EventEmitter {
 
   async playAd(adDurationSeconds = 30) {
     const job = async () => {
-      await this.apiClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
+      await this.streamerClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
     }
     try {
       await pRetry(job, {
@@ -182,11 +182,11 @@ class Twitch extends EventEmitter {
   }
 
   async getMyStream() {
-    return this.apiClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
+    return this.streamerClient.kraken.streams.getStreamByChannel(this.streamerUser.twitchId)
   }
 
   async setCategory(game) {
-    await this.apiClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
+    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {game})
   }
 
   /**
@@ -212,7 +212,7 @@ class Twitch extends EventEmitter {
   }
 
   async setTitle(title) {
-    await this.apiClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
+    await this.streamerClient.kraken.channels.updateChannel(this.streamerUser.twitchId, {
       status: title.trim(),
     })
   }
