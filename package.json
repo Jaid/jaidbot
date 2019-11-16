@@ -60,6 +60,7 @@
     "regex-parser": "^2.2.10",
     "repo-package-json": "^1.0.0",
     "sequelize": "^5.21.2",
+    "shortid": "^2.2.15",
     "socket-enhance": "^1.1.1",
     "socket.io": "^2.3.0",
     "sort-keys": "^4.0.0",

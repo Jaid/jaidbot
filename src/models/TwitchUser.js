@@ -4,6 +4,8 @@ import twitchCore from "src/plugins/twitch"
 import {config, logger} from "src/core"
 import scope from "src/plugins/twitchAuth/scope"
 import ChatClient from "twitch-chat-client"
+import shortid from "shortid"
+import User from "src/models/User"
 
 class TwitchUser extends Sequelize.Model {
 
@@ -16,6 +18,11 @@ class TwitchUser extends Sequelize.Model {
     TwitchUser.hasMany(models.Video, {
       as: "RequestedVideos",
       foreignKey: "RequesterId",
+    })
+    TwitchUser.belongsTo(models.User, {
+      foreignKey: {
+        allowNull: false,
+      },
     })
   }
 
@@ -97,19 +104,29 @@ class TwitchUser extends Sequelize.Model {
       return twitchUser
     }
     const helixUser = await keyMeta[key].fetchUser(value)
-    const displayName = helixUser.displayName || helixUser.name
+    const login = helixUser.name.toLowerCase()
+    const displayName = helixUser.displayName || login
     logger.info("New Twitch user %s", displayName)
+    const isNameSlugUsed = await User.isSlugInUse(login)
+    if (isNameSlugUsed) {
+      logger.warn("Can not use %s for user slug, because is it already in use, generating one instead", login)
+    }
     const newTwitchUser = await TwitchUser.create({
       displayName,
       twitchId: helixUser.id,
       description: helixUser.description,
-      loginName: helixUser.name.toLowerCase(),
+      loginName: login,
       offlineImageUrl: helixUser.offlinePlaceholderUrl,
       avatarUrl: helixUser.profilePictureUrl,
       viewCount: helixUser.views,
       broadcasterType: helixUser.broadcasterType,
+      User: {
+        title: displayName,
+        color: defaults?.nameColor,
+        slug: isNameSlugUsed ? shortid() : login,
+      },
       ...defaults,
-    })
+    }, {include: "User"})
     return newTwitchUser
   }
 
