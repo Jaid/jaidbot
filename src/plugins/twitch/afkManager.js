@@ -4,6 +4,7 @@ import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
 import twitch, {removeTitlePrefix} from "src/plugins/twitch"
 import ms from "ms.macro"
+import apiServer from "src/plugins/apiServer"
 
 const afkToleranceMinutes = 2
 
@@ -59,6 +60,11 @@ class AfkManager extends EventEmitter {
     this.afkStart = Date.now()
     this.afkEnd = this.afkStart + durationSeconds * 1000
     this.afkMessage = message
+    apiServer.client?.emit("startAfk", {
+      start: this.afkStart,
+      end: this.afkEnd,
+      message: this.afkMessage,
+    })
     await this.updateTitle()
     twitch.startAdLoop()
     twitch.say(`Jaidchen geht jetzt mal weg für etwa ${(durationSeconds * 1000) |> humanizeDuration}. Als Nachricht hat er lediglich ein "${message}" hinterlassen.`)
