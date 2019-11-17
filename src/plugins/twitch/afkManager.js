@@ -1,6 +1,5 @@
 import EventEmitter from "events"
 
-import {logger} from "src/core"
 import moment from "lib/moment"
 import humanizeDuration from "lib/humanizeDuration"
 import twitch, {removeTitlePrefix} from "src/plugins/twitch"
