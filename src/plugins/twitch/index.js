@@ -86,7 +86,7 @@ class Twitch extends EventEmitter {
       logger.debug("The initial stream title had a prefix, removing it because it is most likely outdated")
       this.setTitle(normalizedTitle)
     }
-    logger.debug("Initial stream title: %s", this.currentTitle)
+    logger.info("Initial stream title: %s", this.currentTitle)
     this.streamerChatClient = this.streamer.chatClient
     this.chatClient = this.bot.chatClient
     await this.chatClient.join(this.streamerLogin)
