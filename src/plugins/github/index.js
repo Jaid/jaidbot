@@ -1,9 +1,14 @@
 import {logger} from "src/core"
-import Octokit from "@octokit/rest"
 import pMap from "p-map"
 import twitch from "src/plugins/twitch"
 import zahl from "zahl"
 import {isEmpty} from "has-content"
+import {createProbot} from "probot"
+import fsp from "@absolunet/fsp"
+import Octokit from "@octokit/rest"
+
+import checkRunCompleted from "./events/checkRunCompleted"
+import releasePublished from "./events/releasePublished"
 
 export default class StarredReleaseNotifier {
 
@@ -12,10 +17,26 @@ export default class StarredReleaseNotifier {
      */
     github = null
 
-    init() {
-      if (isEmpty(this.user) || isEmpty(this.token) || isEmpty(this.pollInterval)) {
+    async init() {
+      if (isEmpty(this.token) || isEmpty(this.user) || isEmpty(this.pollInterval) || isEmpty(this.pemFile)) {
         return false
       }
+      const cert = await fsp.readFile(this.pemFile, "utf8")
+      this.probot = createProbot({
+        cert,
+        secret: this.webhookSecret,
+        id: this.appId,
+        port: this.webhookPort,
+      })
+      /**
+       * @type {import("probot").Application}
+       */
+      this.probotApp = this.probot.load(app => {
+        app.on("check_run.completed", checkRunCompleted)
+        app.on("release.published", releasePublished)
+      })
+      this.probot.start()
+      logger.info("GitHub app %s is listening to webhook port %s", this.appId, this.webhookPort)
       try {
         this.github = new Octokit({
           log: logger,
@@ -31,8 +52,12 @@ export default class StarredReleaseNotifier {
 
     handleConfig(config) {
       this.user = config.starredReleasesUser
-      this.token = config.githubToken
       this.pollInterval = config.starredReleasesPollIntervalSeconds * 1000
+      this.pemFile = config.githubAppPemFilePath
+      this.appId = config.githubAppId
+      this.webhookSecret = config.githubAppWebhookSecret
+      this.webhookPort = config.githubWebhookPort
+      this.token = config.githubToken
     }
 
     postInit() {

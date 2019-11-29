@@ -93,13 +93,18 @@ export default class SubscriptionWatcher extends PollingEmitter {
        * @type {YoutubeVideo}
        */
       logger.debug("Fetching YouTube videos from %s", channel.name)
-      const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), this.forcedTimeBetweenChecks, {
-        delayRejection: false,
-      })
-      return youtubeVideos.map(video => ({
-        ...video,
-        channel,
-      }))
+      try {
+        const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), this.forcedTimeBetweenChecks, {
+          delayRejection: false,
+        })
+        return youtubeVideos.map(video => ({
+          ...video,
+          channel,
+        }))
+      } catch (error) {
+        logger.error("Could not fetch YouTube channel %s", channel.name)
+        throw error
+      }
     }
     const results = await pMap(this.observedChannels, mapper, {concurrency: 1})
     const resultsList = flatten(results)
