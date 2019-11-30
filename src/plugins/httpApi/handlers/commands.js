@@ -3,10 +3,8 @@ import twitch from "src/plugins/twitch"
 /**
  * @type {import("koa").Middleware}
  */
-const middleware = async (context, next, password) => {
-  await next()
+const middleware = async context => {
+  context.body = twitch.chatBot.commandUsages
 }
 
-export default async (context, next) => {
-  return await middleware(context, next)
-}
+export default middleware
