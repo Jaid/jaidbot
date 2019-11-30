@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "fast-decode-uri-component": "^1.0.1",
     "fast-koa-router": "^1.0.1",
-    "fetch-youtube-uploads": "^0.4.0",
+    "fetch-youtube-uploads": "^0.4.1",
     "filesize": "^6.0.1",
     "fkill-cli": "^5.2.0",
     "googleapis": "^45.0.0",
