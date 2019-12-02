@@ -3,6 +3,15 @@
 
 Personal chat bot for my Twitch stream.
 
+## Installation
+<a href='https://npmjs.com/package/jaidbot'><img alt='npm logo' src='https://raw.githubusercontent.com/npm/logos/master/npm%20logo/npm-logo-red.png' height=16/></a>
+```bash
+npm install --global jaidbot@^
+```
+<a href='https://yarnpkg.com/package/jaidbot'><img alt='Yarn logo' src='https://raw.githubusercontent.com/yarnpkg/assets/master/yarn-kitten-full.png' height=24/></a>
+```bash
+yarn global add jaidbot@^
+```
 
 
 ## Try it out
