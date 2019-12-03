@@ -6,29 +6,14 @@ Personal chat bot for my Twitch stream.
 ## Installation
 <a href='https://npmjs.com/package/jaidbot'><img alt='npm logo' src='https://raw.githubusercontent.com/npm/logos/master/npm%20logo/npm-logo-red.png' height=16/></a>
 ```bash
-npm install --global jaidbot@^
+npm install --global jaidbot@^6.3.0
 ```
 <a href='https://yarnpkg.com/package/jaidbot'><img alt='Yarn logo' src='https://raw.githubusercontent.com/yarnpkg/assets/master/yarn-kitten-full.png' height=24/></a>
 ```bash
-yarn global add jaidbot@^
+yarn global add jaidbot@^6.3.0
 ```
 
 
-## Try it out
-Open a browser's JavaScript console and execute:
-
-```javascript
-const scriptElement = document.createElement("script");
-scriptElement.setAttribute("type","text/javascript");
-scriptElement.setAttribute("src","https://unpkg.com/jaidbot@6.3.0");
-document.querySelector("head").appendChild(scriptElement);
-```
-
-The module is now loaded in a variable.
-
-```javascript
-typeof jaidbot.default
-```
 
 
 ## License
