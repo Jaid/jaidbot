@@ -1,6 +1,6 @@
-import twitch from "src/plugins/twitch"
 import {config} from "src/core"
 import Video from "src/models/Video"
+import twitch from "src/plugins/twitch"
 
 export default {
   permission: "subOrVip",

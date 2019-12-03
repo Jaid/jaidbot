@@ -1,8 +1,10 @@
+import {isArray, sample, template} from "lodash"
+
 import moment from "lib/moment"
-import {template, sample, isArray} from "lodash"
+import normalizeUsername from "lib/normalizeUsername"
+
 import {config} from "src/core"
 import twitch from "src/plugins/twitch"
-import normalizeUsername from "lib/normalizeUsername"
 
 const getGreeting = () => {
   const hour = moment().hour()

@@ -1,5 +1,6 @@
-import afkManager from "src/plugins/twitch/afkManager"
 import parseDuration from "parse-duration"
+
+import afkManager from "src/plugins/twitch/afkManager"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/
 

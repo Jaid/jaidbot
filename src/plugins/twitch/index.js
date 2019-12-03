@@ -1,18 +1,19 @@
+import capitalize from "capitalize"
+import delay from "delay"
 import EventEmitter from "events"
-
-import {logger} from "src/core"
-import moment from "lib/moment"
-import TwitchUser from "src/models/TwitchUser"
-import Heartbeat from "src/models/Heartbeat"
-import isOnlyDigits from "lib/isOnlyDigits"
-import Cache from "node-cache"
+import {isEmpty} from "has-content"
 import ms from "ms.macro"
+import Cache from "node-cache"
 import pRetry from "p-retry"
 import readableMs from "readable-ms"
-import delay from "delay"
-import {isEmpty} from "has-content"
-import capitalize from "capitalize"
 import twitch from "twitch"
+
+import isOnlyDigits from "lib/isOnlyDigits"
+import moment from "lib/moment"
+
+import {logger} from "src/core"
+import Heartbeat from "src/models/Heartbeat"
+import TwitchUser from "src/models/TwitchUser"
 
 import ChatBot from "./ChatBot"
 

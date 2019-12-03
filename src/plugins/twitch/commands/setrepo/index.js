@@ -1,10 +1,11 @@
-import {config} from "src/core"
-import afkManager from "src/plugins/twitch/afkManager"
-import repoPackageJson from "repo-package-json"
 import hasContent, {isEmpty} from "has-content"
-import nestext from "nestext"
 import {shuffle} from "lodash"
+import nestext from "nestext"
+import repoPackageJson from "repo-package-json"
+
+import {config} from "src/core"
 import main from "src/plugins/main"
+import afkManager from "src/plugins/twitch/afkManager"
 
 import titleNestext from "./title.nestext.yml"
 

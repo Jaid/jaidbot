@@ -1,9 +1,10 @@
-import twitch from "src/plugins/twitch"
 import nodeSchedule from "node-schedule"
 
+import twitch from "src/plugins/twitch"
+
 import scheduledMessages from "./scheduledMessages.yml"
-import worldBosses from "./worldBosses.yml"
 import worldBossDates from "./worldBossDates.yml"
+import worldBosses from "./worldBosses.yml"
 
 const days = {
   sunday: 0,

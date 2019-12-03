@@ -1,4 +1,5 @@
 import {isEmpty} from "has-content"
+
 import twitch from "src/plugins/twitch"
 
 export default async event => {

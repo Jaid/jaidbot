@@ -1,4 +1,5 @@
 import ms from "ms.macro"
+
 import ScheduledMessage from "src/models/ScheduledMessage"
 
 export default {

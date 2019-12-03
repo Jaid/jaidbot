@@ -1,4 +1,5 @@
 import parseDuration from "parse-duration"
+
 import ScheduledMessage from "src/models/ScheduledMessage"
 
 const removeFirstArgumentRegex = /^\S+\s*(?<rest>.*)/

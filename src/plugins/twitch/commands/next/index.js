@@ -1,4 +1,5 @@
 import {Op} from "sequelize"
+
 import Video from "src/models/Video"
 
 export default {

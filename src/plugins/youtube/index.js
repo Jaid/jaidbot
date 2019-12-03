@@ -1,16 +1,17 @@
-import PollingEmitter from "polling-emitter"
-import {logger} from "src/core"
-import twitch from "src/plugins/twitch"
-import fetchYoutubeUploads from "fetch-youtube-uploads"
-import {flatten} from "lodash"
-import ensureObject from "ensure-object"
-import Video from "src/models/Video"
-import regexParser from "regex-parser"
-import pMinDelay from "p-min-delay"
-import pMap from "p-map"
 import delay from "delay"
-import zahl from "zahl"
+import ensureObject from "ensure-object"
+import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {isEmpty} from "has-content"
+import {flatten} from "lodash"
+import pMap from "p-map"
+import pMinDelay from "p-min-delay"
+import PollingEmitter from "polling-emitter"
+import regexParser from "regex-parser"
+import zahl from "zahl"
+
+import {logger} from "src/core"
+import Video from "src/models/Video"
+import twitch from "src/plugins/twitch"
 
 /**
  * @typedef {Object} YoutubeVideo

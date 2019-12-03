@@ -1,4 +1,5 @@
 import moment from "lib/moment"
+
 import Video from "src/models/Video"
 
 export default {

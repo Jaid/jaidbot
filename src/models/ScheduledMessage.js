@@ -1,6 +1,7 @@
-import Sequelize, {Op} from "sequelize"
-import twitch from "src/plugins/twitch"
 import nodeSchedule from "node-schedule"
+import Sequelize, {Op} from "sequelize"
+
+import twitch from "src/plugins/twitch"
 
 class ScheduledMessage extends Sequelize.Model {
 

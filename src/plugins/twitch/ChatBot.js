@@ -1,13 +1,13 @@
-import EventEmitter from "events"
-
-import stringArgv from "string-argv"
-import minimist from "minimist"
-import {isString, pick} from "lodash"
-import twitch from "src/plugins/twitch"
-import server from "src/plugins/apiServer"
-import {logger} from "src/core"
 import ensureArray from "ensure-array"
+import EventEmitter from "events"
 import {isEmpty} from "has-content"
+import {isString, pick} from "lodash"
+import minimist from "minimist"
+import stringArgv from "string-argv"
+
+import {logger} from "src/core"
+import server from "src/plugins/apiServer"
+import twitch from "src/plugins/twitch"
 
 const commandRegex = /^(?<prefix>!)(?<commandName>[\da-z]+)(?<afterCommandName>\s*(?<commandArguments>.*))?/i
 

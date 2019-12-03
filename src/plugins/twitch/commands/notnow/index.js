@@ -1,5 +1,6 @@
-import Video from "src/models/Video"
 import ms from "ms.macro"
+
+import Video from "src/models/Video"
 
 export default {
   permission: "subOrVip",

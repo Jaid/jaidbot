@@ -1,9 +1,10 @@
+import {isEmpty} from "has-content"
+import {unpackObject} from "magina"
 import Twit from "twit"
+import zahl from "zahl"
+
 import {logger} from "src/core"
 import twitch from "src/plugins/twitch"
-import {unpackObject} from "magina"
-import zahl from "zahl"
-import {isEmpty} from "has-content"
 
 const getTweetText = tweet => {
   return tweet.extended_tweet?.full_text || tweet.text

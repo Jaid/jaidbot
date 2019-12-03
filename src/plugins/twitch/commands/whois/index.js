@@ -1,10 +1,12 @@
-import twitch from "src/plugins/twitch"
-import normalizeUsername from "lib/normalizeUsername"
-import {hoursMinutesHumanize} from "lib/humanizeDuration"
-import moment from "lib/moment"
 import hasContent from "has-content"
-import millify from "lib/millify"
 import zahl from "zahl"
+
+import {hoursMinutesHumanize} from "lib/humanizeDuration"
+import millify from "lib/millify"
+import moment from "lib/moment"
+import normalizeUsername from "lib/normalizeUsername"
+
+import twitch from "src/plugins/twitch"
 
 function prettifyLanguage(code) {
   return {

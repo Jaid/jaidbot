@@ -1,12 +1,13 @@
 import Sequelize from "sequelize"
-import twitch from "twitch"
-import twitchCore from "src/plugins/twitch"
-import {config, logger} from "src/core"
-import scope from "src/plugins/twitchAuth/scope"
-import ChatClient from "twitch-chat-client"
 import shortid from "shortid"
-import User from "src/models/User"
+import twitch from "twitch"
+import ChatClient from "twitch-chat-client"
+
+import {config, logger} from "src/core"
 import ChatMessage from "src/models/ChatMessage"
+import User from "src/models/User"
+import twitchCore from "src/plugins/twitch"
+import scope from "src/plugins/twitchAuth/scope"
 
 class TwitchUser extends Sequelize.Model {
 

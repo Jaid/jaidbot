@@ -1,12 +1,14 @@
-import Sequelize, {Op} from "sequelize"
-import core, {config, logger} from "src/core"
-import apiServer from "src/plugins/apiServer"
+import emitPromise from "emit-promise"
 import execa from "execa"
 import {isString, pick} from "lodash"
-import moment from "lib/moment"
-import TwitchUser from "src/models/TwitchUser"
 import ms from "ms.macro"
-import emitPromise from "emit-promise"
+import Sequelize, {Op} from "sequelize"
+
+import moment from "lib/moment"
+
+import core, {config, logger} from "src/core"
+import TwitchUser from "src/models/TwitchUser"
+import apiServer from "src/plugins/apiServer"
 import twitch from "src/plugins/twitch"
 
 /**

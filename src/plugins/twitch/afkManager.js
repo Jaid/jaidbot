@@ -1,10 +1,11 @@
 import EventEmitter from "events"
-
-import moment from "lib/moment"
-import humanizeDuration from "lib/humanizeDuration"
-import twitch, {removeTitlePrefix} from "src/plugins/twitch"
 import ms from "ms.macro"
+
+import humanizeDuration from "lib/humanizeDuration"
+import moment from "lib/moment"
+
 import apiServer from "src/plugins/apiServer"
+import twitch, {removeTitlePrefix} from "src/plugins/twitch"
 
 const afkToleranceMinutes = 2
 

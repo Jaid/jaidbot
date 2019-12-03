@@ -1,6 +1,8 @@
-import youtube from "lib/youtube"
-import Video from "src/models/Video"
 import ms from "ms.macro"
+
+import youtube from "lib/youtube"
+
+import Video from "src/models/Video"
 
 export default {
   permission: "mod",

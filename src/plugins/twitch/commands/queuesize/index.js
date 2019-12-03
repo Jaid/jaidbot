@@ -1,6 +1,8 @@
-import Video from "src/models/Video"
 import {Op} from "sequelize"
+
 import {hoursMinutesHumanize} from "lib/humanizeDuration"
+
+import Video from "src/models/Video"
 
 export default {
   async handle() {

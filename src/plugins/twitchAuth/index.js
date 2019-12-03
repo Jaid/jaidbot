@@ -1,8 +1,9 @@
+import Router from "@koa/router"
+import passport from "koa-passport"
 import {Strategy as TwitchStrategy} from "passport-twitch-new"
+
 import core, {config, logger} from "src/core"
 import TwitchUser from "src/models/TwitchUser"
-import passport from "koa-passport"
-import Router from "@koa/router"
 
 import scope from "./scope"
 

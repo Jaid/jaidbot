@@ -1,5 +1,6 @@
-import twitch from "src/plugins/twitch"
 import {isEmpty} from "has-content"
+
+import twitch from "src/plugins/twitch"
 
 /**
  * @type {import("koa").Middleware}

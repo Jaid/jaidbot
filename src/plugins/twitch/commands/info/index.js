@@ -1,7 +1,9 @@
-import moment from "lib/moment"
-import millify from "millify"
 import filesize from "filesize"
 import {isNumber} from "lodash"
+import millify from "millify"
+
+import moment from "lib/moment"
+
 import Video from "src/models/Video"
 
 export default {

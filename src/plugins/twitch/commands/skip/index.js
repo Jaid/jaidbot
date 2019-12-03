@@ -1,6 +1,7 @@
-import Video from "src/models/Video"
 import humanizeDuration from "humanize-duration"
 import ms from "ms.macro"
+
+import Video from "src/models/Video"
 
 const humanizeDurationShort = humanizeDuration.humanizer({
   language: "de",

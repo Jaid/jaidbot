@@ -1,4 +1,5 @@
 import {hoursMinutesHumanize} from "lib/humanizeDuration"
+
 import main from "src/plugins/main"
 
 export default {

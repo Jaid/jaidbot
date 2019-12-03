@@ -1,9 +1,10 @@
-import SteamGameUpdateWatcher from "steam-game-update-watcher"
-import {logger} from "src/core"
-import {ensureObject} from "magina"
-import twitch from "src/plugins/twitch"
 import {isEmpty} from "has-content"
+import {ensureObject} from "magina"
+import SteamGameUpdateWatcher from "steam-game-update-watcher"
 import zahl from "zahl"
+
+import {logger} from "src/core"
+import twitch from "src/plugins/twitch"
 
 export default class GameUpdateWatcher {
 

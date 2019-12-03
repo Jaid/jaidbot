@@ -1,11 +1,12 @@
-import {logger} from "src/core"
-import pMap from "p-map"
-import twitch from "src/plugins/twitch"
-import zahl from "zahl"
-import {isEmpty} from "has-content"
-import {createProbot} from "probot"
 import fsp from "@absolunet/fsp"
 import Octokit from "@octokit/rest"
+import {isEmpty} from "has-content"
+import pMap from "p-map"
+import {createProbot} from "probot"
+import zahl from "zahl"
+
+import {logger} from "src/core"
+import twitch from "src/plugins/twitch"
 
 import checkRunCompleted from "./events/checkRunCompleted"
 import releasePublished from "./events/releasePublished"
