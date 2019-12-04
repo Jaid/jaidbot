@@ -4,11 +4,11 @@
 Personal chat bot for my Twitch stream.
 
 ## Installation
-<a href='https://npmjs.com/package/jaidbot'><img alt='npm logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/npm.png' height=24/></a>
+<a href='https://npmjs.com/package/jaidbot'><img alt='npm logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/npm.png' height='24'/></a>
 ```bash
 npm install --global jaidbot@^6.3.0
 ```
-<a href='https://yarnpkg.com/package/jaidbot'><img alt='Yarn logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/yarn.png' height=24/></a>
+<a href='https://yarnpkg.com/package/jaidbot'><img alt='Yarn logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/yarn.png' height='30'/></a>
 ```bash
 yarn global add jaidbot@^6.3.0
 ```
