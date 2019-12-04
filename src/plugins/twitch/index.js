@@ -14,6 +14,7 @@ import moment from "lib/moment"
 import {logger} from "src/core"
 import Heartbeat from "src/models/Heartbeat"
 import TwitchUser from "src/models/TwitchUser"
+import apiServer from "src/plugins/apiServer"
 
 import ChatBot from "./ChatBot"
 
@@ -312,6 +313,9 @@ class Twitch extends EventEmitter {
           twitchUser.chatterRole = role
         }
         await twitchUser.save()
+      }
+      if (apiServer.hasClient()) {
+        apiServer.client.emit("updateChatters", chatters.allChattersWithStatus)
       }
       logger.debug("Twitch tick done in %s", readableMs(Date.now() - tickStart))
     } catch (error) {
