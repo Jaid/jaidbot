@@ -37,6 +37,10 @@ class ApiServer extends EventEmitter {
     return Boolean(this.client)
   }
 
+  emitToClient(...args) {
+    this.client?.emit(...args)
+  }
+
 }
 
 export default new ApiServer

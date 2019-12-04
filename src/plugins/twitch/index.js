@@ -29,6 +29,11 @@ class Twitch extends EventEmitter {
   currentTitle = null
 
   /**
+   * @type {import("twitch").default}
+   */
+  botClient = null
+
+  /**
    * @param {import("src/core").Config} config
    */
   handleConfig(config) {
@@ -302,6 +307,7 @@ class Twitch extends EventEmitter {
       const fetchChattersStart = Date.now()
       const chatters = await this.botClient.unsupported.getChatters(this.streamerLogin)
       logger.debug("Fetched %s chatters in %s", chatters.allChatters.length, readableMs(Date.now() - fetchChattersStart))
+      const chatterSummary = []
       for (const [chatter, role] of chatters.allChattersWithStatus.entries()) {
         const twitchUser = await TwitchUser.findOrRegisterByLogin(chatter, {
           defaults: {
@@ -313,10 +319,16 @@ class Twitch extends EventEmitter {
           twitchUser.chatterRole = role
         }
         await twitchUser.save()
+        chatterSummary.push({
+          role,
+          login: chatter,
+          displayName: twitchUser.getDisplayName(),
+          avatarUrl: twitchUser.avatarUrl,
+          followDate: twitchUser.followDate,
+          nameColor: twitchUser.nameColor,
+        })
       }
-      if (apiServer.hasClient()) {
-        apiServer.client.emit("updateChatters", chatters.allChattersWithStatus)
-      }
+      apiServer.emitToClient("updateChatters", chatterSummary)
       logger.debug("Twitch tick done in %s", readableMs(Date.now() - tickStart))
     } catch (error) {
       logger.error("Twitch tick failed: %s", error)
