@@ -2,8 +2,7 @@ import delay from "delay"
 import ensureObject from "ensure-object"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {isEmpty} from "has-content"
-import {flatten} from "lodash"
-import pMap from "p-map"
+import pAll from "p-all"
 import pMinDelay from "p-min-delay"
 import PollingEmitter from "polling-emitter"
 import regexParser from "regex-parser"
@@ -85,6 +84,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
   }
 
   async fetchEntries() {
+    const results = []
     const mapper = async entry => {
       /**
        * @type {import("../lib/config").ObservedYoutubeChannel}
@@ -98,19 +98,20 @@ export default class SubscriptionWatcher extends PollingEmitter {
         const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), this.forcedTimeBetweenChecks, {
           delayRejection: false,
         })
-        return youtubeVideos.map(video => ({
-          ...video,
-          channel,
-        }))
+        for (const video of youtubeVideos) {
+          results.push({
+            ...video,
+            channel,
+          })
+        }
       } catch (error) {
         logger.error("Could not fetch YouTube channel %s", channel.name)
         throw error
       }
     }
-    const results = await pMap(this.observedChannels, mapper, {concurrency: 1})
-    const resultsList = flatten(results)
-    logger.debug("Fetched %s from %s", zahl(resultsList, "video"), zahl(this.observedChannels, "channel"))
-    return resultsList
+    await pAll(this.observedChannels.map(mapper), {concurrency: 1})
+    logger.debug("Fetched %s from %s", zahl(results, "video"), zahl(this.observedChannels, "channel"))
+    return results
   }
 
   handleError(error) {
