@@ -27,7 +27,7 @@
     "got": "^10.0.1",
     "has-content": "^1.1.0",
     "humanize-duration": "^3.21.0",
-    "jaid-core": "^5.8.0",
+    "jaid-core": "^5.9.0",
     "jaid-core-dashboard": "^1.2.2",
     "jaid-logger": "^1.5.3",
     "koa": "^2.11.0",
