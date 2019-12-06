@@ -19,9 +19,14 @@ async function job() {
 }
 
 process.on("unhandledRejection", error => {
-  logError("Unhandled promise rejection")
-  logError(error)
-  process.exit(1)
+  if (error) {
+    logError(`Unhandled promise rejection: ${error?.message || error}`)
+  } else {
+    logError("Unhandled promise rejection")
+  }
+  if (error?.stack) {
+    logError(error.stack)
+  }
 })
 
 job().catch(error => {
