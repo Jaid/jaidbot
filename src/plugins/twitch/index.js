@@ -331,7 +331,6 @@ class Twitch extends EventEmitter {
       apiServer.emitToClient("updateChatters", chatterSummary)
       logger.debug("Twitch tick done in %s", readableMs(Date.now() - tickStart))
     } catch (error) {
-      debugger
       logger.error("Twitch tick failed: %s", error)
     }
   }
