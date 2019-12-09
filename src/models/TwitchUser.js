@@ -108,6 +108,18 @@ class TwitchUser extends Sequelize.Model {
     const helixUser = await keyMeta[key].fetchUser(value)
     const login = helixUser.name.toLowerCase()
     const displayName = helixUser.displayName || login
+    if (key === "twitchLogin") {
+      const twitchUserWithSameId = await TwitchUser.findOne({
+        where: {twitchId: helixUser.id},
+      })
+      if (twitchUserWithSameId) {
+        logger.info("Twitch user #%s seems to have been renamed from %s to %s", twitchUserWithSameId.id, twitchUserWithSameId.loginName, value)
+        twitchUserWithSameId.loginName = value
+        twitchUserWithSameId.displayName = displayName
+        await twitchUserWithSameId.save()
+        return twitchUserWithSameId
+      }
+    }
     logger.info("New Twitch user %s", displayName)
     const isNameSlugUsed = await User.isSlugInUse(login)
     let newSlug = login
@@ -125,9 +137,9 @@ class TwitchUser extends Sequelize.Model {
       viewCount: helixUser.views,
       broadcasterType: helixUser.broadcasterType,
       User: {
-        title: displayName,
-        color: defaults?.nameColor,
-        slug: newSlug,
+        title: displayName || "X",
+        color: defaults?.nameColor || "X",
+        slug: newSlug || "X",
       },
       ...defaults,
     }, {include: "User"})
