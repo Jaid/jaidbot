@@ -110,8 +110,10 @@ class TwitchUser extends Sequelize.Model {
     const displayName = helixUser.displayName || login
     logger.info("New Twitch user %s", displayName)
     const isNameSlugUsed = await User.isSlugInUse(login)
+    let newSlug = login
     if (isNameSlugUsed) {
-      logger.warn("Can not use %s for user slug, because is it already in use, generating one instead", login)
+      newSlug = shortid.generate()
+      logger.warn("Can not use %s for user slug, because is it already in use, using random slug %s instead", login, newSlug)
     }
     const newTwitchUser = await TwitchUser.create({
       displayName,
@@ -125,7 +127,7 @@ class TwitchUser extends Sequelize.Model {
       User: {
         title: displayName,
         color: defaults?.nameColor,
-        slug: isNameSlugUsed ? shortid() : login,
+        slug: newSlug,
       },
       ...defaults,
     }, {include: "User"})
