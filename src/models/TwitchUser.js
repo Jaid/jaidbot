@@ -137,9 +137,9 @@ class TwitchUser extends Sequelize.Model {
       viewCount: helixUser.views,
       broadcasterType: helixUser.broadcasterType,
       User: {
-        title: displayName || "X",
-        color: defaults?.nameColor || "X",
-        slug: newSlug || "X",
+        title: displayName,
+        color: defaults?.nameColor,
+        slug: newSlug,
       },
       ...defaults,
     }, {include: "User"})
