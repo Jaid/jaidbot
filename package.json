@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "fast-decode-uri-component": "^1.0.1",
     "fast-koa-router": "^1.0.1",
-    "fetch-youtube-uploads": "^0.4.1",
+    "fetch-youtube-uploads": "^1.0.0",
     "filesize": "^6.0.1",
     "fkill-cli": "^5.2.0",
     "googleapis": "^46.0.0",
@@ -71,7 +71,7 @@
     "twitch-chat-client": "^3.6.0",
     "url-parse": "^1.4.7",
     "uws": "uNetworking/uWebSockets.js#v15.10.0",
-    "ws": "^7.2.0",
+    "ws": "^7.2.1",
     "zahl": "^2.0.3"
   },
   "devDependencies": {
