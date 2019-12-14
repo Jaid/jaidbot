@@ -109,7 +109,8 @@ export default class SubscriptionWatcher extends PollingEmitter {
         throw error
       }
     }
-    await pAll(this.observedChannels.map(mapper), {concurrency: 1})
+    const jobs = this.observedChannels.map(channel => mapper(channel)) // Must be wrapped into a function, so Promises don't automatically start
+    await pAll(jobs, {concurrency: 1})
     logger.debug("Fetched %s from %s", zahl(results, "video"), zahl(this.observedChannels, "channel"))
     return results
   }
