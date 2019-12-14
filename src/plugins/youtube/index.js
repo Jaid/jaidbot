@@ -2,7 +2,7 @@ import delay from "delay"
 import ensureObject from "ensure-object"
 import fetchYoutubeUploads from "fetch-youtube-uploads"
 import {isEmpty} from "has-content"
-import pAll from "p-all"
+import pMap from "p-map"
 import pMinDelay from "p-min-delay"
 import PollingEmitter from "polling-emitter"
 import regexParser from "regex-parser"
@@ -109,8 +109,7 @@ export default class SubscriptionWatcher extends PollingEmitter {
         throw error
       }
     }
-    const jobs = this.observedChannels.map(channel => mapper(channel)) // Must be wrapped into a function, so Promises don't automatically start
-    await pAll(jobs, {concurrency: 1})
+    await pMap(this.observedChannels, mapper, {concurrency: 1})
     logger.debug("Fetched %s from %s", zahl(results, "video"), zahl(this.observedChannels, "channel"))
     return results
   }
