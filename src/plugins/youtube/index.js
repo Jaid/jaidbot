@@ -36,7 +36,6 @@ export default class SubscriptionWatcher extends PollingEmitter {
   handleConfig(config) {
     this.observedChannels = config.observedYoutubeChannels
     this.options.pollInterval = config.youtubeSubscriptionsPollIntervalSeconds * 1000
-    this.videoAddDelay = config.videoSubscriptionAddDelaySeconds * 1000
     this.defaultPriority = config.videoSubscriptionPriority
     this.forcedTimeBetweenChecks = config.secondsBetweenYoutubeChecks * 1000
   }
@@ -64,7 +63,6 @@ export default class SubscriptionWatcher extends PollingEmitter {
         } else {
           twitch.say(`PopCorn Video "${youtubeVideo.title}": ${url}`)
         }
-        await delay(this.videoAddDelay)
         await Video.queueByUrl(url, {
           priority: youtubeVideo.channel.priority || this.defaultPriority,
         })

@@ -40,7 +40,6 @@ videoRequestPriorityVips: 20
 videoRequestPriorityMods: 50
 videoRequestPriorityBroadcaster: 100
 videoSubscriptionPriority: 50
-videoSubscriptionAddDelaySeconds: 900
 secondsBetweenYoutubeChecks: 5
 twitchTickSeconds: 60
 neutralTitles:

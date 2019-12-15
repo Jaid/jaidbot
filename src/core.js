@@ -77,7 +77,6 @@ const core = new JaidCore({
  * @prop {number} videoSubscriptionPriority
  * @prop {string|string[]} neutralTitles
  * @prop {number} secondsBetweenYoutubeChecks
- * @prop {number} videoSubscriptionAddDelaySeconds
  * @prop {string} githubAppPemFilePath
  * @prop {number} githubAppId
  * @prop {string} githubAppSecret
