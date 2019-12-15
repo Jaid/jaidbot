@@ -90,15 +90,15 @@ export default class SubscriptionWatcher extends PollingEmitter {
        * @type {import("../lib/config").ObservedYoutubeChannel}
        */
       const channel = ensureObject(entry, "id")
-      /**
-       * @type {YoutubeVideo}
-       */
       logger.debug("Fetching YouTube videos from %s", channel.name)
       try {
         const youtubeVideos = await pMinDelay(fetchYoutubeUploads(channel.id), this.forcedTimeBetweenChecks, {
           delayRejection: false,
         })
         for (const video of youtubeVideos) {
+          if (!video.published) {
+            continue
+          }
           results.push({
             ...video,
             channel,
