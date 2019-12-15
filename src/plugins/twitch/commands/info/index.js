@@ -1,4 +1,3 @@
-import filesize from "filesize"
 import {isNumber} from "lodash"
 import millify from "millify"
 
@@ -8,7 +7,7 @@ import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
-  async handle({sender, senderName}) {
+  async handle({senderName}) {
     const video = Video.getCurrentVideo()
     if (!video) {
       return `Gerade läuft doch gar kein Video, ${senderName}!`
@@ -27,9 +26,6 @@ export default {
     }
     if (video.ageLimit > 0) {
       properties.push(`freigegeben ab ${video.ageLimit} Jahren`)
-    }
-    if (video.bytes > 1000) {
-      properties.push(filesize(video.bytes, {round: 0}))
     }
     if (video.views) {
       properties.push(`${millify(video.views, {precision: 0})} Views`)
