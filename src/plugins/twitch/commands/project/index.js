@@ -12,7 +12,6 @@ export default {
     if (!main.currentProjectRepo) {
       return `Jaidchen ist seit ${workingDurationString} mit ${main.currentProject} beschäftigt, ${senderName}.`
     }
-
-    return `Jaidchen ist seit ${workingDurationString} mit ${main.currentProject} beschäftigt. Das Projekt ist öffentlich auf github.com/${main.currentProjectRepo} einsehbar. Da kannst du, falls du einen GitHub-Account hast, ${senderName}, das Projekt mit einem Stern markieren, einen Fehler melden, Vorschläge eintragen oder auch Änderungen am Code einreichen.`
+    return `Jaidchen ist seit ${workingDurationString} mit ${main.currentProject} beschäftigt. Das Projekt ist öffentlich auf github.com/${main.currentProjectRepo} einsehbar. Da kannst du, falls du auf GitHub registriert bist, ${senderName}, das Projekt starren, Fehler melden und Änderungen einreichen.`
   },
 }

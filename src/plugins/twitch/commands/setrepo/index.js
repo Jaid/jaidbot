@@ -5,7 +5,7 @@ import repoPackageJson from "repo-package-json"
 
 import {config} from "src/core"
 import main from "src/plugins/main"
-import afkManager from "src/plugins/twitch/afkManager"
+import twitch from "src/plugins/twitch"
 
 import titleNestext from "./title.nestext.yml"
 
@@ -51,7 +51,7 @@ export default {
       technologyList: technologies.join(", "),
     })
     main.setProject(projectTitle, `${config.githubUser}/${repo}`)
-    await afkManager.updateTitle(title)
+    await twitch.setTitle(title)
     return `Neuer Titel: ${title}`
   },
 }

@@ -1,8 +1,9 @@
-text: "{{activity}} ({{technologyList}})"
-activity:
-  - "{{projectTitle}} weitermachen"
-  - "{{projectTitle}} weiterbauen"
-  - "{{projectTitle}} weiterentwickeln"
-  - "An {{projectTitle}} weiterarbeiten"
-  - "Weiter geht's mit {{projectTitle}}"
-  - "Projekt: {{projectTitle}}"
+# text: "{{activity}} ({{technologyList}})"
+# activity:
+#   - "{{projectTitle}} weitermachen"
+#   - "{{projectTitle}} weiterbauen"
+#   - "{{projectTitle}} weiterentwickeln"
+#   - "An {{projectTitle}} weiterarbeiten"
+#   - "Weiter geht's mit {{projectTitle}}"
+#   - "Projekt: {{projectTitle}}"
+text: "An {{projectTitle}} schrauben 🍿 !info für Infos zum Video im Hintergrund 📜 !project für Infos zum Code"
