@@ -6,4 +6,4 @@
 #   - "An {{projectTitle}} weiterarbeiten"
 #   - "Weiter geht's mit {{projectTitle}}"
 #   - "Projekt: {{projectTitle}}"
-text: "{{projectTitle}} weiterbauen 🍿 !info für Infos zum Video im Hintergrund 📜 !project für Infos zum Code"
+text: "{{projectTitle}} weiterbauen 📜 !project für Infos zum Code 🍿 !info für Infos zum Video im Hintergrund"
