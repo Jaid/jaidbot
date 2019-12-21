@@ -33,12 +33,19 @@ class ApiServer extends EventEmitter {
     socketEnhancer.enhanceServer(this.socketServer)
   }
 
+  /**
+   * @return {boolean}
+   */
   hasClient() {
     return Boolean(this.client)
   }
 
   emitToClient(...args) {
     this.client?.emit(...args)
+  }
+
+  emitToOverlay(...args) {
+    this.emitToClient("forwardToOverlay", ...args)
   }
 
 }

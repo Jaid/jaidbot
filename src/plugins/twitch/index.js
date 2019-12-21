@@ -34,6 +34,11 @@ class Twitch extends EventEmitter {
   botClient = null
 
   /**
+   * @type {import("twitch").default}
+   */
+  streamerClient = null
+
+  /**
    * @param {import("src/core").Config} config
    */
   handleConfig(config) {
