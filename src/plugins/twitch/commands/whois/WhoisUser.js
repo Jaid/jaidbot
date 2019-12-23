@@ -136,6 +136,29 @@ export default class WhoisUser {
   getData() {
     const data = {
       displayName: this.displayName,
+      avatarUrl: this.helixProfile.profilePictureUrl,
+      offlineImageUrl: this.helixProfile.offlinePlaceholderUrl,
+      creationDate: Number(this.krakenProfile.creationDate),
+      followers: this.followers.total,
+      followees: this.followees.total,
+      twitchId: this.id,
+      views: this.helixProfile.views,
+    }
+    data.creationDateString = moment(data.creationDate).fromNow()
+    if (this.streamerFollow) {
+      data.followDate = Number(this.streamerFollow.followDate)
+    }
+    if (this.isLive()) {
+      data.stream = {
+        game: this.game.name,
+        startDate: Number(this.stream.startDate),
+        startDateString: `seit ${hoursMinutesHumanize(Date.now() - Number(this.stream.startDate))}`,
+        viewers: this.stream.viewers,
+        languageId: this.stream?.language,
+      }
+      if (data.stream.languageId) {
+        data.stream.languageTitle = prettifyLanguage(data.stream.languageId)
+      }
     }
     return data
   }
