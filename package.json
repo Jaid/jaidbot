@@ -103,5 +103,6 @@
     "prepareActionJest": "npm run build:prod"
   },
   "name": "jaidbot",
-  "description": "Personal chat bot for my Twitch stream."
+  "description": "Personal chat bot for my Twitch stream.",
+  "funding": "https://github.com/sponsors/jaid"
 }
