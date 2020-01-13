@@ -104,5 +104,9 @@
   },
   "name": "jaidbot",
   "description": "Personal chat bot for my Twitch stream.",
-  "funding": "https://github.com/sponsors/jaid"
+  "funding": "https://github.com/sponsors/jaid",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaid/jaidbot"
+  }
 }
