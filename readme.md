@@ -1,9 +1,9 @@
 # Jaidbot
 
 
-<a href="https://raw.githubusercontent.com/Jaid/jaidbot/master/license.txt"><img src="https://img.shields.io/github/license/Jaid/jaidbot?style=flat-square" alt="License"/></a>  
-<a href="https://actions-badge.atrox.dev/Jaid/jaidbot/goto"><img src="https://img.shields.io/endpoint.svg?style=flat-square&url=https%3A%2F%2Factions-badge.atrox.dev%2FJaid%2Fjaidbot%2Fbadge" alt="Build status"/></a> <a href="https://github.com/Jaid/jaidbot/commits"><img src="https://img.shields.io/github/commits-since/Jaid/jaidbot/v6.3.0?style=flat-square&logo=github" alt="Commits since v6.3.0"/></a> <a href="https://github.com/Jaid/jaidbot/commits"><img src="https://img.shields.io/github/last-commit/Jaid/jaidbot?style=flat-square&logo=github" alt="Last commit"/></a> <a href="https://github.com/Jaid/jaidbot/issues"><img src="https://img.shields.io/github/issues/Jaid/jaidbot?style=flat-square&logo=github" alt="Issues"/></a>  
-<a href="https://npmjs.com/package/jaidbot"><img src="https://img.shields.io/npm/v/jaidbot?style=flat-square&logo=npm&label=latest%20version" alt="Latest version on npm"/></a> <a href="https://github.com/Jaid/jaidbot/network/dependents"><img src="https://img.shields.io/librariesio/dependents/npm/jaidbot?style=flat-square&logo=npm" alt="Dependents"/></a> <a href="https://npmjs.com/package/jaidbot"><img src="https://img.shields.io/npm/dm/jaidbot?style=flat-square&logo=npm" alt="Downloads"/></a>
+<a href="https://raw.githubusercontent.com/jaid/jaidbot/master/license.txt"><img src="https://img.shields.io/github/license/jaid/jaidbot?style=flat-square" alt="License"/></a> <a href="https://github.com/sponsors/jaid"><img src="https://img.shields.io/badge/<3-Sponsor-FF45F1?style=flat-square" alt="Sponsor jaidbot"/></a>
+<a href="https://actions-badge.atrox.dev/jaid/jaidbot/goto"><img src="https://img.shields.io/endpoint.svg?style=flat-square&url=https%3A%2F%2Factions-badge.atrox.dev%2Fjaid%2Fjaidbot%2Fbadge" alt="Build status"/></a> <a href="https://github.com/jaid/jaidbot/commits"><img src="https://img.shields.io/github/commits-since/jaid/jaidbot/v6.3.0?style=flat-square&logo=github" alt="Commits since v6.3.0"/></a> <a href="https://github.com/jaid/jaidbot/commits"><img src="https://img.shields.io/github/last-commit/jaid/jaidbot?style=flat-square&logo=github" alt="Last commit"/></a> <a href="https://github.com/jaid/jaidbot/issues"><img src="https://img.shields.io/github/issues/jaid/jaidbot?style=flat-square&logo=github" alt="Issues"/></a>  
+<a href="https://npmjs.com/package/jaidbot"><img src="https://img.shields.io/npm/v/jaidbot?style=flat-square&logo=npm&label=latest%20version" alt="Latest version on npm"/></a> <a href="https://github.com/jaid/jaidbot/network/dependents"><img src="https://img.shields.io/librariesio/dependents/npm/jaidbot?style=flat-square&logo=npm" alt="Dependents"/></a> <a href="https://npmjs.com/package/jaidbot"><img src="https://img.shields.io/npm/dm/jaidbot?style=flat-square&logo=npm" alt="Downloads"/></a>
 
 **Personal chat bot for my Twitch stream.**
 
@@ -33,7 +33,6 @@ yarn global add jaidbot@^6.3.0
 
 
 
-
 ## CLI Usage
 After installing package `jaidbot` globally, you can use its command line interface.
 ```bash
@@ -53,7 +52,7 @@ jaidbot --help
 
 Setting up:
 ```bash
-git clone git@github.com:Jaid/jaidbot.git
+git clone git@github.com:jaid/jaidbot.git
 cd jaidbot
 npm install
 ```
