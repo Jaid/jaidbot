@@ -72,6 +72,7 @@
     "url-parse": "^1.4.7",
     "uws": "uNetworking/uWebSockets.js#v15.10.0",
     "ws": "^7.2.1",
+    "yargs": "^15.1.0",
     "zahl": "^2.0.6"
   },
   "devDependencies": {
