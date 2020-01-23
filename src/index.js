@@ -23,7 +23,7 @@ process.on("unhandledRejection", error => {
 
 async function job() {
   const plugins = {}
-  const pluginsRequire = require.context("./plugins/", true, /index.js$/)
+  const pluginsRequire = require.context("./plugins/", true, /^\.\/\w+\/index.js$/)
   for (const value of pluginsRequire.keys()) {
     const {pluginName} = value.match(/[/\\](?<pluginName>.+?)[/\\]index\.js$/).groups
     plugins[pluginName] = pluginsRequire(value).default
@@ -33,7 +33,7 @@ async function job() {
 
 function main() {
   job().catch(error => {
-    logError("Core process crafshed")
+    logError("Core process crashed")
     logError(error)
     process.exit(1)
   })
