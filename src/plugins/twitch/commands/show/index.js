@@ -3,6 +3,7 @@ import emitPromise from "emit-promise"
 import apiServer from "src/plugins/apiServer"
 
 export default {
+  permission: "mod",
   needsDesktopClient: true,
   requiredArguments: 1,
   async handle({senderName, combinedArguments: sourceName}) {
