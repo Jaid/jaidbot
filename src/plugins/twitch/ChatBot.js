@@ -34,6 +34,9 @@ export default class ChatBot extends EventEmitter {
           command: commandName,
           description: helpEntry.description,
         }
+        if (helpEntry.for) {
+          normalizedHelpEntry.for = helpEntry.for
+        }
         if (helpEntry.param) {
           const params = ensureArray(helpEntry.param)
           normalizedHelpEntry.params = params
