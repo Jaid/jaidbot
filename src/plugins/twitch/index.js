@@ -55,6 +55,7 @@ class Twitch extends EventEmitter {
     this.nicknameCache = new Cache({
       stdTTL: ms`1 day` / 1000,
     })
+    this.autoAds = config.autoAds
   }
 
   /**
@@ -127,6 +128,10 @@ class Twitch extends EventEmitter {
       this.emit("chat", messageInfo)
       await this.chatBot.handleMessage(messageInfo)
     })
+    if (this.autoAds) {
+      logger.info("Starting ad loop")
+      this.startAdLoop()
+    }
     this.isReady = true
     this.say("TBAngel Da bin ich!")
   }
@@ -191,6 +196,10 @@ class Twitch extends EventEmitter {
   }
 
   async startAdLoop() {
+    if (this.isInAdLoop) {
+      logger.info("Skipping twitch.startAdLoop(), because an ad loop is already active")
+      return
+    }
     this.isInAdLoop = true
     while (this.isInAdLoop) {
       await this.playAd(180)
@@ -199,6 +208,13 @@ class Twitch extends EventEmitter {
   }
 
   async stopAdLoop() {
+    if (!this.isInAdLoop) {
+      logger.info("Skipping twitch.stopAdLoop(), because an ad loop was not active")
+      return
+    }
+    if (this.autoAds) {
+      return
+    }
     this.isInAdLoop = false
   }
 
