@@ -181,6 +181,9 @@ class Twitch extends EventEmitter {
   }
 
   async playAd(adDurationSeconds = 30) {
+    if (!this.isLive()) {
+      return
+    }
     const job = async () => {
       await this.streamerClient.kraken.channels.startChannelCommercial(this.streamerUser.twitchId, adDurationSeconds)
     }
@@ -276,6 +279,13 @@ class Twitch extends EventEmitter {
       return
     }
     this.chatClient.say(this.streamerUser.loginName, message)
+  }
+
+  isLive() {
+    if (!Heartbeat.currentStatus) {
+      return false
+    }
+    return Heartbeat.currentStatus.streamTitle !== undefined
   }
 
   isPlayingGame(game) {
