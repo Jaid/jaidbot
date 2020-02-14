@@ -100,6 +100,32 @@ class Video extends Sequelize.Model {
   }
 
   /**
+   * @param {import()} queryOptions
+   * @return {Promise<Video>}
+   */
+  static async findNext(queryOptions) {
+    return Video.findOne({
+      where: {
+        watchedAt: {
+          [Op.eq]: null,
+        },
+        videoFile: {
+          [Op.ne]: null,
+        },
+        frozenUntil: {
+          [Op.lt]: Date.now(),
+        },
+      },
+      order: [
+        ["timestamp", "desc"],
+        ["priority", "desc"],
+        ["id", "desc"],
+      ],
+      ...queryOptions,
+    })
+  }
+
+  /**
    * @param {Video} video
    */
   static setCurrentVideo(video) {

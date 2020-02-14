@@ -1,27 +1,9 @@
-import {Op} from "sequelize"
-
 import Video from "src/models/Video"
 
 export default {
   needsDesktopClient: true,
   async handle() {
-    const nextVideo = await Video.findOne({
-      where: {
-        watchedAt: {
-          [Op.eq]: null,
-        },
-        videoFile: {
-          [Op.ne]: null,
-        },
-        frozenUntil: {
-          [Op.lt]: Date.now(),
-        },
-      },
-      order: [
-        ["priority", "desc"],
-        ["id", "asc"],
-      ],
-    })
+    const nextVideo = await Video.findNext()
     if (!nextVideo) {
       return "Anscheinend ist die komplette Playlist leergeguckt. D:"
     }
