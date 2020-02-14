@@ -8,6 +8,7 @@ export default class ChannelEmitter extends PollingEmitter {
     super({
       autostart: true,
       pollInterval,
+      invalidateInitialEntries: true,
     })
     this.channel = channel
     this.logger = logger
