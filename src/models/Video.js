@@ -119,6 +119,7 @@ class Video extends Sequelize.Model {
       order: [
         ["timestamp", "desc"],
         ["priority", "desc"],
+        ["publisher", "asc"],
         ["id", "desc"],
       ],
       ...queryOptions,
