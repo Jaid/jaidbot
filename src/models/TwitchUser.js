@@ -1,3 +1,5 @@
+import ms from "ms.macro"
+import pTimeout from "p-timeout"
 import Sequelize from "sequelize"
 import shortid from "shortid"
 import twitch from "twitch"
@@ -187,7 +189,7 @@ class TwitchUser extends Sequelize.Model {
     const apiClient = await this.toTwitchClient()
     const chatClient = await ChatClient.forTwitchClient(apiClient)
     await chatClient.connect()
-    return new Promise((resolve, reject) => {
+    const waitForRegister = new Promise(resolve => {
       const listener = chatClient.onRegister(() => {
         chatClient.removeListener(listener)
         resolve({
@@ -196,6 +198,7 @@ class TwitchUser extends Sequelize.Model {
         })
       })
     })
+    return pTimeout(waitForRegister, ms`30 seconds`)
   }
 
   /**
