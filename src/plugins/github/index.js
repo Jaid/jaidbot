@@ -1,5 +1,5 @@
 import fsp from "@absolunet/fsp"
-import Octokit from "@octokit/rest"
+import {Octokit} from "@octokit/rest"
 import {isEmpty} from "has-content"
 import pMap from "p-map"
 import {createProbot} from "probot"

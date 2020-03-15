@@ -157,7 +157,7 @@ class Twitch extends EventEmitter {
       let username
       let profile
       if (isTwitchId) {
-        profile = await this.apiClient.helix.users.getUserById(normalizedUsername)
+        profile = await this.getUserInfoByTwitchId(normalizedUsername)
         if (profile) {
           username = profile.name
           const customNicknameById = this.nicknames[username]
@@ -169,7 +169,7 @@ class Twitch extends EventEmitter {
       }
       if (!profile) {
         username = normalizedUsername
-        profile = await this.apiClient.helix.users.getUserByName(username)
+        profile = await this.getUserInfoByTwitchLogin(username)
       }
       const name = profile?.displayName || profile?.name || normalizedUsername
       this.nicknameCache.set(username, name)
@@ -246,6 +246,9 @@ class Twitch extends EventEmitter {
    */
   async getUserInfoByTwitchId(twitchId) {
     const helixUser = await this.apiClient.helix.users.getUserById(twitchId)
+    if (!helixUser) {
+      logger.warn(`Could not get Twitch user info for user with ID ${twitchId}`)
+    }
     return helixUser
   }
 
@@ -257,6 +260,9 @@ class Twitch extends EventEmitter {
    */
   async getUserInfoByTwitchLogin(twitchLogin) {
     const helixUser = await this.apiClient.helix.users.getUserByName(twitchLogin)
+    if (!helixUser) {
+      logger.warn(`Could not get Twitch user info for user with name ${twitchLogin}`)
+    }
     return helixUser
   }
 
@@ -340,11 +346,16 @@ class Twitch extends EventEmitter {
       logger.debug("Fetched %s chatters in %s", chatters.allChatters.length, readableMs(Date.now() - fetchChattersStart))
       const chatterSummary = []
       for (const [chatter, role] of chatters.allChattersWithStatus.entries()) {
-        const twitchUser = await TwitchUser.findOrRegisterByLogin(chatter, {
-          defaults: {
-            chatterRole: role,
-          },
-        })
+        let twitchUser
+        try {
+          twitchUser = await TwitchUser.findOrRegisterByLogin(chatter, {
+            defaults: {
+              chatterRole: role,
+            },
+          })
+        } catch {
+          continue
+        }
         if (twitchUser.chatterRole !== role) {
           logger.info("Changed chatter role of %s from %s to %s", twitchUser.getDisplayName(), twitchUser.chatterRole, role)
           twitchUser.chatterRole = role

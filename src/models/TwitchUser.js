@@ -106,6 +106,9 @@ class TwitchUser extends Sequelize.Model {
       return twitchUser
     }
     const helixUser = await keyMeta[key].fetchUser(value)
+    if (!helixUser) {
+      throw new Error("Could not fetch a user")
+    }
     const login = helixUser.name.toLowerCase()
     const displayName = helixUser.displayName || login
     if (key === "twitchLogin") {
@@ -184,11 +187,15 @@ class TwitchUser extends Sequelize.Model {
     const apiClient = await this.toTwitchClient()
     const chatClient = await ChatClient.forTwitchClient(apiClient)
     await chatClient.connect()
-    await chatClient.waitForRegistration()
-    return {
-      apiClient,
-      chatClient,
-    }
+    return new Promise((resolve, reject) => {
+      const listener = chatClient.onRegister(() => {
+        chatClient.removeListener(listener)
+        resolve({
+          apiClient,
+          chatClient,
+        })
+      })
+    })
   }
 
   /**
