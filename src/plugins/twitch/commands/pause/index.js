@@ -1,4 +1,5 @@
 import moment from "lib/moment"
+import {hideVideoSources, showVideoSources} from "lib/videoSources"
 
 import Video from "src/models/Video"
 
@@ -17,12 +18,14 @@ export default {
         return "Da hat etwas nicht geklappt"
       }
       const durationString = moment.duration(vlcState.time, "seconds").format()
+      hideVideoSources()
       return `PopCorn Pausiert bei ${durationString}, Bruder! Jetzt hast du deine Ruhe.`
     } else {
       const result = await Video.sendVlcCommand("pl_play")
       if (!result) {
         return "Da hat etwas nicht geklappt"
       }
+      showVideoSources()
       const newTimeSeconds = Math.max(vlcState.time - 3, 0)
       await Video.sendVlcCommand("seek", { // https://wiki.videolan.org/VLC_HTTP_requests
         val: "-3s",
