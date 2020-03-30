@@ -43,6 +43,7 @@ npm install --global @jaid/jaidbot@^6.7.0
 
 
 
+
 ## CLI Usage
 After installing package `jaidbot` globally, you can use its command line interface.
 ```bash
@@ -52,6 +53,10 @@ For usage instructions:
 ```bash
 jaidbot --help
 ```
+
+
+
+
 
 
 
