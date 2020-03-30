@@ -17,9 +17,6 @@ export default class ChannelEmitter extends PollingEmitter {
   async fetchEntries() {
     const results = []
     const youtubeVideos = await fetchYoutubeUploads(this.channel.id)
-    if (isEmpty(youtubeVideos)) {
-      throw new Error(`Fetched no videos from ${this.channel.name || this.channel.id}`)
-    }
     for (const video of youtubeVideos) {
       if (!video.published) {
         continue
@@ -28,6 +25,9 @@ export default class ChannelEmitter extends PollingEmitter {
         ...video,
         channel: this.channel,
       })
+    }
+    if (isEmpty(youtubeVideos)) {
+      throw new Error(`Fetched no videos from ${this.channel.name || this.channel.id}`)
     }
     return results
   }
