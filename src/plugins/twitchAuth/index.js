@@ -18,17 +18,11 @@ class Auth {
       clientSecret: config.twitchClientSecret,
       callbackURL: config.twitchClientCallbackUrl,
     }, async (accessToken, refreshToken, profile, done) => {
-      await TwitchUser.upsert({
-        accessToken,
-        refreshToken,
-        broadcasterType: profile.broadcaster_type,
-        description: profile.description,
-        displayName: profile.display_name,
-        twitchId: profile.id,
-        loginName: profile.login,
-        offlineImageUrl: profile.offline_image_url,
-        avatarUrl: profile.profile_image_url,
-        viewCount: profile.view_count,
+      await TwitchUser.findOrRegisterById(profile.id, {
+        defaults: {
+          accessToken,
+          refreshToken,
+        },
       })
       logger.info("Login from Twitch user %s", profile.login)
       done()
