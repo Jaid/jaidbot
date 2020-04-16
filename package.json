@@ -6,7 +6,7 @@
   "dependencies": {
     "@babel/runtime": "^7.9.2",
     "@koa/router": "^9.0.0",
-    "@octokit/rest": "^17.2.1",
+    "@octokit/rest": "^17.3.0",
     "capitalize": "^2.0.3",
     "debug": "^4.1.1",
     "delay": "^4.3.0",
@@ -82,7 +82,7 @@
     "babel-jest": "^25.3.0",
     "babel-preset-jaid": "^7.3.6",
     "browserslist-config-jaid-node": "^2.2.2",
-    "caniuse-lite": "^1.0.30001041",
+    "caniuse-lite": "^1.0.30001042",
     "eslint": "^6.8.0",
     "eslint-config-jaid": "^1.49.0",
     "jest": "^25.3.0",
