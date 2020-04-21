@@ -2,6 +2,9 @@ import yargs from "yargs"
 
 import core from "./core"
 
+/**
+ * @param {*} message
+ */
 function logError(message) {
   if (core?.logger?.error) {
     core.logger.error(message)
@@ -11,16 +14,13 @@ function logError(message) {
 }
 
 process.on("unhandledRejection", error => {
-  if (error) {
-    logError(`Unhandled promise rejection: ${error?.message || error}`)
-  } else {
-    logError("Unhandled promise rejection")
-  }
-  if (error?.stack) {
-    logError(error.stack)
-  }
+  logError("Unhandled promise rejection")
+  logError(error)
 })
 
+/**
+ * @return {Promise<void>}
+ */
 async function job() {
   const plugins = {}
   const pluginsRequire = require.context("./plugins/", true, /^\.\/\w+\/index.js$/)
@@ -33,7 +33,8 @@ async function job() {
 
 function main() {
   job().catch(error => {
-    logError("Core process crashed: %s", error)
+    logError("Core process crashed")
+    logError(error)
     process.exit(1)
   })
 }
