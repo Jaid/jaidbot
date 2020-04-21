@@ -1,21 +1,27 @@
+import readableMs from "readable-ms"
 import yargs from "yargs"
 
 import core from "./core"
 
 /**
  * @param {*} message
+ * @param {string} [level="info"]
  */
-function logError(message) {
-  if (core?.logger?.error) {
-    core.logger.error(message)
+function log(message, level = "info") {
+  if (core?.logger?.[level]) {
+    core.logger[level](message)
   } else {
-    console.error(message)
+    console[level](message)
   }
 }
 
 process.on("unhandledRejection", error => {
-  logError("Unhandled promise rejection")
-  logError(error)
+  log("Unhandled promise rejection", "error")
+  log(error, "error")
+})
+
+process.on("exit", code => {
+  log(`Exiting with code ${code} after ${readableMs(Date.now() - core.startTime)}`)
 })
 
 /**
@@ -33,8 +39,8 @@ async function job() {
 
 function main() {
   job().catch(error => {
-    logError("Core process crashed")
-    logError(error)
+    log("Core process crashed", "error")
+    log(error, "error")
     process.exit(1)
   })
 }
