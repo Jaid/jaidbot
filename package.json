@@ -1,7 +1,7 @@
 {
   "title": "Jaidbot",
   "webpackConfigJaid": "cli",
-  "version": "6.9.0",
+  "version": "6.9.1",
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@koa/router": "^9.0.0",
