@@ -111,5 +111,17 @@
     "url": "https://github.com/jaid/jaidbot"
   },
   "homepage": "https://twitch.tv/jaidchen",
-  "keywords": []
+  "keywords": [
+    "bot",
+    "cli",
+    "stream",
+    "streamer",
+    "streaming",
+    "streaming-tool",
+    "twitch",
+    "twitch-api",
+    "twitch-bot",
+    "twitch-tv",
+    "twitchtv"
+  ]
 }
