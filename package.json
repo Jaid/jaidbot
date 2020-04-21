@@ -4,7 +4,7 @@
   "version": "6.9.2",
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
-    "@koa/router": "^9.0.0",
+    "@koa/router": "^8.0.8",
     "@octokit/rest": "^17.5.1",
     "capitalize": "^2.0.3",
     "debug": "^4.1.1",
