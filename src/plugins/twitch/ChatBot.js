@@ -68,7 +68,7 @@ export default class ChatBot extends EventEmitter {
     const senderName = await twitch.getNickname(message.sender.id)
     const command = this.commands[commandName]
     if (!command) {
-      twitch.say(`Verstehe ich jetzt nicht, ${senderName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
+      // twitch.say(`Verstehe ich jetzt nicht, ${senderName}! Alle Befehle sind in den Panels unter dem Stream beschrieben.`)
       return
     }
     if (!message.sender.isBroadcaster) {
