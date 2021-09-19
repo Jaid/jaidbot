@@ -124,5 +124,6 @@
     "twitch-bot",
     "twitch-tv",
     "twitchtv"
-  ]
+  ],
+  "type": "module"
 }
